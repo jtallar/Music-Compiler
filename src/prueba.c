@@ -15,4 +15,12 @@ int main(){
 }
 
 
-//
+/*      
+**      Ejemplo: 
+**		chord a = A + B + C
+**		set s = [a 30]
+**		set h = [G 1]
+**      set f = [_ 5]
+**		set d = (h / f) * 10
+**		set b = ( s * 4 / [G 10] / s * 1 ) * 20
+*/
