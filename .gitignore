@@ -1,0 +1,21 @@
+# Don't track content of these folders
+
+
+# Compiled source #
+###################
+*.o
+*.wav 
+*.h.gch
+
+
+# Packages #
+############
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
