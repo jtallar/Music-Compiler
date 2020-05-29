@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "sound.h"
+
 
 int main(){
     // Define some variables for the sound
@@ -11,7 +13,21 @@ int main(){
     
     generateWav(score);
 
+    playSound(WAV_FILE_NAME);
+
     return 0;
+}
+
+int playSound( char *filename ) {
+    char command[256];
+    int status;
+    /* create command to execute */
+    sprintf (command, "%s -c 1 -q -t wav %s", SOUND_COMMAND, filename);
+
+    /* play sound */
+    status = system( command );
+     
+    return status;
 }
 
 // Needed function that return freq from given note 

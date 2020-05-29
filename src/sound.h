@@ -1,3 +1,11 @@
+#ifdef __linux__
+    #define SOUND_COMMAND  "aplay"
+#endif
+
+#ifdef __APPLE__	
+    #define SOUND_COMMAND  "afplay"
+#endif
+
 #ifndef _SOUND_H_
 #define _SOUND_H_
 
@@ -29,6 +37,8 @@ typedef struct Score {
 void addChord(Wave * mySound, Chord chord, long nSamples);
 void addScore(Wave * mySound, Score score);
 void generateWav(Score score);
+
+int playSound( char *filename );
 
 // Score is an array of Sets
 long getTotalDuration(Score score);
