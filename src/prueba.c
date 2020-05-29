@@ -22,7 +22,7 @@ int playSound( char *filename ) {
     char command[256];
     int status;
     /* create command to execute */
-    sprintf (command, "%s -c 1 -q -t wav %s", SOUND_COMMAND, filename);
+    sprintf (command, "%s 1 -q -t wav %s", SOUND_COMMAND, filename);
 
     /* play sound */
     status = system( command );

@@ -1,5 +1,5 @@
 #ifdef __linux__
-    #define SOUND_COMMAND  "aplay"
+    #define SOUND_COMMAND  "aplay -c"
 #endif
 
 #ifdef __APPLE__	
