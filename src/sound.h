@@ -38,7 +38,7 @@ void addChord(Wave * mySound, Chord chord, long nSamples);
 void addScore(Wave * mySound, Score score);
 void generateWav(Score score);
 
-int playSound( char *filename );
+int playWav( char * filename );
 
 // Score is an array of Sets
 long getTotalDuration(Score score);
