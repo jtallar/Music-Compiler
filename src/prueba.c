@@ -14,6 +14,23 @@ int main(){
     return 0;
 }
 
+// Needed function that return freq from given note 
+/*Chord newChord( float * freq, int size ){
+    Chord chord[size];
+    for (int i = 0; i < size; i++){
+        chord[i] = freq
+    }
+    return chord;
+}
+
+Set newSet( Chord c, long time ){
+
+}
+
+Score newScore( Set * s, int size ){
+
+}*/
+
 
 /*      
 **      Ejemplo: 
