@@ -26,10 +26,11 @@ void addScore(Wave * mySound, Score score) {
 void addChord(Wave * mySound, Chord chord, long nSamples) {
     float multiplier = M_PI * 2.0 / SAMPLE_RATE;
     float frameData[CHANNEL_NUM];
-    for(int i = 0; i < nSamples; i++){
-        for (int j = 0; j < chord.size; j++) {
-            for (int k = 0; k < CHANNEL_NUM; k++) {
-                frameData[0] = cos(chord.freq[j] * (float)i * multiplier) / chord.size;
+    int i, j, k;
+    for(i = 0; i < nSamples; i++){
+        for (j = 0; j < chord.size; j++) {
+            for (k = 0; k < CHANNEL_NUM; k++) {
+                frameData[k] = cos(chord.freq[j] * (float)i * multiplier) / chord.size;
             }
         }
         waveAddSample(mySound, frameData);

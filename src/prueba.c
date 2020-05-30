@@ -1,15 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "sound.h"
+#include <math.h>
 
 enum notes_enum{ C=0, Cs, D, Ds=3, E, F, Fs=6, G, Gs, A=9, As, B };
 enum chords_enum{ aC=0, aCm, aD, aDm=3, aE, aEm, aF=6, aFm, aG, aGm=9, aA, aAm, aB=12, aBm };
 
-float notes[] = { /*C*/ 65.41, 69.30, 73.42, 77.78, 82.41, 87.31, 92.50, 98.00, 103.83, 110.00, 116.54, 123.47 /*B*/};
+//float notes[] = { /*C*/ 65.41, 69.30, 73.42, 77.78, 82.41, 87.31, 92.50, 98.00, 103.83, 110.00, 116.54, 123.47 /*B*/};
 
 // Cada nota tiene 8 registros, para obtener el registro n de la nota A -> notesFreq[A] * 2^(n-1)
 
 int main(){
+    float notes[] = { /*C*/ 65.41 * pow(2,5), 69.30* pow(2,5), 73.42* pow(2,5), 77.78* pow(2,5), 82.41* pow(2,5), 87.31* pow(2,5), 92.50* pow(2,5), 98.00* pow(2,5), 103.83* pow(2,5), 110.00* pow(2,5), 116.54* pow(2,5), 123.47* pow(2,5) /*B*/};
 
     float chordsFreqs[14][3] = {{notes[C],notes[E],notes[G]}, {notes[C],notes[Ds],notes[G]}, {notes[D],notes[Fs],notes[A]}, {notes[D],notes[F],notes[A]},
                                 {notes[E],notes[Gs],notes[B]}, {notes[E],notes[G],notes[B]}, {notes[F],notes[A],notes[C]}, {notes[F],notes[Gs],notes[C]},

@@ -90,7 +90,7 @@ void waveAddSample( Wave* wave, const float* samples ){
     }
     if( wave->header.bitsPerSample == 16 ){
         for( i=0; i<wave->header.numChannels; i+= 1){
-            sample16bit = (int) (32767 + 32767.0*samples[i]);
+            sample16bit = (int) (32767.0 + 32767.0*samples[i]);
             //sample = (char*)&litEndianInt( sample16bit );
             toLittleEndian(2, (void*) &sample16bit);
             sample = (char*)&sample16bit;
