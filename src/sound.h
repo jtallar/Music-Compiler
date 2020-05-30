@@ -45,4 +45,6 @@ long getTotalDuration(Score score);
 // time in ms
 long getSampleNumber(long miliseconds);
 
+void resetArray(float * array, int size);
+
 #endif /* _SOUND_H_ */

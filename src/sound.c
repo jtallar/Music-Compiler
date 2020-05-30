@@ -1,10 +1,25 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include "sound.h"
+
+int playWav( char *filename ) {
+    char command[256];
+    int status;
+    /* create command to execute */
+    sprintf (command, "%s %s", SOUND_COMMAND, filename);
+
+    /* play sound */
+    status = system( command );
+     
+    return status;
+}
 
 void generateWav(Score score) {
     long duration = getTotalDuration(score);
     long nSamples = getSampleNumber(duration);
     
+    printf("\nTot duration: %ld, dur * samp rate = %g", duration, duration * SAMPLE_RATE);
     // Create a mono (1), 16-bit sound and set the duration
     Wave mySound = makeWave((int)SAMPLE_RATE, CHANNEL_NUM, BITS_SAMPLE);
     waveSetDuration(&mySound, duration);
@@ -28,13 +43,15 @@ void addChord(Wave * mySound, Chord chord, long nSamples) {
     float frameData[CHANNEL_NUM];
     int i, j, k;
     for(i = 0; i < nSamples; i++){
+        resetArray(frameData, CHANNEL_NUM);
         for (j = 0; j < chord.size; j++) {
             for (k = 0; k < CHANNEL_NUM; k++) {
-                frameData[k] = cos(chord.freq[j] * (float)i * multiplier) / chord.size;
+                frameData[k] += sin(chord.freq[j] * (float)i * multiplier) / chord.size;
             }
         }
         waveAddSample(mySound, frameData);
     }
+    printf("\n%g", frameData[0]);
 }
 
 long getTotalDuration(Score score) {
@@ -47,4 +64,10 @@ long getTotalDuration(Score score) {
 
 long getSampleNumber(long miliseconds) {
     return (long) ((miliseconds / 1000.0) * SAMPLE_RATE);
+}
+
+void resetArray(float * array, int size) {
+    for (int i = 0; i < size; i++) {
+        array[i] = 0.0;
+    }
 }

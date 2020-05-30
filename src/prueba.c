@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include "sound.h"
 #include <math.h>
 
@@ -11,7 +10,7 @@ enum chords_enum{ aC=0, aCm, aD, aDm=3, aE, aEm, aF=6, aFm, aG, aGm=9, aA, aAm, 
 // Cada nota tiene 8 registros, para obtener el registro n de la nota A -> notesFreq[A] * 2^(n-1)
 
 int main(){
-    float notes[] = { /*C*/ 65.41 * pow(2,5), 69.30* pow(2,5), 73.42* pow(2,5), 77.78* pow(2,5), 82.41* pow(2,5), 87.31* pow(2,5), 92.50* pow(2,5), 98.00* pow(2,5), 103.83* pow(2,5), 110.00* pow(2,5), 116.54* pow(2,5), 123.47* pow(2,5) /*B*/};
+    float notes[] = { /*C*/ 65.41 * pow(2,3), 69.30* pow(2,3), 73.42* pow(2,3), 77.78* pow(2,3), 82.41* pow(2,3), 87.31* pow(2,3), 92.50* pow(2,3), 98.00* pow(2,3), 103.83* pow(2,3), 110.00* pow(2,3), 116.54* pow(2,3), 123.47* pow(2,3) /*B*/};
 
     float chordsFreqs[14][3] = {{notes[C],notes[E],notes[G]}, {notes[C],notes[Ds],notes[G]}, {notes[D],notes[Fs],notes[A]}, {notes[D],notes[F],notes[A]},
                                 {notes[E],notes[Gs],notes[B]}, {notes[E],notes[G],notes[B]}, {notes[F],notes[A],notes[C]}, {notes[F],notes[Gs],notes[C]},
@@ -42,43 +41,14 @@ int main(){
     Set setfc[12] = {{realChords[aC], 500}, {realChords[aC], 500}, {realChords[aD], 500},{realChords[aC], 500}, {realChords[aF], 500}, {realChords[aE], 800},
         {realChords[aC], 500}, {realChords[aC], 500}, {realChords[aD], 500},{realChords[aC], 500}, {realChords[aG], 500}, {realChords[aF], 800}};
 
-    Score score = {setfc, 12};
-    
+    Score score = {set, 7};
+
     generateWav(score);
 
     playWav(WAV_FILE_NAME);
 
     return 0;
 }
-
-int playWav( char *filename ) {
-    char command[256];
-    int status;
-    /* create command to execute */
-    sprintf (command, "%s %s", SOUND_COMMAND, filename);
-
-    /* play sound */
-    status = system( command );
-     
-    return status;
-}
-
-// Needed function that return freq from given note 
-/*Chord newChord( float * freq, int size ){
-    Chord chord[size];
-    for (int i = 0; i < size; i++){
-        chord[i] = freq
-    }    return chord;
-}
-
-Set newSet( Chord c, long time ){
-
-}
-
-Score newScore( Set * s, int size ){
-
-}*/
-
 
 /*      
 **      Ejemplo: 
