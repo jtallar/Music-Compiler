@@ -16,10 +16,10 @@ chord       a{note}m?
 "while"					return WHILE;
 "do"                    return DO;
 "=" 			  	 	return ASSIGN;
-"*"                     return REPEAT;
-"/"                     return CONCAT;
-"+"                     return JOIN;
-"-"                     return UNJOIN;
+"*"                     return STAR;
+"/"                     return BAR;
+"+"                     return ADD;
+"-"                     return MINUS;
 "=="					return EQUAL_OP;
 "!="					return NOT_EQUAL_OP;
 ">"						return GT_OP;
@@ -31,8 +31,8 @@ chord       a{note}m?
 "!"						return NOT_OP;
 "{"						return OPEN_BRACES;
 "}"						return CLOSE_BRACES;
-"("						return OPEN_PARENTHESES;
-")"						return CLOSE_PARENTHESES;
+"("						return OPEN_PAREN;
+")"						return CLOSE_PAREN;
 "["                     return OPEN_BRACKET;
 "]"                     return CLOSE_BRACKET;
 "play"                  return PLAY;
@@ -42,8 +42,10 @@ chord       a{note}m?
 "set"                   return SET;
 
 
-{number} 				{ strcpy(yylval.string, yytext); return NUMBER; }
-{variable} 				{ strcpy(yylval.string, yytext); return VAR; }
+{number} 				{ yylval=atoi(yytext); return NUMBER; }
+{variable} 				{ yylval= yytext; return VAR; }
+{note} 				    { yylval= yytext; return NOTE; }
+{chord} 				{ yylval= yytext; return CHORD; }
 {new_line} 				{ yylineno++; return NEW_LINE; }		
 .						;
 	
