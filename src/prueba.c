@@ -38,10 +38,12 @@ int main(){
     //Chord chord[5] = {{freqs[0], 2}, {freqs[1], 2}, {freqs[2], 2}, {freqs[3], 2}, {freqs2, 3}};
     //Set set[5] = {{chord[0], 500}, {chord[1], 150}, {chord[2], 150}, {chord[3], 100}, {chord[4], 1500}};
     Set set[7] = {{realChords[aC], 500}, {realChords[aD], 500}, {realChords[aE], 500},{realChords[aFm], 500}, {realChords[aG], 500}, {realChords[aA], 500}, {realChords[aB], 1000}};
+    Set set2[14] = {{realChords[aC], 500}, {realChords[aCm], 500}, {realChords[aD], 500},{realChords[aDm], 500}, {realChords[aE], 500}, {realChords[aEm], 500}, {realChords[aF], 500},
+                    {realChords[aFm], 500}, {realChords[aG], 500}, {realChords[aGm], 500},{realChords[aA], 500}, {realChords[aAm], 500}, {realChords[aB], 500}, {realChords[aBm], 500}};
     Set setfc[12] = {{realChords[aC], 500}, {realChords[aC], 500}, {realChords[aD], 500},{realChords[aC], 500}, {realChords[aF], 500}, {realChords[aE], 800},
         {realChords[aC], 500}, {realChords[aC], 500}, {realChords[aD], 500},{realChords[aC], 500}, {realChords[aG], 500}, {realChords[aF], 800}};
 
-    Score score = {set, 7};
+    Score score = {set2, 14};
 
     generateWav(score);
 

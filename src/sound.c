@@ -19,7 +19,6 @@ void generateWav(Score score) {
     long duration = getTotalDuration(score);
     long nSamples = getSampleNumber(duration);
     
-    printf("\nTot duration: %ld, dur * samp rate = %g", duration, duration * SAMPLE_RATE);
     // Create a mono (1), 16-bit sound and set the duration
     Wave mySound = makeWave((int)SAMPLE_RATE, CHANNEL_NUM, BITS_SAMPLE);
     waveSetDuration(&mySound, duration);
@@ -51,7 +50,7 @@ void addChord(Wave * mySound, Chord chord, long nSamples) {
         }
         waveAddSample(mySound, frameData);
     }
-    printf("\n%g", frameData[0]);
+    printf("%g\n", frameData[0]);
 }
 
 long getTotalDuration(Score score) {
