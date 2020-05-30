@@ -18,7 +18,7 @@ int main(){
 
     float chordsFreqs[14][3] = {{notes[C],notes[E],notes[G]}, {notes[C],notes[Ds],notes[G]}, {notes[D],notes[Fs],notes[A]}, {notes[D],notes[F],notes[A]},
                                 {notes[E],notes[Gs],notes[B]}, {notes[E],notes[G],notes[B]}, {notes[F],notes[A],notes[C]}, {notes[F],notes[Gs],notes[C]},
-                                 {notes[G],notes[B],notes[D]}, {notes[G],notes[As],notes[A]}, {notes[A],notes[Cs],notes[E]}, {notes[A],notes[C],notes[E]},
+                                 {notes[G],notes[B],notes[D]}, {notes[G],notes[As],notes[D]}, {notes[A],notes[Cs],notes[E]}, {notes[A],notes[C],notes[E]},
                                   {notes[B],notes[Ds],notes[Fs]}, {notes[B],notes[E],notes[G]} };
 
     Chord realChords[14] = {   /*C */{ chordsFreqs[aC],3  },
