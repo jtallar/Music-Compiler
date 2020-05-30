@@ -1,3 +1,11 @@
+#ifdef __linux__
+    #define SOUND_COMMAND  "aplay -c 1 -q -t wav"
+#endif
+
+#ifdef __APPLE__	
+    #define SOUND_COMMAND  "afplay"
+#endif
+
 #ifndef _SOUND_H_
 #define _SOUND_H_
 
@@ -30,9 +38,13 @@ void addChord(Wave * mySound, Chord chord, long nSamples);
 void addScore(Wave * mySound, Score score);
 void generateWav(Score score);
 
+int playWav( char * filename );
+
 // Score is an array of Sets
 long getTotalDuration(Score score);
 // time in ms
 long getSampleNumber(long miliseconds);
+
+void resetArray(float * array, int size);
 
 #endif /* _SOUND_H_ */

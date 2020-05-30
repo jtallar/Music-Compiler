@@ -6,7 +6,7 @@
 *.o
 *.wav 
 *.h.gch
-
+*.out
 
 # Packages #
 ############
