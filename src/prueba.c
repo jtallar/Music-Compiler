@@ -56,8 +56,10 @@ int main(){
     Set set[7] = {{realChords[aC], 500}, {realChords[aD], 500}, {realChords[aE], 500},{realChords[aFm], 500}, {realChords[aG], 500}, {realChords[aA], 500}, {realChords[aB], 1000}};
     Set set2[14] = {{realChords[aC], 500}, {realChords[aCm], 500}, {realChords[aD], 500},{realChords[aDm], 500}, {realChords[aE], 500}, {realChords[aEm], 500}, {realChords[aF], 500},
                     {realChords[aFm], 500}, {realChords[aG], 500}, {realChords[aGm], 500},{realChords[aA], 500}, {realChords[aAm], 500}, {realChords[aB], 500}, {realChords[aBm], 500}};
-    Set setfc[12] = {{realChords[aC], 500}, {realChords[aC], 500}, {realChords[aD], 500},{realChords[aC], 500}, {realChords[aF], 500}, {realChords[aE], 800},
-        {realChords[aC], 500}, {realChords[aC], 500}, {realChords[aD], 500},{realChords[aC], 500}, {realChords[aG], 500}, {realChords[aF], 800}};
+    Set setfc[25] = {{realChords[aC], 500}, {realChords[aC], 500}, {realChords[aD], 500},{realChords[aC], 500}, {realChords[aF], 500}, {realChords[aE], 800},
+        {realChords[aC], 500}, {realChords[aC], 500}, {realChords[aD], 500},{realChords[aC], 500}, {realChords[aG], 500}, {realChords[aF], 800},
+        {realChords[aC], 500}, {realChords[aC], 500}, {realChords[aC], 500},{realChords[aA], 500}, {realChords[aF], 500}, {realChords[aE], 500}, {realChords[aD], 800},
+        {noteChords[As], 500}, {noteChords[As], 500}, {realChords[aA], 500},{realChords[aF], 500}, {realChords[aG], 500}, {realChords[aF], 800}};
     
     Set set3[12] = {{noteChords[C], 500}, {noteChords[Cs], 500}, {noteChords[D], 500},{noteChords[Ds], 500}, {noteChords[E], 500}, {noteChords[F], 500},
                     {noteChords[Fs], 500}, {noteChords[G], 500}, {noteChords[Gs], 500},{noteChords[A], 500}, {noteChords[As], 500}, {noteChords[B], 500}};
@@ -65,7 +67,7 @@ int main(){
     Set set4[8] = {{realChords[aF], 500},
                     {realChords[aFm], 500}, {realChords[aG], 500}, {realChords[aGm], 500},{realChords[aA], 500}, {realChords[aAm], 500}, {realChords[aB], 500}, {realChords[aBm], 500}};
 
-    Score score = {set4, 8};
+    Score score = {setfc, 25};
 
     generateWav(score);
 
