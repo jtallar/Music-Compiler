@@ -4,8 +4,7 @@
 #include "y.tab.h"
 %}
 
-digit		[0-9]
-number		[1-9]{digit}+
+number		[1-9][0-9]+
 variable 	[a-z][a-z0-9_]*
 new_line 	\n
 note        (As|Cs|Ds|Fs|Gs|[A-G])
@@ -39,15 +38,15 @@ chord       a{note}m?
 "]"                     return CLOSE_BRACKET;
 "play"                  return PLAY;
 
-"int"                   return INT;
-"chord"                 return CHORD;
-"set"                   return SET;
+"int"                   return INT_NAME;
+"chord"                 return CHORD_NAME;
+"set"                   return SET_NAME;
 
 
-{number} 				{ yylval.intVal = atoi(yytext); return NUMBER; }
-{variable} 				{ yylval = yytext; return VAR; }
-{note} 				    { yylval = yytext; return NOTE; }
-{chord} 				{ yylval = yytext; return CHORD; }
+{number} 				{ yylval.number = atoi(yytext); return NUMBER; }
+{variable} 				{ yylval.variable = yytext; return VAR; }
+{note} 				    { yylval.note = yytext; return NOTE; }
+{chord} 				{ yylval.chord = yytext; return CHORD; }
 {new_line} 				{ yylineno++; return NEW_LINE; }		
 .						;
 	
@@ -57,6 +56,6 @@ int yywrap(){
         return 1;
 } 
 
-// int yyerror(char *s){
-//     fprintf(stderr, "\nERROR ON LINE %d : $s\n", yylineo, s);
-// }
+int yyerror(char *s){
+    fprintf(stderr, "\nERROR ON LINE %d : $s\n", yylineo, s);
+}

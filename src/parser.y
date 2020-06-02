@@ -71,11 +71,11 @@ constant    : NOTE
 %%
 
 int yywrap(){
-        return 1;
+    return 1;
 } 
 
 main() {
-    printf("Enter the expression:\n");
+    printf("Make your music...\n");
     yyparse();
 } 
 
