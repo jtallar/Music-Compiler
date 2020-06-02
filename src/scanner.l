@@ -44,10 +44,10 @@ chord       a{note}m?
 "set"                   return SET;
 
 
-{number} 				{ yylval.number = atoi(yytext); return NUMBER; }
-{variable} 				{ yylval.variable = yytext; return VAR; }
-{note} 				    { yylval.note = yytext; return NOTE; }
-{chord} 				{ yylval.chord = yytext; return CHORD; }
+{number} 				{ yylval.intVal = atoi(yytext); return NUMBER; }
+{variable} 				{ yylval = yytext; return VAR; }
+{note} 				    { yylval = yytext; return NOTE; }
+{chord} 				{ yylval = yytext; return CHORD; }
 {new_line} 				{ yylineno++; return NEW_LINE; }		
 .						;
 	
@@ -57,6 +57,6 @@ int yywrap(){
         return 1;
 } 
 
-int yyerror(char *s){
-    fprintf(stderr, "\nERROR ON LINE %d : $s\n", yylineo, s);
-}
+// int yyerror(char *s){
+//     fprintf(stderr, "\nERROR ON LINE %d : $s\n", yylineo, s);
+// }
