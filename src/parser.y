@@ -7,22 +7,19 @@
 /* ----------------- TOKENS ---------------------
  * Token that I'm expecting from the lexical 
  * analyzer (will save as defines in tab.h) */
-
 %union {
-    int intVal; 
-    char strVal[200];
-
-    //struct Token *token;
+    int number; 
+    Chord chord;
+    Set set;
 }
 
 %token IF ELSE DO WHILE ASSIGN STAR BAR ADD MINUS 
 %token EQUAL_OP NOT_EQUAL_OP GT_OP GTE_OP LT_OP LTE_OP AND_OP OR_OP NOT_OP
 %token OPEN_BRACES CLOSE_BRACES OPEN_PAREN CLOSE_PAREN
 %token OPEN_BRACKET CLOSE_BRACKET
-%token NUMBER PLAY CHORD SET NEW_LINE NOTE 
-%token <intVal> INT 
-%token <strVal> VAR
-%type <strVal> expression assign var_type
+%token PLAY CHORD SET NEW_LINE NOTE VAR
+%token <number> NUMBER 
+%type  <strVal> expression assign var_type
 
 /*
 %type <num> INT expression assign

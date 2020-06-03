@@ -1,48 +1,56 @@
 #ifndef TRANSLATION_TOKENS_H
 #define TRANSLATION_TOKENS_H
 
-typedef enum {  NULL_TOKEN = 1,
-                OPERATION_TOKEN,
-                SINGLE_OPERATION_TOKEN,
-                IF_TOKEN,
-                WHILE_TOKEN,
-                RETURN_TOKEN,
-                STATEMENT_TOKEN,
-                STATEMENTS_TOKEN,
-                NEGATION_TOKEN,
-                PRINT_TOKEN,
-                STRING_TOKEN,
-                CONSTANT_TOKEN,
-                FUNCTION_DEF_TOKEN,
-                FUNCTION_CALL_TOKEN,
-                COORDINATES_TOKEN,
-                VARIABLE_TOKEN,
-                BLOCK_TOKEN,
-                SIGMA_PI_TOKEN,
-                SIGMA_PI_COND_TOKEN,
-                SLOPE_TOKEN
+enum notes_enum{ C=0, Cs, D, Ds=3, E, F, Fs=6, G, Gs, A=9, As, B };
+enum chords_enum{ aC=0, aCm, aD, aDm=3, aE, aEm, aF=6, aFm, aG, aGm=9, aA, aAm, aB=12, aBm };
+
+
+const notes_enum chordsFreqs[14][3] = {{C,E,G},
+                                      {C,Ds,G}, 
+                                      {D,Fs,A}, 
+                                      {D,F,A},
+                                      {E,Gs,B}, 
+                                      {E,G,B}, 
+                                      {F,A,C}, 
+                                      {F,Gs,C},
+                                      {G,B,D}, 
+                                      {G,As,D}, 
+                                      {A,Cs,E}, 
+                                      {A,C,E},
+                                      {B,Ds,Fs}, 
+                                      {B,E,G}
+                                  };
+
+static const Chord ch[] = {{ .note = chordsFreqs[0], .quant =  3},
+                           {}
+                          
+                          };
+
+typedef enum {  
 } TokenType;
 
 typedef enum {  
             
-            DATA_CHORD,
-            DATA_NUMBER,
-            DATA_SET
-
 } DataType;
 
 /* Token structures that hold the token information */
 
 /* Shared struct */
-typedef struct basicInfo {
-  DataType    dataType;
-  
-} BasicInfo;
+typedef struct chord{
+  notes_enum * note;
+  int quant;
+}Chord;
 
-/* Basic token */
-typedef struct Token {
-  BasicInfo   basicInfo;
-} Token;
+
+typedef struct block{
+  Chord *chords;
+  int time;
+}Block;
+
+typedef struct set{
+  Block blocks[200];
+  int quant;
+}Set;
 
 
 #endif

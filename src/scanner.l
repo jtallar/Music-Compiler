@@ -12,28 +12,28 @@ chord       a{note}m?
 
 
 %%
-"if"					return IF;
-"else"					return ELSE;
-"while"					return WHILE;
+"if"			return IF;
+"else"		        return ELSE;
+"while"			return WHILE;
 "do"                    return DO;
-"=" 			  	 	return ASSIGN;
+"=" 	  	 	return ASSIGN;
 "*"                     return STAR;
 "/"                     return BAR;
 "+"                     return ADD;
 "-"                     return MINUS;
-"=="					return EQUAL_OP;
-"!="					return NOT_EQUAL_OP;
-">"						return GT_OP;
-">="					return GTE_OP;
-"<"						return LT_OP;
-"<="					return LTE_OP;
-"&&"					return AND_OP;
-"||"					return OR_OP;
-"!"						return NOT_OP;
-"{"						return OPEN_BRACES;
-"}"						return CLOSE_BRACES;
-"("						return OPEN_PAREN;
-")"						return CLOSE_PAREN;
+"=="		        return EQUAL_OP;
+"!="			return NOT_EQUAL_OP;
+">"			return GT_OP;
+">="			return GTE_OP;
+"<"			return LT_OP;
+"<="			return LTE_OP;
+"&&"			return AND_OP;
+"||"			return OR_OP;
+"!"			return NOT_OP;
+"{"			return OPEN_BRACES;
+"}"			return CLOSE_BRACES;
+"("			return OPEN_PAREN;
+")"			return CLOSE_PAREN;
 "["                     return OPEN_BRACKET;
 "]"                     return CLOSE_BRACKET;
 "play"                  return PLAY;
@@ -43,12 +43,12 @@ chord       a{note}m?
 "set"                   return SET_NAME;
 
 
-{number} 				{ yylval.number = atoi(yytext); return NUMBER; }
-{variable} 				{ yylval.variable = yytext; return VAR; }
-{note} 				    { yylval.note = yytext; return NOTE; }
-{chord} 				{ yylval.chord = yytext; return CHORD; }
-{new_line} 				{ yylineno++; return NEW_LINE; }		
-.						;
+{number} 			{ yylval.number = atoi(yytext); return NUMBER; }
+{note} 		        	{ yylval.note = yytext; return NOTE; }
+{chord} 			{ yylval.chord = yytext; return CHORD; }
+{variable} 			{ yylval.variable = yytext; return VAR; }
+{new_line} 			{ yylineno++; return NEW_LINE; }		
+.				;
 	
 %%
 
