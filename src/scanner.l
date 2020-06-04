@@ -57,36 +57,6 @@ chord       a{note}m?
 	
 %%
 
-struct chord * atochord(const char *nptr) {
-    int stdChord;
-    for (stdChord = aC; stdChord < CHORD_COUNT; stdChord++) {
-        if (strcmp(nptr, chordName[stdChord]) == 0) {
-            break;
-        }
-    }
-    if (stdChord == CHORD_COUNT) {
-        // ERROR --> Que hacemos?
-        return NULL;
-    }
-    
-    Chord * chord = malloc(sizeof(*chord));
-    if (malloc == NULL) {
-        // ERROR --> Que hacemos?
-        return NULL;
-    }
-    chord->note = malloc(sizeof(*chord->note) * STD_CHORD_L);
-    if (chord->note == NULL) {
-        // ERROR --> Que hacemos?
-        free(chord);
-        return NULL;
-    }
-    for (int i = 0; i < STD_CHORD_L; i++) {
-        chord->note[i] = chordsNotes[stdChord][i];
-    }
-    chord->quant = STD_CHORD_L;
-    return chord;
-} 
-
 /* int yyerror(char *s){
     fprintf(stderr, "\nERROR ON LINE %d : $s\n", yylineno, s);
 } */
