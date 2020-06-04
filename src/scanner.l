@@ -1,11 +1,15 @@
 %{
 #include "y.tab.h"
 #include <stdio.h>
+#include <stdlib.h>
+// #include "translator.h"
+// #include "typeUtil.h"
+struct chord * atochord(const char *nptr);
 void yyerror (char *s);
 int yylex();
 %}
 
-number		[1-9][0-9]+
+number		[1-9][0-9]*
 variable 	[a-z][a-z0-9_]*
 new_line 	\n
 note        (As|Cs|Ds|Fs|Gs|[A-G])
@@ -45,14 +49,43 @@ chord       a{note}m?
 
 
 {number} 			{ puts(yytext); yylval.number = atoi(yytext); return NUMBER; }
-{note} 		        { puts(yytext); yylval.strVal = yytext; return NOTE; }
-{chord} 			{ puts(yytext); yylval.chord = yytext; return CHORD; }
+{note} 		        { puts(yytext); /*yylval.note = atonote(yytext);*/ return NOTE; }
+{chord} 			{ puts(yytext); /*yylval.chord = atochord(yytext); */return CHORD; }
 {variable} 			{ puts(yytext); yylval.strVal = yytext; return VAR; }
 {new_line} 			{ yylineno++; return NEW_LINE; }		
 .				    ;
 	
 %%
 
+struct chord * atochord(const char *nptr) {
+    int stdChord;
+    for (stdChord = aC; stdChord < CHORD_COUNT; stdChord++) {
+        if (strcmp(nptr, chordName[stdChord]) == 0) {
+            break;
+        }
+    }
+    if (stdChord == CHORD_COUNT) {
+        // ERROR --> Que hacemos?
+        return NULL;
+    }
+    
+    Chord * chord = malloc(sizeof(*chord));
+    if (malloc == NULL) {
+        // ERROR --> Que hacemos?
+        return NULL;
+    }
+    chord->note = malloc(sizeof(*chord->note) * STD_CHORD_L);
+    if (chord->note == NULL) {
+        // ERROR --> Que hacemos?
+        free(chord);
+        return NULL;
+    }
+    for (int i = 0; i < STD_CHORD_L; i++) {
+        chord->note[i] = chordsNotes[stdChord][i];
+    }
+    chord->quant = STD_CHORD_L;
+    return chord;
+} 
 
 /* int yyerror(char *s){
     fprintf(stderr, "\nERROR ON LINE %d : $s\n", yylineno, s);

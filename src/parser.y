@@ -3,7 +3,7 @@ void yyerror (char *s);
 int yylex();
 #include <stdio.h>
 #include <stdlib.h>
-#include "translator.h"
+#include "typeUtil.h"
 
 %}
 
@@ -13,8 +13,8 @@ int yylex();
  * analyzer (will save as defines in tab.h) */
 %union {
     int number; 
-    struct Chord * chord;
-    struct Set * set;
+    struct chord * chord;
+    struct set * set;
     char * strVal;
 }
 
@@ -47,23 +47,39 @@ program         :  program declare
 play            : PLAY OPEN_PAREN expression CLOSE_PAREN NEW_LINE
                 ;
 
-do_sentence     : DO body WHILE compare
+do_sentence     : DO body WHILE compare NEW_LINE
                 ;
 
-while_sentence  : WHILE compare body
+while_sentence  : WHILE compare body NEW_LINE
                 ;
 
-if_sentence     : IF compare body else
+if_sentence     : IF compare body else NEW_LINE
                 ;
 
-compare         : OPEN_PAREN expression op_compare expression CLOSE_PAREN
+compare         : simple_compare
+                | not_op_logic OPEN_PAREN simple_compare add_op_logic mult_compare CLOSE_PAREN
                 ;
+
+simple_compare  : not_op_logic OPEN_PAREN expression op_compare expression CLOSE_PAREN
+                ;
+
+mult_compare    : simple_compare add_op_logic mult_compare
+                | simple_compare
+                ; 
 
 body            : OPEN_BRACES program CLOSE_BRACES
                 ;
 
 else            : ELSE body 
                 |
+                ;
+
+not_op_logic    : NOT_OP
+                |
+                ;
+
+add_op_logic    : AND_OP
+                | OR_OP
                 ;
 
 op_compare      : GT_OP 
@@ -99,11 +115,13 @@ factor          : constant
                 | VAR
                 ;
 
-constant        : CHORD 
+constant        : CHORD     {print_chord($1);}
                 | NUMBER
                 ;
 
 %%
+
+
 
 int yywrap(){
     return 1;
@@ -113,6 +131,15 @@ int main() {
     printf("Make your music...\n");
     return yyparse();
 } 
+
+void print_chord(struct chord * chord) {
+    if (chord == NULL || chord->note == NULL) return;
+    puts("\nVino un chord: \n");
+    for (int i = 0; i < chord->quant; i++) {
+        printf("\nNota %d: %d", i, chord->note[i]);
+    }
+}
+
 
 /**
 * *       yacc -d parser.y

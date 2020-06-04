@@ -125,8 +125,8 @@ union YYSTYPE
 #line 14 "parser.y" /* yacc.c:1909  */
 
     int number; 
-    struct Chord * chord;
-    struct Set * set;
+    struct chord * chord;
+    struct set * set;
     char * strVal;
 
 #line 133 "y.tab.h" /* yacc.c:1909  */
