@@ -1,7 +1,8 @@
 %{
-#include <stdio.h>
-#include <stdlib.h>
 #include "y.tab.h"
+#include <stdio.h>
+void yyerror (char *s);
+int yylex();
 %}
 
 number		[1-9][0-9]+
@@ -43,10 +44,10 @@ chord       a{note}m?
 "set"               return SET_NAME;
 
 
-{number} 			{ yylval.number = atoi(yytext); return NUMBER; }
-{note} 		        { yylval.strVal = yytext; return NOTE; }
-{chord} 			{ yylval.chord = yytext; return CHORD; }
-{variable} 			{ yylval.strVal = yytext; return VAR; }
+{number} 			{ puts(yytext); yylval.number = atoi(yytext); return NUMBER; }
+{note} 		        { puts(yytext); yylval.strVal = yytext; return NOTE; }
+{chord} 			{ puts(yytext); yylval.chord = yytext; return CHORD; }
+{variable} 			{ puts(yytext); yylval.strVal = yytext; return VAR; }
 {new_line} 			{ yylineno++; return NEW_LINE; }		
 .				    ;
 	

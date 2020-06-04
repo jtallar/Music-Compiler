@@ -1,4 +1,6 @@
 %{
+void yyerror (char *s);
+int yylex();
 #include <stdio.h>
 #include <stdlib.h>
 #include "translator.h"
@@ -19,9 +21,10 @@
 %token IF ELSE DO WHILE ASSIGN STAR BAR ADD MINUS 
 %token EQUAL_OP NOT_EQUAL_OP GT_OP GTE_OP LT_OP LTE_OP AND_OP OR_OP NOT_OP
 %token OPEN_BRACES CLOSE_BRACES OPEN_PAREN CLOSE_PAREN OPEN_BRACKET CLOSE_BRACKET
-%token PLAY NEW_LINE NOTE VAR
+%token PLAY NEW_LINE NOTE
 %token INT_NAME CHORD_NAME SET_NAME
 
+%token <strVal> VAR
 %token <number> NUMBER 
 %token <set> SET
 %token <chord> CHORD
@@ -41,7 +44,7 @@ program         :  program declare
                 |  /* empty */
                 ;
 
-play            : PLAY OPEN_PAREN set CLOSE_PAREN
+play            : PLAY OPEN_PAREN expression CLOSE_PAREN NEW_LINE
                 ;
 
 do_sentence     : DO body WHILE compare
@@ -61,12 +64,6 @@ body            : OPEN_BRACES program CLOSE_BRACES
 
 else            : ELSE body 
                 |
-                ;
-
-set             : set STAR factor 
-                | set BAR set  
-                | OPEN_BRACKET constant factor CLOSE_BRACKET
-                | factor
                 ;
 
 op_compare      : GT_OP 
@@ -98,7 +95,7 @@ term            : term STAR factor
                 | factor
                 ;
 
-factor          : CHORD 
+factor          : constant 
                 | VAR
                 ;
 
@@ -114,7 +111,7 @@ int yywrap(){
 
 int main() {
     printf("Make your music...\n");
-    yyparse();
+    return yyparse();
 } 
 
 /**

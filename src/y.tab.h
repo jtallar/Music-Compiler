@@ -72,10 +72,10 @@ extern int yydebug;
     PLAY = 282,
     NEW_LINE = 283,
     NOTE = 284,
-    VAR = 285,
-    INT_NAME = 286,
-    CHORD_NAME = 287,
-    SET_NAME = 288,
+    INT_NAME = 285,
+    CHORD_NAME = 286,
+    SET_NAME = 287,
+    VAR = 288,
     NUMBER = 289,
     SET = 290,
     CHORD = 291
@@ -109,10 +109,10 @@ extern int yydebug;
 #define PLAY 282
 #define NEW_LINE 283
 #define NOTE 284
-#define VAR 285
-#define INT_NAME 286
-#define CHORD_NAME 287
-#define SET_NAME 288
+#define INT_NAME 285
+#define CHORD_NAME 286
+#define SET_NAME 287
+#define VAR 288
 #define NUMBER 289
 #define SET 290
 #define CHORD 291
@@ -122,7 +122,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 12 "parser.y" /* yacc.c:1909  */
+#line 14 "parser.y" /* yacc.c:1909  */
 
     int number; 
     struct Chord * chord;
