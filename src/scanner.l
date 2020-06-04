@@ -12,50 +12,47 @@ chord       a{note}m?
 
 
 %%
-"if"			return IF;
+"if"			    return IF;
 "else"		        return ELSE;
-"while"			return WHILE;
-"do"                    return DO;
-"=" 	  	 	return ASSIGN;
-"*"                     return STAR;
-"/"                     return BAR;
-"+"                     return ADD;
-"-"                     return MINUS;
+"while"			    return WHILE;
+"do"                return DO;
+"=" 	  	 	    return ASSIGN;
+"*"                 return STAR;
+"/"                 return BAR;
+"+"                 return ADD;
+"-"                 return MINUS;
 "=="		        return EQUAL_OP;
-"!="			return NOT_EQUAL_OP;
-">"			return GT_OP;
-">="			return GTE_OP;
-"<"			return LT_OP;
-"<="			return LTE_OP;
-"&&"			return AND_OP;
-"||"			return OR_OP;
-"!"			return NOT_OP;
-"{"			return OPEN_BRACES;
-"}"			return CLOSE_BRACES;
-"("			return OPEN_PAREN;
-")"			return CLOSE_PAREN;
-"["                     return OPEN_BRACKET;
-"]"                     return CLOSE_BRACKET;
-"play"                  return PLAY;
+"!="			    return NOT_EQUAL_OP;
+">"			        return GT_OP;
+">="			    return GTE_OP;
+"<"			        return LT_OP;
+"<="			    return LTE_OP;
+"&&"			    return AND_OP;
+"||"			    return OR_OP;
+"!"			        return NOT_OP;
+"{"			        return OPEN_BRACES;
+"}"			        return CLOSE_BRACES;
+"("			        return OPEN_PAREN;
+")"			        return CLOSE_PAREN;
+"["                 return OPEN_BRACKET;
+"]"                 return CLOSE_BRACKET;
+"play"              return PLAY;
 
-"int"                   return INT_NAME;
-"chord"                 return CHORD_NAME;
-"set"                   return SET_NAME;
+"int"               return INT_NAME;
+"chord"             return CHORD_NAME;
+"set"               return SET_NAME;
 
 
 {number} 			{ yylval.number = atoi(yytext); return NUMBER; }
-{note} 		        	{ yylval.note = yytext; return NOTE; }
+{note} 		        { yylval.strVal = yytext; return NOTE; }
 {chord} 			{ yylval.chord = yytext; return CHORD; }
-{variable} 			{ yylval.variable = yytext; return VAR; }
+{variable} 			{ yylval.strVal = yytext; return VAR; }
 {new_line} 			{ yylineno++; return NEW_LINE; }		
-.				;
+.				    ;
 	
 %%
 
-int yywrap(){
-        return 1;
-} 
 
-int yyerror(char *s){
-    fprintf(stderr, "\nERROR ON LINE %d : $s\n", yylineo, s);
-}
+/* int yyerror(char *s){
+    fprintf(stderr, "\nERROR ON LINE %d : $s\n", yylineno, s);
+} */
