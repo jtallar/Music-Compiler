@@ -499,7 +499,7 @@ char *yytext;
 #include <stdio.h>
 #include <stdlib.h>
 // #include "translator.h"
-// #include "typeUtil.h"
+#include "typeUtil.h"
 struct chord * atochord(const char *nptr);
 void yyerror (char *s);
 int yylex();
@@ -928,12 +928,12 @@ YY_RULE_SETUP
 case 30:
 YY_RULE_SETUP
 #line 52 "scanner.l"
-{ puts(yytext); /*yylval.note = atonote(yytext);*/ return NOTE; }
+{ puts(yytext); yylval.chord = atonote(yytext); return NOTE; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 53 "scanner.l"
-{ puts(yytext); /*yylval.chord = atochord(yytext); */return CHORD; }
+{ puts(yytext); yylval.chord = atochord(yytext); return CHORD; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP

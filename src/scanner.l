@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 // #include "translator.h"
-// #include "typeUtil.h"
+#include "typeUtil.h"
 struct chord * atochord(const char *nptr);
 void yyerror (char *s);
 int yylex();
@@ -49,8 +49,8 @@ chord       a{note}m?
 
 
 {number} 			{ puts(yytext); yylval.number = atoi(yytext); return NUMBER; }
-{note} 		        { puts(yytext); /*yylval.note = atonote(yytext);*/ return NOTE; }
-{chord} 			{ puts(yytext); /*yylval.chord = atochord(yytext); */return CHORD; }
+{note} 		        { puts(yytext); yylval.chord = atonote(yytext); return NOTE; }
+{chord} 			{ puts(yytext); yylval.chord = atochord(yytext); return CHORD; }
 {variable} 			{ puts(yytext); yylval.strVal = yytext; return VAR; }
 {new_line} 			{ yylineno++; return NEW_LINE; }		
 .				    ;

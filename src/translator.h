@@ -13,20 +13,20 @@ static const char * chordName[CHORD_COUNT] = {"aC", "aCm", "aD", "aDm", "aE", "a
 
 // float notes[] = { /*C*/ 65.41 * pow(2,3), 69.30* pow(2,3), 73.42* pow(2,3), 77.78* pow(2,3), 82.41* pow(2,3), 87.31* pow(2,3), 92.50* pow(2,3), 98.00* pow(2,3), 103.83* pow(2,3), 110.00* pow(2,3), 116.54* pow(2,3), 123.47* pow(2,3) /*B*/};
 
-notes_enum chordsNotes[CHORD_COUNT][STD_CHORD_L] = {  {C,E, G},
-                                                      {C,Ds,G}, 
-                                                      {D,Fs,A}, 
-                                                      {D,F, A},
-                                                      {E,Gs,B}, 
-                                                      {E,G, B}, 
-                                                      {F,A, C}, 
-                                                      {F,Gs,C},
-                                                      {G,B, D}, 
-                                                      {G,As,D}, 
-                                                      {A,Cs,E}, 
-                                                      {A,C, E},
-                                                      {B,Ds,Fs}, 
-                                                      {B,E, G}    };
+static notes_enum chordsNotes[CHORD_COUNT][STD_CHORD_L] = { {C,E, G},
+                                                            {C,Ds,G}, 
+                                                            {D,Fs,A}, 
+                                                            {D,F, A},
+                                                            {E,Gs,B}, 
+                                                            {E,G, B}, 
+                                                            {F,A, C}, 
+                                                            {F,Gs,C},
+                                                            {G,B, D}, 
+                                                            {G,As,D}, 
+                                                            {A,Cs,E}, 
+                                                            {A,C, E},
+                                                            {B,Ds,Fs}, 
+                                                            {B,E, G}};
 
 typedef struct chord{
   notes_enum * note;
@@ -43,19 +43,12 @@ typedef struct set{
   int quant;
 }Set;
 
-
-// static const Chord ch[] = { { .note[0] = C, .quant = 3 } };
-
-int a[] = {C, D, G};
-
-const Chord ch[] = {  
+static const Chord ch[] = {  
       {chordsNotes[aC], STD_CHORD_L},{chordsNotes[aCm], STD_CHORD_L},{chordsNotes[aD],STD_CHORD_L},
       {chordsNotes[aDm], STD_CHORD_L},{chordsNotes[aE], STD_CHORD_L},{chordsNotes[aEm],STD_CHORD_L},
       {chordsNotes[aF], STD_CHORD_L},{chordsNotes[aFm], STD_CHORD_L},{chordsNotes[aG],STD_CHORD_L},
       {chordsNotes[aGm], STD_CHORD_L},{chordsNotes[aA], STD_CHORD_L},{chordsNotes[aAm],STD_CHORD_L},
       {chordsNotes[aB], STD_CHORD_L},{chordsNotes[aBm], STD_CHORD_L},
 };
-
-//ch[0]={ chordsNotes[0], 3};
 
 #endif
