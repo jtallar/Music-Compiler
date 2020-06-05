@@ -3,6 +3,10 @@
 #include <math.h>
 #include "sound.h"
 
+#ifndef M_PI
+#define M_PI           3.14159265358979323846
+#endif
+
 int playWav( char *filename ) {
     char command[256];
     int status;

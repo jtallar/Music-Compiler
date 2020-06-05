@@ -16,7 +16,7 @@ Chord * atochord(const char *nptr) {
     }
     
     Chord * chord = malloc(sizeof(*chord));
-    if (malloc == NULL) {
+    if (chord == NULL) {
         // ERROR --> Que hacemos?
         return NULL;
     }
@@ -46,7 +46,7 @@ Chord * atonote(const char *nptr) {
     }
     
     Chord * chord = malloc(sizeof(*chord));
-    if (malloc == NULL) {
+    if (chord == NULL) {
         // ERROR --> Que hacemos?
         return NULL;
     }
