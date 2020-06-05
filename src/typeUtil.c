@@ -69,3 +69,38 @@ void print_chord(struct chord * chord) {
     }
     printf("\n\n");
 }
+
+bool createVar(types type, char * name, void * value){
+    
+    // averiguar si hay espacio y realloc de ser necesario usando CHUNK
+
+    switch (type)
+    {
+        case num:
+            variables[index]->type = type;
+            variables[index]->name = calloc(strlen(name) + 1, sizeof(*name));
+            if (variables[index]->name == NULL) {
+                // ERROR
+                return false;
+            }
+            strcpy(variables[index]->name, name);
+
+            // el tema de void no me acuerdo un choto btw
+            // Estoy viendo el codigo de flor
+            // okok. ahora vuelvo
+            // variables[index]->value = ;
+            break;
+        case chord:
+            break;
+        case set:
+            break;
+        default:
+            break;
+    }
+    return true;
+}
+
+/* falopa no era la idea de la funcion */
+struct variables * allocVars(){
+    return malloc(sizeof(Var)*CHUNK);
+}

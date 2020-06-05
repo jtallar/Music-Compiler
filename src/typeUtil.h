@@ -9,4 +9,8 @@ struct chord * atonote(const char *nptr);
 
 void print_chord(struct chord * chord);
 
+void * getVar (char * name);
+
+bool setVar(types type, char * name, void * value);
+
 #endif
