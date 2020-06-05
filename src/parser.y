@@ -21,13 +21,14 @@ int yylex();
 %token IF ELSE DO WHILE ASSIGN STAR BAR ADD MINUS 
 %token EQUAL_OP NOT_EQUAL_OP GT_OP GTE_OP LT_OP LTE_OP AND_OP OR_OP NOT_OP
 %token OPEN_BRACES CLOSE_BRACES OPEN_PAREN CLOSE_PAREN OPEN_BRACKET CLOSE_BRACKET
-%token PLAY NEW_LINE NOTE
+%token PLAY NEW_LINE
 %token INT_NAME CHORD_NAME SET_NAME
 
 %token <strVal> VAR
 %token <number> NUMBER 
 %token <set> SET
 %token <chord> CHORD
+%token <chord> NOTE
 
 //%type <strVal> expression assign var_type term factor constant
 
@@ -56,25 +57,28 @@ while_sentence  : WHILE compare body NEW_LINE
 if_sentence     : IF compare body else NEW_LINE
                 ;
 
-compare         : simple_compare
-                | not_op_logic OPEN_PAREN simple_compare add_op_logic mult_compare CLOSE_PAREN
+compare         : OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN
+                | NOT_OP OPEN_PAREN mult_compare CLOSE_PAREN
+                | OPEN_PAREN expression CLOSE_PAREN
                 ;
 
-simple_compare  : not_op_logic OPEN_PAREN expression op_compare expression CLOSE_PAREN
+single_compare  : OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN
+                | NOT_OP OPEN_PAREN mult_compare CLOSE_PAREN
+                | expression
                 ;
 
-mult_compare    : simple_compare add_op_logic mult_compare
-                | simple_compare
-                ; 
+mult_compare    : mult_compare any_op single_compare
+                | single_compare
+                ;
 
+any_op          : add_op_logic
+                | op_compare
+                ;
+                
 body            : OPEN_BRACES program CLOSE_BRACES
                 ;
 
 else            : ELSE body 
-                |
-                ;
-
-not_op_logic    : NOT_OP
                 |
                 ;
 
@@ -113,10 +117,13 @@ term            : term STAR factor
 
 factor          : constant 
                 | VAR
+                | OPEN_BRACKET expression expression CLOSE_BRACKET
+                | OPEN_PAREN expression CLOSE_PAREN
                 ;
 
 constant        : CHORD     {print_chord($1);}
                 | NUMBER
+                | NOTE      {print_chord($1);}
                 ;
 
 %%

@@ -67,4 +67,5 @@ void print_chord(struct chord * chord) {
     for (int i = 0; i < chord->quant; i++) {
         printf("\nNota %d: %d", i, chord->note[i]);
     }
+    printf("\n\n");
 }

@@ -71,14 +71,14 @@ extern int yydebug;
     CLOSE_BRACKET = 281,
     PLAY = 282,
     NEW_LINE = 283,
-    NOTE = 284,
-    INT_NAME = 285,
-    CHORD_NAME = 286,
-    SET_NAME = 287,
-    VAR = 288,
-    NUMBER = 289,
-    SET = 290,
-    CHORD = 291
+    INT_NAME = 284,
+    CHORD_NAME = 285,
+    SET_NAME = 286,
+    VAR = 287,
+    NUMBER = 288,
+    SET = 289,
+    CHORD = 290,
+    NOTE = 291
   };
 #endif
 /* Tokens.  */
@@ -108,14 +108,14 @@ extern int yydebug;
 #define CLOSE_BRACKET 281
 #define PLAY 282
 #define NEW_LINE 283
-#define NOTE 284
-#define INT_NAME 285
-#define CHORD_NAME 286
-#define SET_NAME 287
-#define VAR 288
-#define NUMBER 289
-#define SET 290
-#define CHORD 291
+#define INT_NAME 284
+#define CHORD_NAME 285
+#define SET_NAME 286
+#define VAR 287
+#define NUMBER 288
+#define SET 289
+#define CHORD 290
+#define NOTE 291
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
