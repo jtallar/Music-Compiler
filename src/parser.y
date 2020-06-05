@@ -95,6 +95,7 @@ op_compare      : GT_OP
                 ;
 
 declare         : var_type VAR NEW_LINE
+                | var_type assign
                 ;
 
 var_type        : INT_NAME

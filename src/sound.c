@@ -54,7 +54,6 @@ void addChord(Wave * mySound, Chord chord, long nSamples) {
         }
         waveAddSample(mySound, frameData);
     }
-    printf("%g\n", frameData[0]);
 }
 
 long getTotalDuration(Score score) {

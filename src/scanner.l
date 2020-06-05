@@ -12,7 +12,7 @@ int yylex();
 number		[1-9][0-9]*
 variable 	[a-z][a-z0-9_]*
 new_line 	\n
-note        (As|Cs|Ds|Fs|Gs|[A-G])
+note        (As|Cs|Ds|Fs|Gs|[_A-G])
 chord       a{note}m?
 
 
