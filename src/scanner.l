@@ -48,10 +48,10 @@ chord       a{note}m?
 "set"               return SET_NAME;
 
 
-{number} 			{ puts(yytext); yylval.number = atoi(yytext); return NUMBER; }
-{note} 		        { puts(yytext); yylval.chord = atonote(yytext); return NOTE; }
-{chord} 			{ puts(yytext); yylval.chord = atochord(yytext); return CHORD; }
-{variable} 			{ puts(yytext); yylval.strVal = yytext; return VAR; }
+{number} 			{ /* puts(yytext); */ yylval.number = atoi(yytext); return NUMBER; }
+{note} 		        { /* puts(yytext); */ yylval.chord = atonote(yytext); return NOTE; }
+{chord} 			{ /* puts(yytext); */ yylval.chord = atochord(yytext); return CHORD; }
+{variable} 			{ /* puts(yytext); */ yylval.strVal = yytext; return VAR; }
 {new_line} 			{ yylineno++; return NEW_LINE; }		
 .				    ;
 	

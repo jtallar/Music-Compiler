@@ -24,13 +24,15 @@ int yylex();
 %token PLAY NEW_LINE
 %token INT_NAME CHORD_NAME SET_NAME
 
-%token <strVal> VAR
-%token <number> NUMBER 
+%token <strVal> VAR 
+%token <number> NUMBER
 %token <set> SET
 %token <chord> CHORD
 %token <chord> NOTE
 
 //%type <strVal> expression assign var_type term factor constant
+
+%type <number> var_type
 
 %start program
 
@@ -94,19 +96,19 @@ op_compare      : GT_OP
                 | NOT_EQUAL_OP
                 ;
 
-declare         : var_type VAR NEW_LINE
-                | var_type assign
+declare         : var_type VAR NEW_LINE                 { createVar($1,$2); }           
+                | var_type assign                       /* { createVar($1,$2); } */
                 ;
 
-var_type        : INT_NAME
-                | CHORD_NAME 
-                | SET_NAME
+var_type        : INT_NAME                              { $$ = 0; }                              
+                | CHORD_NAME                            { $$ = 1; }
+                | SET_NAME                              { $$ = 2; }
                 ;
 
-assign          : VAR ASSIGN expression NEW_LINE        /* { $$ = $3; printf("Found %d\n", $$); } */
+assign          : VAR ASSIGN expression NEW_LINE        { $$ = $1; }
                 ;
 
-expression      : expression ADD term                   /* { $$ = $1 + $3; printf("Found %d\n", $$); } */
+expression      : expression ADD term                   /*{ $$ = $1 + $3; printf("Found %d\n", $$); } */
                 | expression MINUS term                 /* { $$ = $1 - $3; printf("Found %d\n", $$); } */
                 | term
                 ;
@@ -129,25 +131,15 @@ constant        : CHORD     {print_chord($1);}
 
 %%
 
-
-
 int yywrap(){
     return 1;
 } 
 
 int main() {
-    printf("Make your music...\n");
+    init_list();
+    printf("Ready! Make your music!\n\n");
     return yyparse();
 } 
-
-/* void print_chord(struct chord * chord) {
-    if (chord == NULL || chord->note == NULL) return;
-    puts("\nVino un chord: \n");
-    for (int i = 0; i < chord->quant; i++) {
-        printf("\nNota %d: %d", i, chord->note[i]);
-    }
-} */
-
 
 /**
 * *       yacc -d parser.y

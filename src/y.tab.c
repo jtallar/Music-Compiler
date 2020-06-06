@@ -508,12 +508,12 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    39,    39,    40,    41,    42,    43,    44,    45,    48,
-      51,    54,    57,    60,    61,    62,    65,    66,    67,    70,
-      71,    74,    75,    78,    81,    82,    85,    86,    89,    90,
-      91,    92,    93,    94,    97,    98,   101,   102,   103,   106,
-     109,   110,   111,   114,   115,   116,   119,   120,   121,   122,
-     125,   126,   127
+       0,    41,    41,    42,    43,    44,    45,    46,    47,    50,
+      53,    56,    59,    62,    63,    64,    67,    68,    69,    72,
+      73,    76,    77,    80,    83,    84,    87,    88,    91,    92,
+      93,    94,    95,    96,    99,   100,   103,   104,   105,   108,
+     111,   112,   113,   116,   117,   118,   121,   122,   123,   124,
+     127,   128,   129
 };
 #endif
 
@@ -1359,20 +1359,44 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 50:
-#line 125 "parser.y" /* yacc.c:1646  */
-    {print_chord((yyvsp[0].chord));}
+        case 34:
+#line 99 "parser.y" /* yacc.c:1646  */
+    { createVar((yyvsp[-2].number),(yyvsp[-1].strVal)); }
 #line 1366 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 52:
-#line 127 "parser.y" /* yacc.c:1646  */
-    {print_chord((yyvsp[0].chord));}
+  case 36:
+#line 103 "parser.y" /* yacc.c:1646  */
+    { (yyval.number) = 0; }
 #line 1372 "y.tab.c" /* yacc.c:1646  */
     break;
 
+  case 37:
+#line 104 "parser.y" /* yacc.c:1646  */
+    { (yyval.number) = 1; }
+#line 1378 "y.tab.c" /* yacc.c:1646  */
+    break;
 
-#line 1376 "y.tab.c" /* yacc.c:1646  */
+  case 38:
+#line 105 "parser.y" /* yacc.c:1646  */
+    { (yyval.number) = 2; }
+#line 1384 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 50:
+#line 127 "parser.y" /* yacc.c:1646  */
+    {print_chord((yyvsp[0].chord));}
+#line 1390 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 52:
+#line 129 "parser.y" /* yacc.c:1646  */
+    {print_chord((yyvsp[0].chord));}
+#line 1396 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+
+#line 1400 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1600,9 +1624,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 130 "parser.y" /* yacc.c:1906  */
-
-
+#line 132 "parser.y" /* yacc.c:1906  */
 
 
 int yywrap(){
@@ -1610,18 +1632,10 @@ int yywrap(){
 } 
 
 int main() {
-    printf("Make your music...\n");
+    init_list();
+    printf("Ready! Make your music!\n\n");
     return yyparse();
 } 
-
-/* void print_chord(struct chord * chord) {
-    if (chord == NULL || chord->note == NULL) return;
-    puts("\nVino un chord: \n");
-    for (int i = 0; i < chord->quant; i++) {
-        printf("\nNota %d: %d", i, chord->note[i]);
-    }
-} */
-
 
 /**
 * *       yacc -d parser.y

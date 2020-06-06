@@ -923,22 +923,22 @@ return SET_NAME;
 case 29:
 YY_RULE_SETUP
 #line 51 "scanner.l"
-{ puts(yytext); yylval.number = atoi(yytext); return NUMBER; }
+{ /* puts(yytext); */ yylval.number = atoi(yytext); return NUMBER; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 52 "scanner.l"
-{ puts(yytext); yylval.chord = atonote(yytext); return NOTE; }
+{ /* puts(yytext); */ yylval.chord = atonote(yytext); return NOTE; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 53 "scanner.l"
-{ puts(yytext); yylval.chord = atochord(yytext); return CHORD; }
+{ /* puts(yytext); */ yylval.chord = atochord(yytext); return CHORD; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 54 "scanner.l"
-{ puts(yytext); yylval.strVal = yytext; return VAR; }
+{ /* puts(yytext); */ yylval.strVal = yytext; return VAR; }
 	YY_BREAK
 case 33:
 /* rule 33 can match eol */
