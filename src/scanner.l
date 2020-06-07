@@ -6,7 +6,7 @@
 #include <string.h>
 // #include "translator.h"
 struct chord * atochord(const char *nptr);
-void yyerror (char *s);
+void yyerror (const char * format, ...);
 int yylex();
 %}
 

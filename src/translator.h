@@ -78,6 +78,6 @@ static const Chord ch[] = {
       {chordsNotes[aB],  STD_CHORD_L}, {chordsNotes[aBm], STD_CHORD_L},
 };
 
-extern void yyerror (char *s);
+extern void yyerror(const char * format, ...);
 
 #endif

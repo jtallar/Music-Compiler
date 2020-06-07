@@ -1,9 +1,14 @@
 %{
-void yyerror (char *s);
+void yyerror(const char * format, ...);
 int yylex();
+extern int yylineno;
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include "typeUtil.h"
+/* Variable for the line count */
+
 %}
 
 /* ----------------- TOKENS ---------------------
@@ -118,19 +123,19 @@ var_type        : INT_NAME                              { $$ = num_type; }
 assign          : VAR ASSIGN expression NEW_LINE        { $$ = $1; }
                 ;
 
-expression      : expression ADD term                   /* { $$ = $1 + $3; } */
-                | expression MINUS term                 /* { $$ = $1 - $3; } */
+expression      : expression ADD term                   { $$ = addOperation($1,$3);   }
+                | expression MINUS term                 { $$ = minusOperation($1,$3); }
                 | term                                  { $$ = $1; }
                 ;
 
-term            : term STAR factor
-                | term BAR factor
+term            : term STAR factor                      { $$ = starOperation($1,$3); }
+                | term BAR factor                       { $$ = barOperation($1,$3);  }
                 | factor                                { $$ = $1; }
                 ;
 
 factor          : constant                                              { $$ = $1; }
-                | VAR                                                   { $$ = getDataByName($1); }
-                | OPEN_BRACKET expression expression CLOSE_BRACKET      { $$ = newSet($2, $3);}
+                | VAR                                                   { $$ = getDataByName($1);  }
+                | OPEN_BRACKET expression expression CLOSE_BRACKET      { $$ = newSetData($2, $3); }
                 | OPEN_PAREN expression CLOSE_PAREN                     { $$ = $2;}
                 ;
 
@@ -140,6 +145,15 @@ constant        : CHORD                                 { $$ = getChordData($1);
                 ;
 
 %%
+
+void yyerror(const char * format, ...){
+    va_list argptr;
+    va_start(argptr, format);
+    vfprintf(stderr, format, argptr);
+    va_end(argptr);
+    fprintf(stderr," -> Error in line %d\n\n", yylineno);
+    exit(1);
+}
 
 int yywrap(){
     return 1;

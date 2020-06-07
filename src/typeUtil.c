@@ -67,7 +67,7 @@ void print_chord(struct chord * chord) {
     for (int i = 0; i < chord->quant; i++) {
         printf("\nNota %d: %d", i, chord->note[i]);
     }
-    printf("\n");
+    puts("\n");
 }
 
 void init_list(){
@@ -79,11 +79,9 @@ void init_list(){
 }
 
 bool createVar(types type, char * name){
-    if(getVarByName(name) != NULL){
-        printf("ERROR. Variable named %s already exists.\n\n", name);
-        return false;
-    }
-    printf("Creating varible:  %s -> %s", type==0?"int":"chord", name);
+    if(getVarByName(name) != NULL)
+        yyerror("Variable named %s already exists.", name);
+    printf("Creating varible:  %s -> %s", getTypeByEnum(type), name);
     struct Node * node = (struct Node *) malloc(sizeof(struct Node));
     if(node == NULL) return false;
 
@@ -159,7 +157,7 @@ Var * getVarByName(char * name){
 Data getDataByName(char * name){
     Var * var = getVarByName(name);
     if(var == NULL){
-        yyerror("Variable doesnt exist");
+        yyerror("Variable %s undefined", name);
         exit(EXIT_FAILURE); 
     }
     return var->data;
@@ -171,20 +169,107 @@ Data getChordData(Chord * chord ){
 }
 
 Data getIntData(int * num){
-    Data data = {num_type, num };
+    Data data = { num_type, num };
     return data;
 }
 
-Data newSetData(Data chord, Data time){
-    
+Data addOperation(Data first, Data second){
+    Data out;
+    if(first.type == num_type && second.type == num_type){
+        out.type = num_type;
+        int result =  *((int *) first.value) + *((int *) second.value);
+        out.value = malloc(sizeof(int *));
+        *((int *) out.value) = result;
+        return out;
+    }
+    if(first.type == chord_type && second.type == chord_type){
+        
+    }
+    yyerror("Incompatible types. Can't operate %s value + %s value", getTypeByEnum(first.type), getTypeByEnum(second.type));
 }
 
-Set * newSet(Data chord, Data time){
-    // chequeo que chord y time lo sean
-
+Data minusOperation(Data first, Data second){
+    Data out;
+    if(first.type == num_type && second.type == num_type){
+        out.type = num_type;
+        int result =  *((int *) first.value) - *((int *) second.value);
+        out.value = malloc(sizeof(int *));
+        *((int *) out.value) = result;
+        return out;
+    }
+    if(first.type == chord_type && second.type == chord_type){
+        
+    }
+    yyerror("Incompatible types. Can't operate %s value - %s value", getTypeByEnum(first.type), getTypeByEnum(second.type));
 }
+
+Data barOperation(Data first, Data second){
+    Data out;
+    if(first.type == num_type && second.type == num_type){
+        out.type = num_type;
+        int result =  *((int *) first.value) / *((int *) second.value);
+        out.value = malloc(sizeof(int *));
+        *((int *) out.value) = result;
+        return out;
+    }
+    if(first.type == set_type && second.type == set_type){
+        Set set_one = *((Set *) first.value);
+        Set set_two = *((Set *) second.value);
+        int new_quant = set_one.quant + set_two.quant;
+
+        for(int i = set_one.quant, j = 0; i < new_quant; i++, j++)
+            set_one.blocks[i] = set_two.blocks[j];
+
+        out.type = set_type;
+        out.value = malloc(sizeof(Set *));
+        ((Set *)out.value)->quant = new_quant;
+        ((Set *)out.value)->blocks = set_one.blocks;
+        
+        return out;
+    }
+    yyerror("Incompatible types. Can't operate %s value / %s value", getTypeByEnum(first.type), getTypeByEnum(second.type));
+}
+
+Data starOperation(Data first, Data second){
+    Data out;
+    if(first.type == num_type && second.type == num_type){
+        out.type = num_type;
+        int result =  *((int *) first.value) * *((int *) second.value);
+        out.value = malloc(sizeof(int *));
+        *((int *) out.value) = result;
+
+        return out;
+    }
+    if(first.type == set_type && second.type == num_type){
+        int repeat = *((int *)second.value);
+        Set set_old = *((Set *) first.value);
+        int old_quant = set_old.quant;
+        int new_quant = set_old.quant * repeat;
+        
+        Block * block_old = set_old.blocks;
+        Block * block_new = malloc(sizeof(struct block));
+
+        for(int i = 0, j, index = 0; i < repeat; i++)
+            for(j = 0; j < old_quant; j++)
+                block_new[index++] = block_old[j];              // luego en block_new tengo block_old repeat veces
+
+        out.type = set_type;
+        out.value = malloc(sizeof(Set *));
+        ((Set *)out.value)->quant = new_quant;
+        ((Set *)out.value)->blocks = block_new;
+        
+        return out;
+    }
+    yyerror("Incompatible types. Can't operate %s value * %s value", getTypeByEnum(first.type), getTypeByEnum(second.type));
+}
+
 
 /* 
+typedef struct chord{
+  notes_enum * note;
+  int quant;
+}Chord;
+
 typedef struct set{
   Block * blocks;
   int quant;
@@ -195,7 +280,49 @@ typedef struct block{
   int time;
 }Block;
 
+typedef struct data{
+  types type;
+  void * value;
+}Data;
+
 */
+
+char * getTypeByEnum(types type){
+    switch (type)
+    {
+        case num_type:   return "int";
+            break;
+        case chord_type: return "chord"; 
+            break;
+        case set_type:   return "set";
+            break;
+        default:         return "unknown";
+            break;
+    }
+    return "unknown";
+}
+
+Data newSetData(Data chord, Data time){
+    Set * set = newSet(chord, time);
+    Data data = {set_type, set};
+    return data;
+}
+
+Set * newSet(Data chord, Data time){
+
+    if(chord.type != chord_type || time.type != num_type) {
+        // yyerror
+        return NULL;
+    }
+    Set * set = malloc(sizeof(struct set));
+    Block * block = malloc(sizeof(struct block));
+    block->chords = ((Chord *)chord.value);
+    block->time = *((int*)time.value);
+    set->blocks[0] = *block;
+    set->quant = 1;
+
+    return set;
+}
 
 bool putVar (unsigned long size, Var * variable, void * value){
     variable->data.value = malloc(size);

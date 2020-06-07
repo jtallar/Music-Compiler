@@ -23,6 +23,24 @@ Data getChordData(Chord * chord );
 
 Data getIntData(int * num);
 
+Data newSetData(Data chord, Data time);
+
+/**     Operations    **/
+
+Data addOperation(Data first, Data second);
+
+Data minusOperation(Data first, Data second);
+
+Data barOperation(Data first, Data second);
+
+Data starOperation(Data first, Data second);
+
+/***********************/
+
+char * getTypeByEnum(types type);
+
+Set * newSet(Data chord, Data time);
+
 bool putInt(char * name, int * value);
 
 bool putChord(char * name, Chord * value);
