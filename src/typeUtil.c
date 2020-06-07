@@ -80,7 +80,7 @@ void init_list(){
 
 bool createVar(types type, char * name){
     if(getVarByName(name) != NULL){
-        printf("ERROR. Variable with that name already exists.\n\n");
+        printf("ERROR. Variable named %s already exists.\n\n", name);
         return false;
     }
     printf("Creating varible:  %s -> %s", type==0?"int":"chord", name);
@@ -88,22 +88,22 @@ bool createVar(types type, char * name){
     if(node == NULL) return false;
 
     if(list->header == NULL){
-        node->var = (struct Var *) malloc(sizeof(struct Var));
+        node->var = (struct var *) malloc(sizeof(struct var));
         if(node->var == NULL) return false;
         if(node == NULL) return false;
-        node->var->type = type;
+        node->var->data.type = type;
         node->var->name = (char *) malloc(sizeof(name));
         if(node->var->name == NULL) return false;
         strcpy(node->var->name, name);
         list->header = node;
         list->tail = node;
-        printf("Done!\n\n");
+        printf("\nDone!\n\n");
         return true;
     }
 
-    node->var = (struct Var *) malloc(sizeof(struct Var));
+    node->var = (struct var *) malloc(sizeof(struct var));
     if(node->var == NULL) return false;
-    node->var->type = type;
+    node->var->data.type = type;
     node->next = NULL;
 
     node->var->name = (char *) malloc(sizeof(name));
@@ -113,35 +113,35 @@ bool createVar(types type, char * name){
     list->tail->next = node;
     list->tail = node;  
     
-    printf("Done!\n\n");
+    printf("\nDone!\n\n");
 
     return true;
 
     /* while (node->next != NULL)      // hasta encontrar que el siguiente esta vacio
     node = node->next;
     Node * new = malloc(sizeof(struct Node *));
-    new->var->type = type;
+    new->var->data.type = type;
     strcpy(new->var->name, name);
     node->next = new; */
 }
 
 bool putInt(char * name, int * value){
     Var * variable = getVarByName(name);
-    if(variable == NULL || variable->type != num)
+    if(variable == NULL || variable->data.type != num_type)
         return false;
     return putVar(sizeof(*value), variable, (void *) value);
 }
 
 bool putChord(char * name, Chord * value){
     Var * variable = getVarByName(name);
-    if(variable == NULL || variable->type != chord)
+    if(variable == NULL || variable->data.type != chord_type)
         return false;
     return putVar(sizeof(*value), variable, (void *) value);
 }
 
 bool putSet(char * name, Set * value){
     Var * variable = getVarByName(name);
-    if(variable == NULL || variable->type != set)
+    if(variable == NULL || variable->data.type != set_type)
         return false;
     return putVar(sizeof(*value), variable, (void *) value);
 }
@@ -156,10 +156,51 @@ Var * getVarByName(char * name){
     return NULL;
 }
 
+Data getDataByName(char * name){
+    Var * var = getVarByName(name);
+    if(var == NULL){
+        yyerror("Variable doesnt exist");
+        exit(EXIT_FAILURE); 
+    }
+    return var->data;
+}
+
+Data getChordData(Chord * chord ){
+    Data data = { chord_type, chord };
+    return data;
+}
+
+Data getIntData(int * num){
+    Data data = {num_type, num };
+    return data;
+}
+
+Data newSetData(Data chord, Data time){
+    
+}
+
+Set * newSet(Data chord, Data time){
+    // chequeo que chord y time lo sean
+
+}
+
+/* 
+typedef struct set{
+  Block * blocks;
+  int quant;
+}Set; 
+
+typedef struct block{
+  Chord * chords;
+  int time;
+}Block;
+
+*/
+
 bool putVar (unsigned long size, Var * variable, void * value){
-    variable->value = malloc(size);
-    if(variable->value == NULL)
+    variable->data.value = malloc(size);
+    if(variable->data.value == NULL)
         return false;
-    memcpy(variable->value, value, size);
+    memcpy(variable->data.value, value, size);
     return true;
 }

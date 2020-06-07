@@ -49,11 +49,11 @@ extern int yydebug;
     ELSE = 259,
     DO = 260,
     WHILE = 261,
-    ASSIGN = 262,
-    STAR = 263,
-    BAR = 264,
-    ADD = 265,
-    MINUS = 266,
+    STAR = 262,
+    BAR = 263,
+    ADD = 264,
+    MINUS = 265,
+    ASSIGN = 266,
     EQUAL_OP = 267,
     NOT_EQUAL_OP = 268,
     GT_OP = 269,
@@ -86,11 +86,11 @@ extern int yydebug;
 #define ELSE 259
 #define DO 260
 #define WHILE 261
-#define ASSIGN 262
-#define STAR 263
-#define BAR 264
-#define ADD 265
-#define MINUS 266
+#define STAR 262
+#define BAR 263
+#define ADD 264
+#define MINUS 265
+#define ASSIGN 266
 #define EQUAL_OP 267
 #define NOT_EQUAL_OP 268
 #define GT_OP 269
@@ -122,14 +122,16 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 14 "parser.y" /* yacc.c:1909  */
+#line 20 "parser.y" /* yacc.c:1909  */
 
-    int number; 
+    int int_type;
+    int * number; 
     struct chord * chord;
     struct set * set;
     char * strVal;
+    struct data dataVal;
 
-#line 133 "y.tab.h" /* yacc.c:1909  */
+#line 135 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

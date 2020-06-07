@@ -4,27 +4,35 @@ int yylex();
 #include <stdio.h>
 #include <stdlib.h>
 #include "typeUtil.h"
-
 %}
-
 
 /* ----------------- TOKENS ---------------------
  * Token that I'm expecting from the lexical 
  * analyzer (will save as defines in tab.h) */
+
+/*  %code requires {
+    struct data{
+        types type;
+        void * value;
+    };
+} */
+
 %union {
-    int number; 
+    int int_type;
+    int * number; 
     struct chord * chord;
     struct set * set;
     char * strVal;
+    struct data dataVal;
 }
 
-%token IF ELSE DO WHILE ASSIGN STAR BAR ADD MINUS 
+%token IF ELSE DO WHILE STAR BAR ADD MINUS ASSIGN
 %token EQUAL_OP NOT_EQUAL_OP GT_OP GTE_OP LT_OP LTE_OP AND_OP OR_OP NOT_OP
 %token OPEN_BRACES CLOSE_BRACES OPEN_PAREN CLOSE_PAREN OPEN_BRACKET CLOSE_BRACKET
 %token PLAY NEW_LINE
 %token INT_NAME CHORD_NAME SET_NAME
 
-%token <strVal> VAR 
+%token <strVal> VAR
 %token <number> NUMBER
 %token <set> SET
 %token <chord> CHORD
@@ -32,7 +40,9 @@ int yylex();
 
 //%type <strVal> expression assign var_type term factor constant
 
-%type <number> var_type
+%type <int_type> var_type
+%type <strVal> assign
+%type <dataVal> constant factor term expression
 
 %start program
 
@@ -96,37 +106,37 @@ op_compare      : GT_OP
                 | NOT_EQUAL_OP
                 ;
 
-declare         : var_type VAR NEW_LINE                 { createVar($1,$2); }           
-                | var_type assign                       /* { createVar($1,$2); } */
+declare         : var_type VAR NEW_LINE                 { createVar($1,$2); }      // se me lleva NEW_LINE     
+                | var_type assign                       { createVar($1,$2); }
                 ;
 
-var_type        : INT_NAME                              { $$ = 0; }                              
-                | CHORD_NAME                            { $$ = 1; }
-                | SET_NAME                              { $$ = 2; }
+var_type        : INT_NAME                              { $$ = num_type; }                              
+                | CHORD_NAME                            { $$ = chord_type; }
+                | SET_NAME                              { $$ = set_type; }
                 ;
 
 assign          : VAR ASSIGN expression NEW_LINE        { $$ = $1; }
                 ;
 
-expression      : expression ADD term                   /*{ $$ = $1 + $3; printf("Found %d\n", $$); } */
-                | expression MINUS term                 /* { $$ = $1 - $3; printf("Found %d\n", $$); } */
-                | term
+expression      : expression ADD term                   /* { $$ = $1 + $3; } */
+                | expression MINUS term                 /* { $$ = $1 - $3; } */
+                | term                                  { $$ = $1; }
                 ;
 
 term            : term STAR factor
                 | term BAR factor
-                | factor
+                | factor                                { $$ = $1; }
                 ;
 
-factor          : constant 
-                | VAR
-                | OPEN_BRACKET expression expression CLOSE_BRACKET
-                | OPEN_PAREN expression CLOSE_PAREN
+factor          : constant                                              { $$ = $1; }
+                | VAR                                                   { $$ = getDataByName($1); }
+                | OPEN_BRACKET expression expression CLOSE_BRACKET      { $$ = newSet($2, $3);}
+                | OPEN_PAREN expression CLOSE_PAREN                     { $$ = $2;}
                 ;
 
-constant        : CHORD     {print_chord($1);}
-                | NUMBER
-                | NOTE      {print_chord($1);}
+constant        : CHORD                                 { $$ = getChordData($1); }
+                | NUMBER                                { $$ = getIntData($1);   }
+                | NOTE                                  { $$ = getChordData($1); }
                 ;
 
 %%

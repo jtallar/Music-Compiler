@@ -17,6 +17,12 @@ bool putVar (unsigned long size, Var * variable, void * value);
 
 Var * getVarByName(char * name);
 
+Data getDataByName(char * name);
+
+Data getChordData(Chord * chord );
+
+Data getIntData(int * num);
+
 bool putInt(char * name, int * value);
 
 bool putChord(char * name, Chord * value);

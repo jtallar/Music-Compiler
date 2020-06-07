@@ -7,7 +7,7 @@
 #define CHORD_COUNT 14
 #define STD_CHORD_L 3
 
-typedef enum { num, chord, set, var } types;
+typedef enum { num_type, chord_type, set_type, var_type } types;
 typedef enum { C=0, Cs, D, Ds=3, E, F, Fs=6, G, Gs, A=9, As, B, _ } notes_enum;
 static const char * noteName[NOTE_COUNT] = {"C", "Cs", "D", "Ds", "E", "F", "Fs", "G", "Gs", "A", "As", "B", "_"};
 typedef enum { aC=0, aCm, aD, aDm=3, aE, aEm, aF=6, aFm, aG, aGm=9, aA, aAm, aB=12, aBm } chords_enum;
@@ -33,11 +33,14 @@ static notes_enum chordsNotes[CHORD_COUNT][STD_CHORD_L] = { {C,E, G},
 /* struct var * variables[CHUNK];
 int index = 0; */
 
-
-typedef struct Var{
+typedef struct data{
   types type;
-  char * name;
   void * value;
+}Data;
+
+typedef struct var{
+  char * name;
+  Data data;
 }Var;
 
 struct Node{
@@ -63,7 +66,7 @@ typedef struct block{
 }Block;
 
 typedef struct set{
-  Block blocks[200];
+  Block * blocks;
   int quant;
 }Set;
 
@@ -74,5 +77,7 @@ static const Chord ch[] = {
       {chordsNotes[aGm], STD_CHORD_L}, {chordsNotes[aA],  STD_CHORD_L}, {chordsNotes[aAm],STD_CHORD_L},
       {chordsNotes[aB],  STD_CHORD_L}, {chordsNotes[aBm], STD_CHORD_L},
 };
+
+extern void yyerror (char *s);
 
 #endif

@@ -1,16 +1,17 @@
 %{
+#include "typeUtil.h"
 #include "y.tab.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 // #include "translator.h"
-#include "typeUtil.h"
 struct chord * atochord(const char *nptr);
 void yyerror (char *s);
 int yylex();
 %}
 
-number		[1-9][0-9]*
-variable 	[a-z][a-z0-9_]*
+number		([1-9][0-9]*|(0))
+variable 	[a-z][a-z0-9_]* 
 new_line 	\n
 note        (As|Cs|Ds|Fs|Gs|[_A-G])
 chord       a{note}m?
@@ -51,7 +52,7 @@ chord       a{note}m?
 {number} 			{ /* puts(yytext); */ yylval.number = atoi(yytext); return NUMBER; }
 {note} 		        { /* puts(yytext); */ yylval.chord = atonote(yytext); return NOTE; }
 {chord} 			{ /* puts(yytext); */ yylval.chord = atochord(yytext); return CHORD; }
-{variable} 			{ /* puts(yytext); */ yylval.strVal = yytext; return VAR; }
+{variable} 			{ /* puts(yytext); */ yylval.strVal = malloc(yyleng+1); strcpy(yylval.strVal,yytext); return VAR; }
 {new_line} 			{ yylineno++; return NEW_LINE; }		
 .				    ;
 	
