@@ -13,6 +13,14 @@ void print_number(int* num);
 
 void print_set(Data set);
 
+void addNote(Chord * chord, notes_enum note);
+
+void deleteNote(Chord * chord, notes_enum note);
+
+int containsNote(Chord * chord, notes_enum note);
+
+void print_chord_data(Data chord);
+
 void init_list();
 
 void createVar(types type, char * name);

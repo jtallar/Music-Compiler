@@ -1442,7 +1442,7 @@ yyreduce:
 
   case 47:
 #line 138 "parser.y" /* yacc.c:1646  */
-    { (yyval.dataVal) = newSetData((yyvsp[-2].dataVal), (yyvsp[-1].dataVal)); print_set((yyval.dataVal));}
+    { (yyval.dataVal) = newSetData((yyvsp[-2].dataVal), (yyvsp[-1].dataVal)); /* print_set($$); */}
 #line 1447 "y.tab.c" /* yacc.c:1646  */
     break;
 
@@ -1708,7 +1708,7 @@ void yyerror(const char * format, ...){
     vfprintf(stderr, format, argptr);
     va_end(argptr);
     fprintf(stderr," -> Error in line %d\n\n", yylineno);
-    exit(1);
+    exit(EXIT_FAILURE);
 }
 
 int yywrap(){

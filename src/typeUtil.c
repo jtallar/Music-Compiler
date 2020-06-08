@@ -34,6 +34,7 @@ Chord * atochord(const char *nptr) {
         node->next->note = chordsNotes[stdChord][i];
         node = node->next;
     }
+    node->next = NULL;    // o calloc
     chord->quant = STD_CHORD_L;
     return chord;
 } 
@@ -59,6 +60,7 @@ Chord * atonote(const char *nptr) {
         yyerror("Not enough heap memory");
     }
     chord->notes->note = note;
+    chord->notes->next = NULL;
     chord->quant = 1;
     return chord;
 }
@@ -72,6 +74,10 @@ void print_chord(struct chord * chord) {
         printf("\tNota %d: %d\n", i, node->note);
         node = node->next;
     }
+}
+
+void print_chord_data(Data chord){
+    print_chord(chord.value);
 }
 
 void init_list(){
@@ -93,6 +99,7 @@ void createVar(types type, char * name){
         node->var = (struct var *) malloc(sizeof(struct var));
         if(node->var == NULL) yyerror("Not enough heap memory");
         node->var->data.type = type;
+        node->var->data.value = NULL;
         node->var->name = (char *) malloc(sizeof(name));
         if(node->var->name == NULL) yyerror("Not enough heap memory");
         strcpy(node->var->name, name);
@@ -105,6 +112,7 @@ void createVar(types type, char * name){
     node->var = (struct var *) malloc(sizeof(struct var));
     if(node->var == NULL) yyerror("Not enough heap memory");
     node->var->data.type = type;
+    node->var->data.value = NULL;
     node->next = NULL;
 
     node->var->name = (char *) malloc(sizeof(name));
@@ -191,7 +199,9 @@ Data getDataByName(char * name){
     Var * var = getVarByName(name);
     if(var == NULL){
         yyerror("Variable '%s' undefined", name);
-        exit(EXIT_FAILURE); 
+    }
+    if(var->data.value == NULL){
+        yyerror("Variable '%s' may not be initialized", name);
     }
     return var->data;
 }
@@ -210,6 +220,58 @@ void print_number(int* num){
     printf("EL NUMERO ES %d", *num);
 }
 
+void addNote(Chord * chord, notes_enum note){
+    /* struct NoteNode * node = chord->notes;
+    while (node->next != NULL)
+        node = node->next;
+    struct NoteNode * new = (struct NoteNote *) malloc(sizeof(struct NoteNode));
+    if(new == NULL) yyerror("Not enough heap memory");
+    new->note = note;
+    new->next = NULL;
+    node->next = new;
+    return; */
+    struct NoteNode * node = chord->notes;
+    struct NoteNode * new = (struct NoteNote *) malloc(sizeof(struct NoteNode));
+    if(new == NULL) yyerror("Not enough heap memory");
+    new->note = note;
+    new->next = node;
+    chord->notes = new;
+    chord->quant++;
+    return;
+}
+
+void deleteNote(Chord * chord, notes_enum note){
+    struct NoteNode * node = chord->notes;
+    if(node->note == note){
+        struct NoteNode * aux = node->next;
+        node->next = node->next->next;
+        free(aux);
+        chord->quant--;
+        return;
+    }    
+    while (node->next != NULL){
+        if(node->next->note == note){
+            struct NoteNode * aux = node->next;
+            node->next = node->next->next;
+            free(aux);
+            chord->quant--;
+            return;
+        }
+        node = node->next;
+    }
+    return;
+}
+
+int containsNote(Chord * chord, notes_enum note){
+    struct NoteNode * node = chord->notes;
+    while(node != NULL){
+        if(node->note == note)
+            return 1;
+        node = node->next;
+    } 
+    return 0;
+}
+
 Data addOperation(Data first, Data second){
     Data out;
     if(first.type == num_type && second.type == num_type){
@@ -222,7 +284,22 @@ Data addOperation(Data first, Data second){
         return out;
     }
     if(first.type == chord_type && second.type == chord_type){
-        // recorrer para cada 
+        Chord * chord_one = (Chord *) first.value;
+        Chord * chord_two = (Chord *) second.value;
+        
+        struct NoteNode * node = chord_two->notes;
+        while(node != NULL){
+            if(!containsNote(chord_one, node->note)){
+                addNote(chord_one, node->note);
+                // printf("NOT CONTAINS %d -> chord_one: ", node->note); 
+            }
+            node = node->next;
+        }
+        out.type = chord_type;
+        out.value = chord_one;
+        print_chord_data(out);
+
+        return out;
     }
     yyerror("Incompatible types. Can't operate %s value + %s value", getTypeByEnum(first.type), getTypeByEnum(second.type));
 }
@@ -239,7 +316,20 @@ Data minusOperation(Data first, Data second){
         return out;
     }
     if(first.type == chord_type && second.type == chord_type){
+        Chord * chord_one = (Chord *) first.value;
+        Chord * chord_two = (Chord *) second.value;
         
+        struct NoteNode * node = chord_two->notes;
+        while(node != NULL){
+            if(containsNote(chord_one, node->note))
+                deleteNote(chord_one, node->note);
+            node = node->next;
+        }
+        out.type = chord_type;
+        out.value = chord_one;
+        print_chord_data(out);
+
+        return out;
     }
     yyerror("Incompatible types. Can't operate %s value - %s value", getTypeByEnum(first.type), getTypeByEnum(second.type));
 }
@@ -264,7 +354,7 @@ Data barOperation(Data first, Data second){
             set_one.blocks[i] = set_two.blocks[j];
 
         out.type = set_type;
-        out.value = malloc(sizeof(Set *));
+        out.value = malloc(sizeof(struct set));
         ((Set *)out.value)->quant = new_quant;
         ((Set *)out.value)->blocks = set_one.blocks;
         
@@ -288,25 +378,32 @@ Data starOperation(Data first, Data second){
     }
     if(first.type == set_type && second.type == num_type){
         int repeat = *((int *)second.value);
+
         Set set_old = *((Set *) first.value);
         int old_quant = set_old.quant;
         int new_quant = set_old.quant * repeat;
         
         Block * block_old = set_old.blocks;
-        Block * block_new = malloc(sizeof(struct block));
+        Block * block_new = malloc(sizeof(struct block)*new_quant);
 
-        for(int i = 0, j, index = 0; i < repeat; i++)
-            for(j = 0; j < old_quant; j++)
-                block_new[index++] = block_old[j];              // luego en block_new tengo block_old repeat veces
-
+        int i = 0, b_index = 0, j = 0;
+        // printf("Repeat: %d \t Old Q: %d\n\n", repeat, old_quant);
+        for(i; i < repeat; i++){
+            for(j = 0; j < old_quant; j++){
+                // printf("\nblock_new[%d] = block_old[%d]\n", b_index, j);
+                block_new[b_index++] = block_old[j];              // luego en block_new tengo block_old repeat veces
+            }
+        }
         out.type = set_type;
-        out.value = malloc(sizeof(Set *));
+        out.value = (Set *) malloc(sizeof(struct set));
         ((Set *)out.value)->quant = new_quant;
         ((Set *)out.value)->blocks = block_new;
         
+        print_set(out);
+
         return out;
     }
-    yyerror("Incompatible types. Can't operate %s value * %s value", getTypeByEnum(first.type), getTypeByEnum(second.type));
+    yyerror("Incompatible types. Can't operate (%s value) * (%s value)", getTypeByEnum(first.type), getTypeByEnum(second.type));
 }
 
 char * getTypeByEnum(types type){
@@ -353,9 +450,16 @@ void print_set(Data set){
     }
     puts("---------------------------");
 }
+
+
 /* 
+struct NoteNode{
+  notes_enum note;
+  struct NoteNode * next;
+};
+
 typedef struct chord{
-  notes_enum * note;
+  struct NoteNode * notes;
   int quant;
 }Chord;
 

@@ -135,7 +135,7 @@ term            : term STAR factor                      { $$ = starOperation($1,
 
 factor          : constant                                              { $$ = $1;}
                 | VAR                                                   { $$ = getDataByName($1);  }
-                | OPEN_BRACKET expression expression CLOSE_BRACKET      { $$ = newSetData($2, $3); print_set($$);}
+                | OPEN_BRACKET expression expression CLOSE_BRACKET      { $$ = newSetData($2, $3); /* print_set($$); */}
                 | OPEN_PAREN expression CLOSE_PAREN                     { $$ = $2; }
                 ;
 
@@ -152,7 +152,7 @@ void yyerror(const char * format, ...){
     vfprintf(stderr, format, argptr);
     va_end(argptr);
     fprintf(stderr," -> Error in line %d\n\n", yylineno);
-    exit(1);
+    exit(EXIT_FAILURE);
 }
 
 int yywrap(){
