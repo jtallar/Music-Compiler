@@ -16,18 +16,23 @@ Chord * atochord(const char *nptr) {
     }
     
     Chord * chord = malloc(sizeof(*chord));
-    if (chord == NULL) {
-        // ERROR --> Que hacemos?
-        return NULL;
-    }
-    chord->note = malloc(sizeof(*chord->note) * STD_CHORD_L);
-    if (chord->note == NULL) {
-        // ERROR --> Que hacemos?
+    if (chord == NULL) yyerror("Not enough heap memory");
+
+    /* chord->notes = malloc(sizeof(struct NoteNode));
+    if (chord->notes == NULL) {
         free(chord);
-        return NULL;
-    }
-    for (int i = 0; i < STD_CHORD_L; i++) {
-        chord->note[i] = chordsNotes[stdChord][i];
+        yyerror("Not enough heap memory");
+    } */
+
+    struct NoteNode * node = (struct NoteNode *) malloc(sizeof(struct NoteNode));
+    if (node == NULL) yyerror("Not enough heap memory");
+    node->note = chordsNotes[stdChord][0];
+    chord->notes = node;
+    for (int i = 1; i < STD_CHORD_L; i++) {
+        node->next = (struct NoteNode *) malloc(sizeof(struct NoteNode));
+        if (node->next == NULL) yyerror("Not enough heap memory");
+        node->next->note = chordsNotes[stdChord][i];
+        node = node->next;
     }
     chord->quant = STD_CHORD_L;
     return chord;
@@ -46,28 +51,27 @@ Chord * atonote(const char *nptr) {
     }
     
     Chord * chord = malloc(sizeof(*chord));
-    if (chord == NULL) {
-        // ERROR --> Que hacemos?
-        return NULL;
-    }
-    chord->note = malloc(sizeof(*chord->note));
-    if (chord->note == NULL) {
-        // ERROR --> Que hacemos?
+    if (chord == NULL) yyerror("Not enough heap memory");
+
+    chord->notes = malloc(sizeof(struct NoteNode));
+    if (chord->notes == NULL) {
         free(chord);
-        return NULL;
+        yyerror("Not enough heap memory");
     }
-    chord->note[0] = note;
+    chord->notes->note = note;
     chord->quant = 1;
     return chord;
 }
 
 void print_chord(struct chord * chord) {
-    if (chord == NULL || chord->note == NULL) return;
-    puts("\nVino un chord: ");
-    for (int i = 0; i < chord->quant; i++) {
-        printf("\nNota %d: %d", i, chord->note[i]);
+    if (chord == NULL || chord->notes == NULL) 
+        yyerror("NULL pointer exception on chord or note");
+    puts("\nChord: ");
+    struct NoteNode * node = chord->notes;
+    for (int i = 0; i < chord->quant; i++){
+        printf("\tNota %d: %d\n", i, node->note);
+        node = node->next;
     }
-    puts("\n");
 }
 
 void init_list(){
@@ -78,42 +82,39 @@ void init_list(){
     // printf("Preparing our band...\nList: %d\t\tHeader: %d\tTail: %d\n", list, list->header, list->tail);
 }
 
-bool createVar(types type, char * name){
+void createVar(types type, char * name){
     if(getVarByName(name) != NULL)
         yyerror("Variable named %s already exists.", name);
-    printf("Creating varible:  %s -> %s", getTypeByEnum(type), name);
+   // printf("Creating varible:  %s -> %s", getTypeByEnum(type), name);
     struct Node * node = (struct Node *) malloc(sizeof(struct Node));
-    if(node == NULL) return false;
+    if(node == NULL) yyerror("Not enough heap memory");
 
     if(list->header == NULL){
         node->var = (struct var *) malloc(sizeof(struct var));
-        if(node->var == NULL) return false;
-        if(node == NULL) return false;
+        if(node->var == NULL) yyerror("Not enough heap memory");
         node->var->data.type = type;
         node->var->name = (char *) malloc(sizeof(name));
-        if(node->var->name == NULL) return false;
+        if(node->var->name == NULL) yyerror("Not enough heap memory");
         strcpy(node->var->name, name);
         list->header = node;
         list->tail = node;
-        printf("\nDone!\n\n");
-        return true;
+        // printf("\tDone!\n\n");
+        return;
     }
 
     node->var = (struct var *) malloc(sizeof(struct var));
-    if(node->var == NULL) return false;
+    if(node->var == NULL) yyerror("Not enough heap memory");
     node->var->data.type = type;
     node->next = NULL;
 
     node->var->name = (char *) malloc(sizeof(name));
-    if(node->var->name == NULL) return false;
+    if(node->var->name == NULL) yyerror("Not enough heap memory");
     strcpy(node->var->name, name);
     
     list->tail->next = node;
     list->tail = node;  
     
-    printf("\nDone!\n\n");
-
-    return true;
+    // printf("\tDone!\n\n");
 
     /* while (node->next != NULL)      // hasta encontrar que el siguiente esta vacio
     node = node->next;
@@ -123,25 +124,57 @@ bool createVar(types type, char * name){
     node->next = new; */
 }
 
-bool putInt(char * name, int * value){
-    Var * variable = getVarByName(name);
-    if(variable == NULL || variable->data.type != num_type)
-        return false;
-    return putVar(sizeof(*value), variable, (void *) value);
+void putVar (size_t size, Var * variable, void * value){
+    variable->data.value = malloc(size);
+    if(variable->data.value == NULL)
+        yyerror("Not enough heap memory");
+
+    memcpy(variable->data.value, value, size);
 }
 
-bool putChord(char * name, Chord * value){
-    Var * variable = getVarByName(name);
-    if(variable == NULL || variable->data.type != chord_type)
-        return false;
-    return putVar(sizeof(*value), variable, (void *) value);
+void newVar (char * name, Data data){
+    switch (data.type)
+    {
+        case num_type:
+            putInt(name, (int *)data.value);
+            break;
+        case chord_type:
+            putChord(name, (Chord *)data.value);
+            break;
+        case set_type:
+            putSet(name, (Set *)data.value);
+            break;
+        default:
+            yyerror("Undefined type of variable");
+            break;
+    }
 }
 
-bool putSet(char * name, Set * value){
+void putInt(char * name, int * value){
     Var * variable = getVarByName(name);
-    if(variable == NULL || variable->data.type != set_type)
-        return false;
-    return putVar(sizeof(*value), variable, (void *) value);
+    if(variable == NULL)
+        yyerror("Variable '%s' doesn't exist", name);
+    if(variable->data.type != num_type)
+        yyerror("You are trying to assign %s to a %s variable", getTypeByEnum(variable->data.type), getTypeByEnum(num_type));
+    putVar(sizeof(*value), variable, (void *) value);
+}
+
+void putChord(char * name, Chord * value){
+    Var * variable = getVarByName(name);
+    if(variable == NULL)
+        yyerror("Variable '%s' doesn't exist", name);
+    if(variable->data.type != chord_type)
+        yyerror("You are trying to assign %s to a %s variable", getTypeByEnum(variable->data.type), getTypeByEnum(chord_type));
+    putVar(sizeof(*value), variable, (void *) value);
+}
+
+void putSet(char * name, Set * value){
+    Var * variable = getVarByName(name);
+    if(variable == NULL)
+        yyerror("Variable '%s' doesn't exist", name);
+    if(variable->data.type != set_type)
+        yyerror("You are trying to assign %s to a %s variable", getTypeByEnum(variable->data.type), getTypeByEnum(set_type));
+    putVar(sizeof(* value), variable, (void *) value);
 }
 
 Var * getVarByName(char * name){
@@ -157,7 +190,7 @@ Var * getVarByName(char * name){
 Data getDataByName(char * name){
     Var * var = getVarByName(name);
     if(var == NULL){
-        yyerror("Variable %s undefined", name);
+        yyerror("Variable '%s' undefined", name);
         exit(EXIT_FAILURE); 
     }
     return var->data;
@@ -173,17 +206,23 @@ Data getIntData(int * num){
     return data;
 }
 
+void print_number(int* num){
+    printf("EL NUMERO ES %d", *num);
+}
+
 Data addOperation(Data first, Data second){
     Data out;
     if(first.type == num_type && second.type == num_type){
         out.type = num_type;
-        int result =  *((int *) first.value) + *((int *) second.value);
+        int result =  *((int *)(first.value)) + *((int *)(second.value));     // violacion de segmento aca
         out.value = malloc(sizeof(int *));
         *((int *) out.value) = result;
+        printf("Result is %d", result);
+
         return out;
     }
     if(first.type == chord_type && second.type == chord_type){
-        
+        // recorrer para cada 
     }
     yyerror("Incompatible types. Can't operate %s value + %s value", getTypeByEnum(first.type), getTypeByEnum(second.type));
 }
@@ -195,6 +234,8 @@ Data minusOperation(Data first, Data second){
         int result =  *((int *) first.value) - *((int *) second.value);
         out.value = malloc(sizeof(int *));
         *((int *) out.value) = result;
+        printf("Result is %d", result);
+
         return out;
     }
     if(first.type == chord_type && second.type == chord_type){
@@ -210,6 +251,8 @@ Data barOperation(Data first, Data second){
         int result =  *((int *) first.value) / *((int *) second.value);
         out.value = malloc(sizeof(int *));
         *((int *) out.value) = result;
+        printf("Result is %d", result);
+
         return out;
     }
     if(first.type == set_type && second.type == set_type){
@@ -225,6 +268,8 @@ Data barOperation(Data first, Data second){
         ((Set *)out.value)->quant = new_quant;
         ((Set *)out.value)->blocks = set_one.blocks;
         
+        print_set(out);
+
         return out;
     }
     yyerror("Incompatible types. Can't operate %s value / %s value", getTypeByEnum(first.type), getTypeByEnum(second.type));
@@ -237,6 +282,7 @@ Data starOperation(Data first, Data second){
         int result =  *((int *) first.value) * *((int *) second.value);
         out.value = malloc(sizeof(int *));
         *((int *) out.value) = result;
+        printf("Result is %d", result);
 
         return out;
     }
@@ -263,7 +309,50 @@ Data starOperation(Data first, Data second){
     yyerror("Incompatible types. Can't operate %s value * %s value", getTypeByEnum(first.type), getTypeByEnum(second.type));
 }
 
+char * getTypeByEnum(types type){
+    switch (type)
+    {
+        case num_type:   return "int";
+            break;
+        case chord_type: return "chord"; 
+            break;
+        case set_type:   return "set";
+            break;
+        default:
+            break;
+    }
+    return "unknown";
+}
 
+Data newSetData(Data chord, Data time){
+    // puts("new data set");
+    Set * set = newSet(chord, time);
+    Data data = {set_type, set};
+    return data;
+}
+
+Set * newSet(Data chord, Data time){
+    if(chord.type != chord_type || time.type != num_type)
+        yyerror("You are creating a new set with incorrect variable types");
+    Set * set = (Set *) malloc(sizeof(struct set));
+    Block * block = (Block *) malloc(sizeof(struct block));
+    block->chords = ((Chord *)chord.value);
+    block->time = *((int*)time.value);
+    set->blocks = block;
+    set->quant = 1;
+    return set;
+}
+
+void print_set(Data set){
+    Set * realSet = (Set *)set.value;
+    puts("---------------------------");
+    printf("Set con:");
+    for(int i=0; i < realSet->quant; i++){
+        print_chord(realSet->blocks[i].chords);
+        printf(" << durante %d segundos >>\n", realSet->blocks[i].time);
+    }
+    puts("---------------------------");
+}
 /* 
 typedef struct chord{
   notes_enum * note;
@@ -286,48 +375,3 @@ typedef struct data{
 }Data;
 
 */
-
-char * getTypeByEnum(types type){
-    switch (type)
-    {
-        case num_type:   return "int";
-            break;
-        case chord_type: return "chord"; 
-            break;
-        case set_type:   return "set";
-            break;
-        default:         return "unknown";
-            break;
-    }
-    return "unknown";
-}
-
-Data newSetData(Data chord, Data time){
-    Set * set = newSet(chord, time);
-    Data data = {set_type, set};
-    return data;
-}
-
-Set * newSet(Data chord, Data time){
-
-    if(chord.type != chord_type || time.type != num_type) {
-        // yyerror
-        return NULL;
-    }
-    Set * set = malloc(sizeof(struct set));
-    Block * block = malloc(sizeof(struct block));
-    block->chords = ((Chord *)chord.value);
-    block->time = *((int*)time.value);
-    set->blocks[0] = *block;
-    set->quant = 1;
-
-    return set;
-}
-
-bool putVar (unsigned long size, Var * variable, void * value){
-    variable->data.value = malloc(size);
-    if(variable->data.value == NULL)
-        return false;
-    memcpy(variable->data.value, value, size);
-    return true;
-}

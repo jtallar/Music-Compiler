@@ -924,7 +924,7 @@ return SET_NAME;
 case 29:
 YY_RULE_SETUP
 #line 52 "scanner.l"
-{ /* puts(yytext); */ yylval.number = atoi(yytext); return NUMBER; }
+{ /* puts(yytext); */ yylval.number = malloc(sizeof(int)); *yylval.number = atoi(yytext); return NUMBER; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP

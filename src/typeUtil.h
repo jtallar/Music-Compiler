@@ -9,11 +9,15 @@ struct chord * atonote(const char *nptr);
 
 void print_chord(struct chord * chord);
 
+void print_number(int* num);
+
+void print_set(Data set);
+
 void init_list();
 
-bool createVar(types type, char * name);
+void createVar(types type, char * name);
 
-bool putVar (unsigned long size, Var * variable, void * value);
+void putVar (size_t size, Var * variable, void * value);
 
 Var * getVarByName(char * name);
 
@@ -41,10 +45,10 @@ char * getTypeByEnum(types type);
 
 Set * newSet(Data chord, Data time);
 
-bool putInt(char * name, int * value);
+void putInt(char * name, int * value);
 
-bool putChord(char * name, Chord * value);
+void putChord(char * name, Chord * value);
 
-bool putSet(char * name, Set * value);
+void putSet(char * name, Set * value);
 
 #endif

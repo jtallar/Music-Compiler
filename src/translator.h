@@ -1,8 +1,8 @@
 #ifndef TRANSLATION_TOKENS_H
 #define TRANSLATION_TOKENS_H
 
-#include <stdbool.h>
-//#include <math.h>
+// #include <stdbool.h>
+// #include <math.h>
 #define NOTE_COUNT  13
 #define CHORD_COUNT 14
 #define STD_CHORD_L 3
@@ -55,8 +55,13 @@ typedef struct list{
 
 List * list;
 
+struct NoteNode{
+  notes_enum note;
+  struct NoteNode * next;
+};
+
 typedef struct chord{
-  notes_enum * note;
+  struct NoteNode * notes;
   int quant;
 }Chord;
 
