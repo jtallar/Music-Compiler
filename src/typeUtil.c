@@ -280,7 +280,7 @@ Data addOperation(Data first, Data second){
         out.value = malloc(sizeof(int *));
         *((int *) out.value) = result;
         printf("Result is %d", result);
-
+        
         return out;
     }
     if(first.type == chord_type && second.type == chord_type){
