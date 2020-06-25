@@ -88,6 +88,7 @@ mult_compare    : mult_compare any_op single_compare
                 | single_compare
                 ;
 
+// Guarda lo que esta a la derecha $$ = $1
 any_op          : add_op_logic
                 | op_compare
                 ;
@@ -99,6 +100,7 @@ else            : ELSE body
                 |
                 ;
 
+// Enum para todos los operadores que siguen
 add_op_logic    : AND_OP
                 | OR_OP
                 ;
