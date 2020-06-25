@@ -34,24 +34,26 @@ extern int yylineno;
 %token IF ELSE DO WHILE STAR BAR ADD MINUS ASSIGN
 %token EQUAL_OP NOT_EQUAL_OP GT_OP GTE_OP LT_OP LTE_OP AND_OP OR_OP NOT_OP
 %token OPEN_BRACES CLOSE_BRACES OPEN_PAREN CLOSE_PAREN OPEN_BRACKET CLOSE_BRACKET
-%token PLAY NEW_LINE
+%token START PLAY NEW_LINE
 %token INT_NAME CHORD_NAME SET_NAME
 
 %token <strVal> VAR
 %token <number> NUMBER
-%token <set> SET
+/* %token <set> SET */
 %token <chord> CHORD
 %token <chord> NOTE
 
 //%type <strVal> expression assign var_type term factor constant
 
-%type <int_type> var_type
+%type <int_type> var_type any_op add_op_logic op_compare
 %type <strVal> assign
-%type <dataVal> constant factor term expression
+%type <dataVal> constant factor term expression /**/ compare single_compare mult_compare
 
-%start program
+%start start
 
 %%
+
+start           :  START NEW_LINE program
 
 program         :  program declare 
                 |  program assign
@@ -74,23 +76,23 @@ while_sentence  : WHILE compare body NEW_LINE
 if_sentence     : IF compare body else NEW_LINE
                 ;
 
-compare         : OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN
-                | NOT_OP OPEN_PAREN mult_compare CLOSE_PAREN
-                | OPEN_PAREN expression CLOSE_PAREN
+compare         : OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN         { $$ = condition_composed($2, $3, $4); print_boolean((int*)$$.value); }
+                | OPEN_PAREN mult_compare CLOSE_PAREN                               { $$ = $2; print_boolean((int*)$$.value);           }
+                /* | OPEN_PAREN expression CLOSE_PAREN                                 { $$ = condition_expression($2); print_boolean((int*)$$.value);       } */
                 ;
 
-single_compare  : OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN
-                | NOT_OP OPEN_PAREN mult_compare CLOSE_PAREN
-                | expression
+single_compare  : OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN         { $$ = condition_composed($2, $3, $4);  }
+                | NOT_OP OPEN_PAREN mult_compare CLOSE_PAREN                        { $$ = negate_condition($3);            }
+                | expression                                                        { $$ = data_boolean($1);        }
                 ;
 
-mult_compare    : mult_compare any_op single_compare
-                | single_compare
+mult_compare    : mult_compare any_op single_compare                                { $$ = condition_composed($1, $2, $3);  }                                
+                | single_compare                                                    { $$ = $1; }
                 ;
 
 // Guarda lo que esta a la derecha $$ = $1
-any_op          : add_op_logic
-                | op_compare
+any_op          : add_op_logic                         { $$ = $1; }
+                | op_compare                           { $$ = $1; }
                 ;
                 
 body            : OPEN_BRACES program CLOSE_BRACES
@@ -101,16 +103,16 @@ else            : ELSE body
                 ;
 
 // Enum para todos los operadores que siguen
-add_op_logic    : AND_OP
-                | OR_OP
+add_op_logic    : AND_OP                               { $$ = and; }
+                | OR_OP                                { $$ = or;  }
                 ;
 
-op_compare      : GT_OP 
-                | GTE_OP    
-                | LT_OP 
-                | LTE_OP 
-                | EQUAL_OP 
-                | NOT_EQUAL_OP
+op_compare      : GT_OP                                { $$ = gt;  }
+                | GTE_OP                               { $$ = gte; }    
+                | LT_OP                                { $$ = lt;  }
+                | LTE_OP                               { $$ = lte; }
+                | EQUAL_OP                             { $$ = eq;  }
+                | NOT_EQUAL_OP                         { $$ = neq; }
                 ;
 
 declare         : var_type VAR NEW_LINE                 { createVar($1,$2); }      // se me lleva NEW_LINE     
@@ -142,7 +144,7 @@ factor          : constant                                              { $$ = $
                 ;
 
 constant        : CHORD                                 { $$ = getChordData($1); /*print_chord($1); */ }
-                | NUMBER                                { $$ = getIntData($1);   /*print_number($1);*/ }
+                | NUMBER                                { $$ = getIntData($1);  /*  print_number($1); */ }
                 | NOTE                                  { $$ = getChordData($1); /*print_chord($1);  */}
                 ;
 
