@@ -33,8 +33,8 @@ chord       a{note}m?
 ">="			    return GTE_OP;
 "<"			        return LT_OP;
 "<="			    return LTE_OP;
-"&&"			    return AND_OP;
-"||"			    return OR_OP;
+"and"			    return AND_OP;
+"or"			    return OR_OP;
 "!"			        return NOT_OP;
 "{"			        return OPEN_BRACES;
 "}"			        return CLOSE_BRACES;
@@ -43,6 +43,7 @@ chord       a{note}m?
 "["                 return OPEN_BRACKET;
 "]"                 return CLOSE_BRACKET;
 "play"              return PLAY;
+"start"             return START;
 
 "int"               return INT_NAME;
 "chord"             return CHORD_NAME;

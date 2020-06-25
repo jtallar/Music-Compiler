@@ -3,6 +3,9 @@
 #include <string.h>
 #include "typeUtil.h"
 
+static int avg_freq(Chord * chord);
+static int total_time(Set * set);
+
 Chord * atochord(const char *nptr) {
     int stdChord;
     for (stdChord = aC; stdChord < CHORD_COUNT; stdChord++) {
@@ -217,7 +220,11 @@ Data getIntData(int * num){
 }
 
 void print_number(int* num){
-    printf("EL NUMERO ES %d", *num);
+    printf("El numero es %d\n", *num);
+}
+
+void print_boolean(int* num){
+    printf("--> %s\n", *num==1?"true":"false");
 }
 
 void addNote(Chord * chord, notes_enum note){
@@ -276,7 +283,7 @@ Data addOperation(Data first, Data second){
     Data out;
     if(first.type == num_type && second.type == num_type){
         out.type = num_type;
-        int result =  *((int *)(first.value)) + *((int *)(second.value));     // violacion de segmento aca
+        int result =  *((int *)(first.value)) + *((int *)(second.value));
         out.value = malloc(sizeof(int *));
         *((int *) out.value) = result;
         printf("Result is %d", result);
@@ -388,7 +395,7 @@ Data starOperation(Data first, Data second){
 
         int i = 0, b_index = 0, j = 0;
         // printf("Repeat: %d \t Old Q: %d\n\n", repeat, old_quant);
-        for(i; i < repeat; i++){
+        for(i=0; i < repeat; i++){
             for(j = 0; j < old_quant; j++){
                 // printf("\nblock_new[%d] = block_old[%d]\n", b_index, j);
                 block_new[b_index++] = block_old[j];              // luego en block_new tengo block_old repeat veces
@@ -446,11 +453,142 @@ void print_set(Data set){
     printf("Set con:");
     for(int i=0; i < realSet->quant; i++){
         print_chord(realSet->blocks[i].chords);
-        printf(" << durante %d segundos >>\n", realSet->blocks[i].time);
+        printf(" << durante %d milisegundos >>\n", realSet->blocks[i].time);
     }
     puts("---------------------------");
 }
 
+Data condition_composed(Data first, conditions cond, Data second){
+    // printf("\nRecibo %d %d %d\n", *((int*)first.value), cond, *((int*)second.value));
+    Data out;
+    out.type = bool_type;
+    out.value = malloc(sizeof(int *));
+    switch (cond){
+        case and: /* if(first.type != bool_type || second.type != bool_type)
+                        yyerror("Incompatible types. Can't operate '(%s value) and (%s value)'", getTypeByEnum(first.type), getTypeByEnum(second.type)); */
+                //   printf("Estoy evaluando %d and %d", *((int*)first.value), *((int*)second.value) );
+                  *((int *) out.value) = (make_comparable(first) && make_comparable(second) ) ? 1:0;  
+                //   *((int *) out.value) = (*((int*)first.value) && *((int*)second.value) ) ? 1:0;
+                  return out;
+                  break;
+        case or:  /* if(first.type != bool_type || second.type != bool_type) */
+                        // yyerror("Incompatible types. Can't operate '(%s value) or (%s value)'", getTypeByEnum(first.type), getTypeByEnum(second.type));
+                  *((int *) out.value) = (make_comparable(first) || make_comparable(second) ) ? 1:0;  
+                //   *((int *) out.value) = (*((int*)first.value) || *((int*)second.value) ) ? 1:0;
+                  return out;
+                  break;
+        case gt:  /* printf("Estoy comparando %d > %d", make_comparable(first), make_comparable(second)); */
+                  *((int *) out.value) = (make_comparable(first) > make_comparable(second))?1:0;
+                  return out;
+                  break;
+        case gte: *((int *) out.value) = (make_comparable(first) >= make_comparable(second))?1:0;
+                  return out;
+                  break;
+        case lt:  *((int *) out.value) = (make_comparable(first) < make_comparable(second))?1:0;
+                  return out;
+                  break;
+        case lte: *((int *) out.value) = (make_comparable(first) <= make_comparable(second))?1:0;
+                  return out;
+                  break;
+        case eq:  *((int *) out.value) = (make_comparable(first) == make_comparable(second))?1:0;
+                  return out;
+                  break;
+        case neq: *((int *) out.value) = (make_comparable(first) != make_comparable(second))?1:0;
+                  return out;
+                  break;
+        default:  free(out.value);
+                  yyerror("Invalid binary logic operator.[Allowed: and or <= < > >= == != ]");
+                  break;
+    }
+}
+
+Data negate_condition(Data condition){
+    Data out;
+    out.type = bool_type;
+    out.value = malloc(sizeof(int *));
+    if(condition.type != bool_type){
+        *((int *) out.value) = make_comparable(condition);
+        return out;
+    }
+        // yyerror("Invalid parameter for condition. Cannot negate %s value", getTypeByEnum(condition.type));
+    *((int *) out.value) = *((int*)condition.value) > 0 ? 0 : 1;
+    return out;
+}    
+
+/* Data condition_expression(Data expression){
+    Data out;
+    out.type = bool_type;
+    out.value = malloc(sizeof(int *));
+    *((int *) out.value) = (expression.value != NULL);
+    return out;
+} */
+
+int make_comparable(Data data){
+    if(data.value == NULL) return 0;
+    switch (data.type){
+        case bool_type:
+        case num_type:      
+                return *((int*)data.value);
+                break;
+        case chord_type: 
+                return avg_freq((Chord *)data.value);
+                break;
+        case set_type:
+                return total_time((Set *) data.value);
+                break;
+        default:
+            yyerror("Invalid comparable type");
+            break;
+    }
+}
+
+Data data_boolean(Data data){
+    Data out;
+    out.type = bool_type;
+    out.value = malloc(sizeof(int *));
+    switch (data.type){
+        case bool_type:
+        case num_type:      
+                *((int *) out.value) = *((int*)data.value);
+                break;
+        case chord_type: 
+                *((int *) out.value) = avg_freq((Chord *)data.value);
+                break;
+        case set_type:
+                *((int *) out.value) = total_time((Set *) data.value);
+                break;
+        default:
+            yyerror("Invalid comparable type");
+            break;
+    }
+    return out;
+}
+
+/* RECURSO DE PRUEBA */
+float getFreq(notes_enum note){
+    float notes[] = { /*C*/ 65.41 * pow(2,3), 69.30* pow(2,3), 73.42* pow(2,3), 77.78* pow(2,3), 82.41* pow(2,3), 87.31* pow(2,3), 92.50* pow(2,3), 98.00* pow(2,3), 103.83* pow(2,3), 110.00* pow(2,3), 116.54* pow(2,3), 123.47* pow(2,3) /*B*/, 0};
+    return notes[note];
+}
+
+static int avg_freq(Chord * chord){
+    float sum_freq = 0;
+    int quant = 0;
+    struct NoteNode * node = chord->notes;
+    while (node != NULL){
+        sum_freq += getFreq(node->note);
+        quant++;
+        node = node->next;
+    }
+    return sum_freq/quant;
+}
+
+static int total_time(Set * set){
+    int i,time = 0;
+    for (i=0; i < set->quant; i++){
+        time += set->blocks[i].time;
+    }
+    return time;
+}
 
 /* 
 struct NoteNode{
