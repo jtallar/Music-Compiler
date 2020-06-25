@@ -14,10 +14,7 @@ Chord * atochord(const char *nptr) {
             break;
         }
     }
-    if (stdChord == CHORD_COUNT) {
-        // ERROR --> Que hacemos?
-        return NULL;
-    }
+    if (stdChord == CHORD_COUNT) yyerror("Invalid chord constant");
     
     Chord * chord = malloc(sizeof(*chord));
     if (chord == NULL) yyerror("Not enough heap memory");
@@ -88,7 +85,7 @@ void init_list(){
     list = (List *) malloc(sizeof(struct list));
     list->header = NULL;
     list->tail = NULL;
-    printf("Preparing our band...\n");
+    // printf("Preparing our band...\n");
     // printf("Preparing our band...\nList: %d\t\tHeader: %d\tTail: %d\n", list, list->header, list->tail);
 }
 
@@ -280,7 +277,7 @@ Data addOperation(Data first, Data second){
         int result =  *((int *)(first.value)) + *((int *)(second.value));
         out.value = malloc(sizeof(int *));
         *((int *) out.value) = result;
-        printf("Result is %d", result);
+        // printf("Result is %d", result);
         
         return out;
     }
@@ -298,7 +295,7 @@ Data addOperation(Data first, Data second){
         }
         out.type = chord_type;
         out.value = chord_one;
-        print_chord_data(out);
+        // print_chord_data(out);
 
         return out;
     }
@@ -312,7 +309,7 @@ Data minusOperation(Data first, Data second){
         int result =  *((int *) first.value) - *((int *) second.value);
         out.value = malloc(sizeof(int *));
         *((int *) out.value) = result;
-        printf("Result is %d", result);
+        // printf("Result is %d", result);
 
         return out;
     }
@@ -328,7 +325,7 @@ Data minusOperation(Data first, Data second){
         }
         out.type = chord_type;
         out.value = chord_one;
-        print_chord_data(out);
+        // print_chord_data(out);
 
         return out;
     }
@@ -342,7 +339,7 @@ Data barOperation(Data first, Data second){
         int result =  *((int *) first.value) / *((int *) second.value);
         out.value = malloc(sizeof(int *));
         *((int *) out.value) = result;
-        printf("Result is %d", result);
+        // printf("Result is %d", result);
 
         return out;
     }
@@ -359,7 +356,7 @@ Data barOperation(Data first, Data second){
         ((Set *)out.value)->quant = new_quant;
         ((Set *)out.value)->blocks = set_one.blocks;
         
-        print_set(out);
+        // print_set(out);
 
         return out;
     }
@@ -373,7 +370,7 @@ Data starOperation(Data first, Data second){
         int result =  *((int *) first.value) * *((int *) second.value);
         out.value = malloc(sizeof(int *));
         *((int *) out.value) = result;
-        printf("Result is %d", result);
+        // printf("Result is %d", result);
 
         return out;
     }
@@ -400,7 +397,7 @@ Data starOperation(Data first, Data second){
         ((Set *)out.value)->quant = new_quant;
         ((Set *)out.value)->blocks = block_new;
         
-        print_set(out);
+        // print_set(out);
 
         return out;
     }
