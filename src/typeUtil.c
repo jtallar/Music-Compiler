@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "typeUtil.h"
+#include "outPrinter.h"
 
 Chord * atochord(const char *nptr) {
     int stdChord;
@@ -95,20 +96,6 @@ void createVar(types type, char * name){
     struct Node * node = (struct Node *) malloc(sizeof(struct Node));
     if(node == NULL) yyerror("Not enough heap memory");
 
-    if(list->header == NULL){
-        node->var = (struct var *) malloc(sizeof(struct var));
-        if(node->var == NULL) yyerror("Not enough heap memory");
-        node->var->data.type = type;
-        node->var->data.value = NULL;
-        node->var->name = (char *) malloc(sizeof(name));
-        if(node->var->name == NULL) yyerror("Not enough heap memory");
-        strcpy(node->var->name, name);
-        list->header = node;
-        list->tail = node;
-        // printf("\tDone!\n\n");
-        return;
-    }
-
     node->var = (struct var *) malloc(sizeof(struct var));
     if(node->var == NULL) yyerror("Not enough heap memory");
     node->var->data.type = type;
@@ -118,9 +105,15 @@ void createVar(types type, char * name){
     node->var->name = (char *) malloc(sizeof(name));
     if(node->var->name == NULL) yyerror("Not enough heap memory");
     strcpy(node->var->name, name);
-    
-    list->tail->next = node;
-    list->tail = node;  
+
+    if(list->header == NULL){
+        list->header = node;
+        list->tail = node;
+    } else {
+        list->tail->next = node;
+        list->tail = node; 
+    }
+    printCreateVar(type, name);
     
     // printf("\tDone!\n\n");
 
@@ -156,6 +149,7 @@ void newVar (char * name, Data data){
             yyerror("Undefined type of variable");
             break;
     }
+    printPutVar(name, data);
 }
 
 void putInt(char * name, int * value){

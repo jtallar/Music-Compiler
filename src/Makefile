@@ -10,7 +10,7 @@ lex:
 	lex scanner.l
 
 compiler: 
-	$(CC) $(CFLAGS) lex.yy.c y.tab.c typeUtil.c -o $@.out $(LIB)
+	$(CC) $(CFLAGS) lex.yy.c y.tab.c typeUtil.c outPrinter.c -o $@.out $(LIB)
 
 sound:
 	$(CC) $(CFLAGS) endianness.c wave.c sound.c prueba.c -o $@.out $(LIB)
