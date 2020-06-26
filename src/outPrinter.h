@@ -10,4 +10,8 @@ void printPutVar(char * name, Data data);
 
 char * printChordConstant(char * chordStr);
 
+char * printNewSet(char * chordPrint, char * timePrint);
+
+char * printAddParen(char * expPrint);
+
 #endif

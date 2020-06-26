@@ -108,6 +108,8 @@ void createVar(types type, char * name){
     if(node->var->name == NULL) yyerror("Not enough heap memory");
     strcpy(node->var->name, name);
 
+    node->var->data.print = node->var->name;
+
     if(list->header == NULL){
         list->header = node;
         list->tail = node;
@@ -204,13 +206,17 @@ Data getDataByName(char * name){
 
 Data getNoteData(char * noteStr ){
     Chord * chord = atonote(noteStr);
-    Data data = { chord_type, chord, noteStr };
+    char * print = printChordConstant(noteStr);
+    Data data = { chord_type, chord, print };
+    free(noteStr);
     return data;
 }
 
 Data getChordData(char * chordStr ){
     Chord * chord = atochord(chordStr);
-    Data data = { chord_type, chord, chordStr };
+    char * print = printChordConstant(chordStr);
+    Data data = { chord_type, chord, print };
+    free(chordStr);
     return data;
 }
 
@@ -433,7 +439,8 @@ char * getTypeByEnum(types type){
 Data newSetData(Data chord, Data time){
     // puts("new data set");
     Set * set = newSet(chord, time);
-    Data data = {set_type, set};
+    char * print = printNewSet(chord.print, time.print);
+    Data data = {set_type, set, print};
     return data;
 }
 
@@ -603,7 +610,10 @@ void playSet(Data set){
     playWav(WAV_FILE_NAME);
 }
 
-
+Data addParen(Data exp) {
+    exp.print = printAddParen(exp.print);
+    return exp;
+}
 
 /* 
 struct NoteNode{

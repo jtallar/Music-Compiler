@@ -142,7 +142,7 @@ term            : term STAR factor                      { $$ = starOperation($1,
 factor          : constant                                              { $$ = $1;}
                 | VAR                                                   { $$ = getDataByName($1);  }
                 | OPEN_BRACKET expression expression CLOSE_BRACKET      { $$ = newSetData($2, $3); /* print_set($$); */}
-                | OPEN_PAREN expression CLOSE_PAREN                     { $$ = $2; }
+                | OPEN_PAREN expression CLOSE_PAREN                     { $$ = addParen($2); }
                 ;
 
 constant        : CHORD                                 { $$ = getChordData($1); /*print_chord($1); */ }

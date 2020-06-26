@@ -81,10 +81,11 @@ static void printBlockAssign(char * name, Set * set) {
     }
 }
 
-#define NEW_CHORD_LEN   16
+#define NEW_CHORD_LEN       16
+#define BASE_NEW_SET_LEN    11
 
 char * printChordConstant(char * chordStr) {
-    char * ret = calloc(NEW_CHORD_LEN, *ret);
+    char * ret = calloc(NEW_CHORD_LEN, sizeof(*ret));
     if (ret == NULL) {
         abort(); /** TODO: Que hacemos aca?? */
     }
@@ -105,4 +106,22 @@ char * printChordConstant(char * chordStr) {
     }
     free(ret);
     abort(); /** TODO: Que hacemos aca?? */
+}
+
+char * printNewSet(char * chordPrint, char * timePrint) {
+    char * ret = calloc(BASE_NEW_SET_LEN + strlen(chordPrint) + strlen(timePrint), sizeof(*ret));
+    if (ret == NULL) {
+        abort(); /** TODO: Que hacemos aca?? */
+    }
+    sprintf(ret, "newSet(%s, %s)", chordPrint, timePrint);
+    return ret;
+}
+
+char * printAddParen(char * expPrint) {
+    char * ret = calloc(3 + strlen(expPrint), sizeof(*ret));
+    if (ret == NULL) {
+        abort(); /** TODO: Que hacemos aca?? */
+    }
+    sprintf(ret, "(%s)", expPrint);
+    return ret;
 }
