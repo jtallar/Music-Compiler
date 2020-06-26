@@ -28,7 +28,7 @@ static const char * noteName[NOTE_COUNT] = {"C", "Cs", "D", "Ds", "E", "F", "Fs"
 static const char * chordName[CHORD_COUNT] = {"aC", "aCm", "aD", "aDm", "aE", "aEm", "aF", "aFm", "aG", "aGm", "aA", "aAm", "aB", "aBm"};
 
 // float notes[] = { /*C*/ 65.41 * pow(2,3), 69.30* pow(2,3), 73.42* pow(2,3), 77.78* pow(2,3), 82.41* pow(2,3), 87.31* pow(2,3), 92.50* pow(2,3), 98.00* pow(2,3), 103.83* pow(2,3), 110.00* pow(2,3), 116.54* pow(2,3), 123.47* pow(2,3) /*B*/};
-static const float notes[] = { /*C*/ 65.41 * 8, 69.30* 8, 73.42* 8, 77.78* 8, 82.41* 8, 87.31* 8, 92.50* 8 , 98.00* 8, 103.83* 8, 110.00* 8, 116.54* 8, 123.47* 8 /*B*/};
+static const float notes[] = { /*C*/ 65.41 * 8, 69.30* 8, 73.42* 8, 77.78* 8, 82.41* 8, 87.31* 8, 92.50* 8 , 98.00* 8, 103.83* 8, 110.00* 8, 116.54* 8, 123.47* 8 /*B*/ , 0};
 
 
 static notes_enum chordsNotes[CHORD_COUNT][STD_CHORD_L] = { {C,E, G},
