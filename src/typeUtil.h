@@ -38,7 +38,7 @@ Data getIntData(char * numStr);
 
 Data newSetData(Data chord, Data time);
 
-Data addParen(Data exp);
+Data addParen(Data data);
 
 /**      Operations     **/
 Data addOperation(Data first, Data second);

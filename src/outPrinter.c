@@ -7,6 +7,7 @@
 static char * callocPrint(size_t size);
 static void printNoteAssign(char * name, Chord * chord);
 static void printBlockAssign(char * name, Set * set);
+static char * getCompareSymbol(conditions cond);
 
 void printCreateVar(types type, char * name) {
     switch (type)
@@ -95,6 +96,8 @@ static void printBlockAssign(char * name, Set * set) {
 #define BASE_SET_BAR_LEN    13
 #define BASE_CHORD_ADD_LEN  12
 #define BASE_CHORD_SUB_LEN  12
+#define BASE_CHORD_CMP_LEN  10
+#define BASE_SET_CMP_LEN    12
 
 
 char * printChordConstant(char * chordStr) {
@@ -214,3 +217,66 @@ char * printSubstractChords(char * print1, char * print2) {
     sprintf(ret, "chordSub(%s,%s)", print1, print2);
     return ret;
 }
+
+char * printMakeComparableChord(char * print) {
+    char * ret = calloc(BASE_CHORD_CMP_LEN + strlen(print), sizeof(*ret));
+    if (ret == NULL) {
+        abort(); /** TODO: Que hacemos aca?? */
+    }
+    sprintf(ret, "avgFreq(%s)", print);
+    return ret;
+}
+
+char * printMakeComparableSet(char * print) {
+    char * ret = calloc(BASE_SET_CMP_LEN + strlen(print), sizeof(*ret));
+    if (ret == NULL) {
+        abort(); /** TODO: Que hacemos aca?? */
+    }
+    sprintf(ret, "totalTime(%s)", print);
+    return ret;
+}
+
+char * printComparison(char * print1, conditions cond, char * print2) {
+    char * ret = calloc(2 + strlen(print1) + strlen(print2), sizeof(*ret));
+    if (ret == NULL) {
+        abort(); /** TODO: Que hacemos aca?? */
+    }
+    sprintf(ret, "%s%s%s", print1, getCompareSymbol(cond), print2);
+    return ret;
+}
+
+static char * getCompareSymbol(conditions cond) {
+    char * ret;
+    switch (cond)
+    {
+        case and:
+            ret = "&&";
+            break;
+        case or:
+            ret = "||";
+            break;
+        case gt:
+            ret = ">";
+            break;
+        case gte:
+            ret = ">=";
+            break;
+        case lt:
+            ret = "<";
+            break;
+        case lte:
+            ret = "<=";
+            break;
+        case eq:
+            ret = "==";
+            break;
+        case neq:
+            ret = "!=";
+            break;
+        default:
+            abort();
+    }
+    return ret;
+}
+
+/** TODO: Ver si puedo liberar cada print recibido a medida que lo uso  */

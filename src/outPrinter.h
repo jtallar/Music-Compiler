@@ -26,4 +26,9 @@ char * printAddChords(char * print1, char * print2);
 char * printSubstractNumbers(char * print1, char * print2);
 char * printSubstractChords(char * print1, char * print2);
 
+char * printMakeComparableChord(char * print);
+char * printMakeComparableSet(char * print);
+
+char * printComparison(char * print1, conditions cond, char * print2);
+
 #endif

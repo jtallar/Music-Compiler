@@ -480,39 +480,33 @@ Data condition_composed(Data first, conditions cond, Data second){
         case and: /* if(first.type != bool_type || second.type != bool_type)
                         yyerror("Incompatible types. Can't operate '(%s value) and (%s value)'", getTypeByEnum(first.type), getTypeByEnum(second.type)); */
                 //   printf("Estoy evaluando %d and %d", *((int*)first.value), *((int*)second.value) );
-                  *((int *) out.value) = (make_comparable(first) && make_comparable(second) ) ? 1:0;  
+                  *((int *) out.value) = (make_comparable(&first) && make_comparable(&second) ) ? 1:0;  
                 //   *((int *) out.value) = (*((int*)first.value) && *((int*)second.value) ) ? 1:0;
-                  return out;
                   break;
         case or:  /* if(first.type != bool_type || second.type != bool_type) */
                         // yyerror("Incompatible types. Can't operate '(%s value) or (%s value)'", getTypeByEnum(first.type), getTypeByEnum(second.type));
-                  *((int *) out.value) = (make_comparable(first) || make_comparable(second) ) ? 1:0;  
+                  *((int *) out.value) = (make_comparable(&first) || make_comparable(&second) ) ? 1:0;  
                 //   *((int *) out.value) = (*((int*)first.value) || *((int*)second.value) ) ? 1:0;
-                  return out;
                   break;
-        case gt:  /* printf("Estoy comparando %d > %d", make_comparable(first), make_comparable(second)); */
-                  *((int *) out.value) = (make_comparable(first) > make_comparable(second))?1:0;
-                  return out;
+        case gt:  /* printf("Estoy comparando %d > %d", make_comparable(&first), make_comparable(&second)); */
+                  *((int *) out.value) = (make_comparable(&first) > make_comparable(&second))?1:0;
                   break;
-        case gte: *((int *) out.value) = (make_comparable(first) >= make_comparable(second))?1:0;
-                  return out;
+        case gte: *((int *) out.value) = (make_comparable(&first) >= make_comparable(&second))?1:0;
                   break;
-        case lt:  *((int *) out.value) = (make_comparable(first) < make_comparable(second))?1:0;
-                  return out;
+        case lt:  *((int *) out.value) = (make_comparable(&first) < make_comparable(&second))?1:0;
                   break;
-        case lte: *((int *) out.value) = (make_comparable(first) <= make_comparable(second))?1:0;
-                  return out;
+        case lte: *((int *) out.value) = (make_comparable(&first) <= make_comparable(&second))?1:0;
                   break;
-        case eq:  *((int *) out.value) = (make_comparable(first) == make_comparable(second))?1:0;
-                  return out;
+        case eq:  *((int *) out.value) = (make_comparable(&first) == make_comparable(&second))?1:0;
                   break;
-        case neq: *((int *) out.value) = (make_comparable(first) != make_comparable(second))?1:0;
-                  return out;
+        case neq: *((int *) out.value) = (make_comparable(&first) != make_comparable(&second))?1:0;
                   break;
         default:  free(out.value);
                   yyerror("Invalid binary logic operator.[Allowed: and or <= < > >= == != ]");
                   break;
     }
+    out.print = printComparison(first.print, cond, second.print);
+    return out;
 }
 
 Data negate_condition(Data condition){
@@ -520,7 +514,7 @@ Data negate_condition(Data condition){
     out.type = bool_type;
     out.value = malloc(sizeof(int *));
     if(condition.type != bool_type){
-        *((int *) out.value) = make_comparable(condition);
+        *((int *) out.value) = make_comparable(&condition);
         return out;
     }
         // yyerror("Invalid parameter for condition. Cannot negate %s value", getTypeByEnum(condition.type));
@@ -536,18 +530,21 @@ Data negate_condition(Data condition){
     return out;
 } */
 
-int make_comparable(Data data){
-    if(data.value == NULL) return 0;
-    switch (data.type){
+int make_comparable(Data * data){
+    if(data->value == NULL) return 0;
+    switch (data->type){
         case bool_type:
-        case num_type:      
-                return *((int*)data.value);
+        case num_type:
+                // data->print = data->print;
+                return *((int*)data->value);
                 break;
         case chord_type: 
-                return avg_freq((Chord *)data.value);
+                data->print = printMakeComparableChord(data->print);
+                return avg_freq((Chord *)data->value);
                 break;
         case set_type:
-                return total_time((Set *) data.value);
+                data->print = printMakeComparableChord(data->print);
+                return total_time((Set *) data->value);
                 break;
         default:
             yyerror("Invalid comparable type");
@@ -614,9 +611,9 @@ void playSet(Data set){
     playWav(WAV_FILE_NAME);
 }
 
-Data addParen(Data exp) {
-    exp.print = printAddParen(exp.print);
-    return exp;
+Data addParen(Data data) {
+    data.print = printAddParen(data.print);
+    return data;
 }
 
 /* 

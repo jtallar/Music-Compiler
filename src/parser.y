@@ -78,12 +78,12 @@ if_sentence     : IF compare body NEW_LINE
                 | IF compare body ELSE body NEW_LINE
                 ;
 
-compare         : OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN         { $$ = condition_composed($2, $3, $4); /* print_boolean((int*)$$.value); */ }
-                | OPEN_PAREN mult_compare CLOSE_PAREN                               { $$ = $2;  /* print_boolean((int*)$$.value);   */        }
+compare         : OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN         { $$ = addParen(condition_composed($2, $3, $4)); /* print_boolean((int*)$$.value); */ }
+                | OPEN_PAREN mult_compare CLOSE_PAREN                               { $$ = addParen($2);  /* print_boolean((int*)$$.value);   */        }
                 /* | OPEN_PAREN expression CLOSE_PAREN                                 { $$ = condition_expression($2); print_boolean((int*)$$.value);       } */
                 ;
 
-single_compare  : OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN         { $$ = condition_composed($2, $3, $4);  }
+single_compare  : OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN         { $$ = addParen(condition_composed($2, $3, $4));  }
                 | NOT_OP OPEN_PAREN mult_compare CLOSE_PAREN                        { $$ = negate_condition($3);            }
                 | expression                                                        { $$ = data_boolean($1);        }
                 ;
