@@ -295,7 +295,7 @@ Data addOperation(Data first, Data second){
         out.value = malloc(sizeof(int *));
         *((int *) out.value) = result;
         // printf("Result is %d", result);
-        
+        out.print = printAddNumbers(first.print, second.print);
         return out;
     }
     if(first.type == chord_type && second.type == chord_type){
@@ -312,6 +312,7 @@ Data addOperation(Data first, Data second){
         }
         out.type = chord_type;
         out.value = chord_one;
+        out.print = printAddChords(first.print, second.print);
         // print_chord_data(out);
 
         return out;
@@ -327,7 +328,7 @@ Data minusOperation(Data first, Data second){
         out.value = malloc(sizeof(int *));
         *((int *) out.value) = result;
         // printf("Result is %d", result);
-
+        out.print = printSubstractNumbers(first.print, second.print);
         return out;
     }
     if(first.type == chord_type && second.type == chord_type){
@@ -342,6 +343,7 @@ Data minusOperation(Data first, Data second){
         }
         out.type = chord_type;
         out.value = chord_one;
+        out.print = printSubstractChords(first.print, second.print);
         // print_chord_data(out);
 
         return out;
@@ -357,7 +359,7 @@ Data barOperation(Data first, Data second){
         out.value = malloc(sizeof(int *));
         *((int *) out.value) = result;
         // printf("Result is %d", result);
-
+        out.print = printBarNumbers(first.print, second.print);
         return out;
     }
     if(first.type == set_type && second.type == set_type){
@@ -373,6 +375,7 @@ Data barOperation(Data first, Data second){
         ((Set *)out.value)->quant = new_quant;
         ((Set *)out.value)->blocks = set_one.blocks;
         
+        out.print = printBarSet(first.print, second.print);
         // print_set(out);
 
         return out;
@@ -388,7 +391,7 @@ Data starOperation(Data first, Data second){
         out.value = malloc(sizeof(int *));
         *((int *) out.value) = result;
         // printf("Result is %d", result);
-
+        out.print = printStarNumbers(first.print, second.print);
         return out;
     }
     if(first.type == set_type && second.type == num_type){
@@ -414,6 +417,7 @@ Data starOperation(Data first, Data second){
         ((Set *)out.value)->quant = new_quant;
         ((Set *)out.value)->blocks = block_new;
         
+        out.print = printStarSet(first.print, second.print);
         // print_set(out);
 
         return out;
@@ -604,7 +608,7 @@ void playSet(Data set){
     if( set.type != set_type ){
         yyerror("\033[1;31mError\033[0m: Can't play %s type",getTypeByEnum(set.type));
     }
-    print_set(set);
+    // print_set(set);
     Set * realSet = (Set *)set.value;
     generateWav(*realSet);
     playWav(WAV_FILE_NAME);
