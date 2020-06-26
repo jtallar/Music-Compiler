@@ -579,7 +579,7 @@ static int avg_freq(Chord * chord){
         quant++;
         node = node->next;
     }
-    return sum_freq/quant;
+    return (quant == 0) ? 0 : (sum_freq/quant);
 }
 
 static int total_time(Set * set){
