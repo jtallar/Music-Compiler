@@ -7,4 +7,7 @@ void printCreateVar(types type, char * name);
 
 void printPutVar(char * name, Data data);
 
+
+char * printChordConstant(char * chordStr);
+
 #endif
