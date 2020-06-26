@@ -3,18 +3,18 @@
 
 #include "translator.h"
 
-Chord * newChord(char * constant);
-Set * newSet(Chord * chord, int time);
+Chord * outNewChord(char * constant);
+Set * outNewSet(Chord * chord, int time);
 
-Chord * chordSum(Chord * c1, Chord * c2);
-Chord * chordSub(Chord * c1, Chord * c2);
+Chord * outChordSum(Chord * c1, Chord * c2);
+Chord * outChordSub(Chord * c1, Chord * c2);
 
-Set * setRepeat(Set * set, int times);
-Set * setConcat(Set * s1, Set * s2);
+Set * outSetRepeat(Set * set, int times);
+Set * outSetConcat(Set * s1, Set * s2);
 
-int totalTime(Set * set);
-int avgFreq(Chord * chord);
+int outTotalTime(Set * set);
+int outAvgFreq(Chord * chord);
 
-void playSet(Set * set);
+void outPlaySet(Set * set);
 
 #endif
