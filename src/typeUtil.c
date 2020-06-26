@@ -292,7 +292,7 @@ Data addOperation(Data first, Data second){
     if(first.type == num_type && second.type == num_type){
         out.type = num_type;
         int result =  *((int *)(first.value)) + *((int *)(second.value));
-        out.value = malloc(sizeof(int *));
+        out.value = malloc(sizeof(int));
         *((int *) out.value) = result;
         // printf("Result is %d", result);
         out.print = printAddNumbers(first.print, second.print);
@@ -325,7 +325,7 @@ Data minusOperation(Data first, Data second){
     if(first.type == num_type && second.type == num_type){
         out.type = num_type;
         int result =  *((int *) first.value) - *((int *) second.value);
-        out.value = malloc(sizeof(int *));
+        out.value = malloc(sizeof(int));
         *((int *) out.value) = result;
         // printf("Result is %d", result);
         out.print = printSubstractNumbers(first.print, second.print);
@@ -356,7 +356,7 @@ Data barOperation(Data first, Data second){
     if(first.type == num_type && second.type == num_type){
         out.type = num_type;
         int result =  *((int *) first.value) / *((int *) second.value);
-        out.value = malloc(sizeof(int *));
+        out.value = malloc(sizeof(int));
         *((int *) out.value) = result;
         // printf("Result is %d", result);
         out.print = printBarNumbers(first.print, second.print);
@@ -367,14 +367,23 @@ Data barOperation(Data first, Data second){
         Set set_two = *((Set *) second.value);
         int new_quant = set_one.quant + set_two.quant;
 
-        for(int i = set_one.quant, j = 0; i < new_quant; i++, j++)
-            set_one.blocks[i] = set_two.blocks[j];
+        // for(int i = set_one.quant, j = 0; i < new_quant; i++, j++)
+        //     set_one.blocks[i] = set_two.blocks[j];
 
         out.type = set_type;
         out.value = malloc(sizeof(struct set));
         ((Set *)out.value)->quant = new_quant;
-        ((Set *)out.value)->blocks = set_one.blocks;
-        
+        // ((Set *)out.value)->blocks = set_one.blocks;
+        Block * outBlocks = calloc(new_quant, sizeof(struct block));
+        if(outBlocks == NULL) yyerror("Not enough heap memory");
+
+        int i = 0, j = 0;
+        for (i = 0; i < set_one.quant; i++)     // TODO: Ver si no conviene malloquear de nuevo
+            outBlocks[i] = set_one.blocks[i];
+        for (j = 0; j < set_two.quant; j++, i++)
+            outBlocks[i] = set_two.blocks[j];
+
+        ((Set *)out.value)->blocks = outBlocks;
         out.print = printBarSet(first.print, second.print);
         // print_set(out);
 
@@ -388,7 +397,7 @@ Data starOperation(Data first, Data second){
     if(first.type == num_type && second.type == num_type){
         out.type = num_type;
         int result =  *((int *) first.value) * *((int *) second.value);
-        out.value = malloc(sizeof(int *));
+        out.value = malloc(sizeof(int));
         *((int *) out.value) = result;
         // printf("Result is %d", result);
         out.print = printStarNumbers(first.print, second.print);
@@ -453,7 +462,7 @@ Set * newSet(Data chord, Data time){
         yyerror("You are creating a new set with incorrect variable types");
     Set * set = (Set *) malloc(sizeof(struct set));
     Block * block = (Block *) malloc(sizeof(struct block));
-    block->chords = ((Chord *)chord.value);
+    block->chords = ((Chord *)chord.value); // TODO: Ver si no conviene hacer malloc y memcpy
     block->time = *((int*)time.value);
     set->blocks = block;
     set->quant = 1;
@@ -475,7 +484,7 @@ Data condition_composed(Data first, conditions cond, Data second){
     // printf("\nRecibo %d %d %d\n", *((int*)first.value), cond, *((int*)second.value));
     Data out;
     out.type = bool_type;
-    out.value = malloc(sizeof(int *));
+    out.value = malloc(sizeof(int));
     switch (cond){
         case and: /* if(first.type != bool_type || second.type != bool_type)
                         yyerror("Incompatible types. Can't operate '(%s value) and (%s value)'", getTypeByEnum(first.type), getTypeByEnum(second.type)); */
@@ -512,7 +521,7 @@ Data condition_composed(Data first, conditions cond, Data second){
 Data negate_condition(Data condition){
     Data out;
     out.type = bool_type;
-    out.value = malloc(sizeof(int *));
+    out.value = malloc(sizeof(int));
     if(condition.type != bool_type){
         *((int *) out.value) = make_comparable(&condition);
         return out;
@@ -525,7 +534,7 @@ Data negate_condition(Data condition){
 /* Data condition_expression(Data expression){
     Data out;
     out.type = bool_type;
-    out.value = malloc(sizeof(int *));
+    out.value = malloc(sizeof(int));
     *((int *) out.value) = (expression.value != NULL);
     return out;
 } */
@@ -555,7 +564,7 @@ int make_comparable(Data * data){
 Data data_boolean(Data data){
     Data out;
     out.type = bool_type;
-    out.value = malloc(sizeof(int *));
+    out.value = malloc(sizeof(int));
     switch (data.type){
         case bool_type:
         case num_type:      

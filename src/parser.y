@@ -79,7 +79,7 @@ if_sentence     : IF compare body NEW_LINE
                 ;
 
 compare         : OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN         { $$ = addParen(condition_composed($2, $3, $4)); /* print_boolean((int*)$$.value); */ }
-                | OPEN_PAREN mult_compare CLOSE_PAREN                               { $$ = addParen($2);  /* print_boolean((int*)$$.value);   */        }
+                | OPEN_PAREN single_compare CLOSE_PAREN                               { $$ = addParen($2);  /* print_boolean((int*)$$.value);   */        }
                 /* | OPEN_PAREN expression CLOSE_PAREN                                 { $$ = condition_expression($2); print_boolean((int*)$$.value);       } */
                 ;
 
