@@ -65,7 +65,7 @@ program         :  program declare
                 |  /* empty */
                 ;
 
-play            : PLAY OPEN_PAREN expression CLOSE_PAREN NEW_LINE
+play            : PLAY OPEN_PAREN expression CLOSE_PAREN NEW_LINE       { playSet($3);   }
                 ;
 
 do_sentence     : DO body WHILE compare NEW_LINE
@@ -157,7 +157,7 @@ void yyerror(const char * format, ...){
     va_start(argptr, format);
     vfprintf(stderr, format, argptr);
     va_end(argptr);
-    fprintf(stderr," -> Error in line %d\n\n", yylineno);
+    fprintf(stderr," -> \033[1;31mError\033[0m in line %d\n\n", yylineno);
     exit(EXIT_FAILURE);
 }
 
@@ -167,7 +167,7 @@ int yywrap(){
 
 int main() {
     init_list();
-    // printf("Ready! Make your music!\n\n");
+    // printf("\033[1;32mReady! Make your music!\033[0m\n\n");
     return yyparse();
 } 
 
