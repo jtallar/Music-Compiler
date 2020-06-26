@@ -8,17 +8,6 @@ static char * callocPrint(size_t size);
 static void printNoteAssign(char * name, Chord * chord);
 static void printBlockAssign(char * name, Set * set);
 
-static void print_chord(struct chord * chord) {
-    if (chord == NULL || chord->notes == NULL) 
-        yyerror("NULL pointer exception on chord or note");
-    puts("\nChord: ");
-    struct NoteNode * node = chord->notes;
-    for (int i = 0; i < chord->quant; i++){
-        printf("\tNota %d: %d\n", i, node->note);
-        node = node->next;
-    }
-}
-
 void printCreateVar(types type, char * name) {
     switch (type)
     {
@@ -36,6 +25,10 @@ void printCreateVar(types type, char * name) {
         abort();
         break;
     }   
+}
+
+static char * callocPrint(size_t size) {
+    return "calloc(1, size);\n";
 }
 
 void printPutVar(char * name, Data data) {
@@ -65,10 +58,6 @@ void printPutVar(char * name, Data data) {
     }   
 }
 
-static char * callocPrint(size_t size) {
-    return "calloc(1, size);\n";
-}
-
 static void printNoteAssign(char * name, Chord * chord) {
     printf("%s = malloc(sizeof(*%s) * %d);\n", name, name, chord->quant);
     struct NoteNode * node = chord->notes;
@@ -90,4 +79,30 @@ static void printBlockAssign(char * name, Set * set) {
         printNoteAssign(buf, set->blocks[i].chords);
         free(buf);
     }
+}
+
+#define NEW_CHORD_LEN   16
+
+char * printChordConstant(char * chordStr) {
+    char * ret = calloc(NEW_CHORD_LEN, *ret);
+    if (ret == NULL) {
+        abort(); /** TODO: Que hacemos aca?? */
+    }
+    int note;
+    for (note = C; note < NOTE_COUNT; note++) {
+        if (strcmp(chordStr, noteName[note]) == 0) {
+            snprintf(ret, NEW_CHORD_LEN, "newChord(\"%s\")", chordStr);
+            return ret;
+        }
+    }
+
+    int stdChord;
+    for (stdChord = aC; stdChord < CHORD_COUNT; stdChord++) {
+        if (strcmp(chordStr, chordName[stdChord]) == 0) {
+            snprintf(ret, NEW_CHORD_LEN, "newChord(\"%s\")", chordStr);
+            return ret;
+        }
+    }
+    free(ret);
+    abort(); /** TODO: Que hacemos aca?? */
 }

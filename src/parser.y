@@ -38,10 +38,10 @@ extern int yylineno;
 %token INT_NAME CHORD_NAME SET_NAME
 
 %token <strVal> VAR
-%token <number> NUMBER
+%token <strVal> NUMBER
 /* %token <set> SET */
-%token <chord> CHORD
-%token <chord> NOTE
+%token <strVal> CHORD
+%token <strVal> NOTE
 %token <strVal> STRING
 
 //%type <strVal> expression assign var_type term factor constant
@@ -62,6 +62,7 @@ program         :  program declare
                 |  program do_sentence
                 |  program while_sentence
                 |  program play
+                |  program NEW_LINE
                 |  /* empty */
                 ;
 
@@ -78,11 +79,12 @@ do_sentence     : DO body WHILE compare NEW_LINE
 while_sentence  : WHILE compare body NEW_LINE
                 ;
 
-if_sentence     : IF compare body else NEW_LINE
+if_sentence     : IF compare body NEW_LINE
+                | IF compare body ELSE body NEW_LINE
                 ;
 
-compare         : OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN         { $$ = condition_composed($2, $3, $4); print_boolean((int*)$$.value); }
-                | OPEN_PAREN mult_compare CLOSE_PAREN                               { $$ = $2; print_boolean((int*)$$.value);           }
+compare         : OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN         { $$ = condition_composed($2, $3, $4); /* print_boolean((int*)$$.value); */ }
+                | OPEN_PAREN mult_compare CLOSE_PAREN                               { $$ = $2;  /* print_boolean((int*)$$.value);   */        }
                 /* | OPEN_PAREN expression CLOSE_PAREN                                 { $$ = condition_expression($2); print_boolean((int*)$$.value);       } */
                 ;
 
@@ -150,7 +152,7 @@ factor          : constant                                              { $$ = $
 
 constant        : CHORD                                 { $$ = getChordData($1); /*print_chord($1); */ }
                 | NUMBER                                { $$ = getIntData($1);  /*  print_number($1); */ }
-                | NOTE                                  { $$ = getChordData($1); /*print_chord($1);  */}
+                | NOTE                                  { $$ = getNoteData($1); /*print_chord($1);  */}
                 ;
 
 %%
@@ -170,7 +172,7 @@ int yywrap(){
 
 int main() {
     init_list();
-    printf("\033[1;32mReady! Make your music!\033[0m\n\n");
+    // printf("\033[1;32mReady! Make your music!\033[0m\n\n");
     return yyparse();
 } 
 

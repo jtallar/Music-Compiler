@@ -52,6 +52,7 @@ int index = 0; */
 typedef struct data{
   types type;
   void * value;
+  char * print;
 }Data;
 
 typedef struct var{
