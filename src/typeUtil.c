@@ -108,6 +108,8 @@ void createVar(types type, char * name){
     if(node->var->name == NULL) yyerror("Not enough heap memory");
     strcpy(node->var->name, name);
 
+    node->var->data.print = node->var->name;
+
     if(list->header == NULL){
         list->header = node;
         list->tail = node;
@@ -204,13 +206,17 @@ Data getDataByName(char * name){
 
 Data getNoteData(char * noteStr ){
     Chord * chord = atonote(noteStr);
-    Data data = { chord_type, chord, noteStr };
+    char * print = printChordConstant(noteStr);
+    Data data = { chord_type, chord, print };
+    free(noteStr);
     return data;
 }
 
 Data getChordData(char * chordStr ){
     Chord * chord = atochord(chordStr);
-    Data data = { chord_type, chord, chordStr };
+    char * print = printChordConstant(chordStr);
+    Data data = { chord_type, chord, print };
+    free(chordStr);
     return data;
 }
 
@@ -289,7 +295,7 @@ Data addOperation(Data first, Data second){
         out.value = malloc(sizeof(int));
         *((int *) out.value) = result;
         // printf("Result is %d", result);
-        
+        out.print = printAddNumbers(first.print, second.print);
         return out;
     }
     if(first.type == chord_type && second.type == chord_type){
@@ -306,6 +312,7 @@ Data addOperation(Data first, Data second){
         }
         out.type = chord_type;
         out.value = chord_one;
+        out.print = printAddChords(first.print, second.print);
         // print_chord_data(out);
 
         return out;
@@ -321,7 +328,7 @@ Data minusOperation(Data first, Data second){
         out.value = malloc(sizeof(int));
         *((int *) out.value) = result;
         // printf("Result is %d", result);
-
+        out.print = printSubstractNumbers(first.print, second.print);
         return out;
     }
     if(first.type == chord_type && second.type == chord_type){
@@ -336,6 +343,7 @@ Data minusOperation(Data first, Data second){
         }
         out.type = chord_type;
         out.value = chord_one;
+        out.print = printSubstractChords(first.print, second.print);
         // print_chord_data(out);
 
         return out;
@@ -351,7 +359,7 @@ Data barOperation(Data first, Data second){
         out.value = malloc(sizeof(int));
         *((int *) out.value) = result;
         // printf("Result is %d", result);
-
+        out.print = printBarNumbers(first.print, second.print);
         return out;
     }
     if(first.type == set_type && second.type == set_type){
@@ -376,6 +384,7 @@ Data barOperation(Data first, Data second){
             outBlocks[i] = set_two.blocks[j];
 
         ((Set *)out.value)->blocks = outBlocks;
+        out.print = printBarSet(first.print, second.print);
         // print_set(out);
 
         return out;
@@ -391,7 +400,7 @@ Data starOperation(Data first, Data second){
         out.value = malloc(sizeof(int));
         *((int *) out.value) = result;
         // printf("Result is %d", result);
-
+        out.print = printStarNumbers(first.print, second.print);
         return out;
     }
     if(first.type == set_type && second.type == num_type){
@@ -417,6 +426,7 @@ Data starOperation(Data first, Data second){
         ((Set *)out.value)->quant = new_quant;
         ((Set *)out.value)->blocks = block_new;
         
+        out.print = printStarSet(first.print, second.print);
         // print_set(out);
 
         return out;
@@ -442,7 +452,8 @@ char * getTypeByEnum(types type){
 Data newSetData(Data chord, Data time){
     // puts("new data set");
     Set * set = newSet(chord, time);
-    Data data = {set_type, set};
+    char * print = printNewSet(chord.print, time.print);
+    Data data = {set_type, set, print};
     return data;
 }
 
@@ -478,39 +489,33 @@ Data condition_composed(Data first, conditions cond, Data second){
         case and: /* if(first.type != bool_type || second.type != bool_type)
                         yyerror("Incompatible types. Can't operate '(%s value) and (%s value)'", getTypeByEnum(first.type), getTypeByEnum(second.type)); */
                 //   printf("Estoy evaluando %d and %d", *((int*)first.value), *((int*)second.value) );
-                  *((int *) out.value) = (make_comparable(first) && make_comparable(second) ) ? 1:0;  
+                  *((int *) out.value) = (make_comparable(&first) && make_comparable(&second) ) ? 1:0;  
                 //   *((int *) out.value) = (*((int*)first.value) && *((int*)second.value) ) ? 1:0;
-                  return out;
                   break;
         case or:  /* if(first.type != bool_type || second.type != bool_type) */
                         // yyerror("Incompatible types. Can't operate '(%s value) or (%s value)'", getTypeByEnum(first.type), getTypeByEnum(second.type));
-                  *((int *) out.value) = (make_comparable(first) || make_comparable(second) ) ? 1:0;  
+                  *((int *) out.value) = (make_comparable(&first) || make_comparable(&second) ) ? 1:0;  
                 //   *((int *) out.value) = (*((int*)first.value) || *((int*)second.value) ) ? 1:0;
-                  return out;
                   break;
-        case gt:  /* printf("Estoy comparando %d > %d", make_comparable(first), make_comparable(second)); */
-                  *((int *) out.value) = (make_comparable(first) > make_comparable(second))?1:0;
-                  return out;
+        case gt:  /* printf("Estoy comparando %d > %d", make_comparable(&first), make_comparable(&second)); */
+                  *((int *) out.value) = (make_comparable(&first) > make_comparable(&second))?1:0;
                   break;
-        case gte: *((int *) out.value) = (make_comparable(first) >= make_comparable(second))?1:0;
-                  return out;
+        case gte: *((int *) out.value) = (make_comparable(&first) >= make_comparable(&second))?1:0;
                   break;
-        case lt:  *((int *) out.value) = (make_comparable(first) < make_comparable(second))?1:0;
-                  return out;
+        case lt:  *((int *) out.value) = (make_comparable(&first) < make_comparable(&second))?1:0;
                   break;
-        case lte: *((int *) out.value) = (make_comparable(first) <= make_comparable(second))?1:0;
-                  return out;
+        case lte: *((int *) out.value) = (make_comparable(&first) <= make_comparable(&second))?1:0;
                   break;
-        case eq:  *((int *) out.value) = (make_comparable(first) == make_comparable(second))?1:0;
-                  return out;
+        case eq:  *((int *) out.value) = (make_comparable(&first) == make_comparable(&second))?1:0;
                   break;
-        case neq: *((int *) out.value) = (make_comparable(first) != make_comparable(second))?1:0;
-                  return out;
+        case neq: *((int *) out.value) = (make_comparable(&first) != make_comparable(&second))?1:0;
                   break;
         default:  free(out.value);
                   yyerror("Invalid binary logic operator.[Allowed: and or <= < > >= == != ]");
                   break;
     }
+    out.print = printComparison(first.print, cond, second.print);
+    return out;
 }
 
 Data negate_condition(Data condition){
@@ -518,11 +523,12 @@ Data negate_condition(Data condition){
     out.type = bool_type;
     out.value = malloc(sizeof(int));
     if(condition.type != bool_type){
-        *((int *) out.value) = make_comparable(condition);
-        return out;
-    }
+        *((int *) out.value) = make_comparable(&condition);
+    } else {
         // yyerror("Invalid parameter for condition. Cannot negate %s value", getTypeByEnum(condition.type));
-    *((int *) out.value) = *((int*)condition.value) > 0 ? 0 : 1;
+        *((int *) out.value) = *((int*)condition.value) > 0 ? 0 : 1;
+    }
+    out.print = printNotComparison(condition.print);
     return out;
 }    
 
@@ -534,20 +540,27 @@ Data negate_condition(Data condition){
     return out;
 } */
 
-int make_comparable(Data data){
-    if(data.value == NULL) return 0;
-    switch (data.type){
+int make_comparable(Data * data){
+    if(data->value == NULL) return 0;
+    switch (data->type){
         case bool_type:
-        case num_type:      
-                return *((int*)data.value);
+        case num_type:
+                // data->print = data->print;
+                return *((int*)data->value);
                 break;
-        case chord_type: 
-                return avg_freq((Chord *)data.value);
+        case chord_type: {
+                char * aux = data->print;
+                data->print = printMakeComparableChord(data->print);
+                free(aux);
+                return avg_freq((Chord *)data->value);
                 break;
-        case set_type:
-                return total_time((Set *) data.value);
+        } case set_type: {
+                char * aux = data->print;
+                data->print = printMakeComparableChord(data->print);
+                free(aux);
+                return total_time((Set *) data->value);
                 break;
-        default:
+        } default:
             yyerror("Invalid comparable type");
             break;
     }
@@ -561,12 +574,17 @@ Data data_boolean(Data data){
         case bool_type:
         case num_type:      
                 *((int *) out.value) = *((int*)data.value);
+                out.print = calloc(strlen(data.print) + 1, sizeof(*out.print));
+                if (out.print == NULL) yyerror("Not enough heap memory");
+                strcpy(out.print, data.print);
                 break;
         case chord_type: 
                 *((int *) out.value) = avg_freq((Chord *)data.value);
+                out.print = printMakeComparableChord(data.print);
                 break;
         case set_type:
                 *((int *) out.value) = total_time((Set *) data.value);
+                out.print = printMakeComparableSet(data.print);
                 break;
         default:
             yyerror("Invalid comparable type");
@@ -606,13 +624,22 @@ void playSet(Data set){
     if( set.type != set_type ){
         yyerror("\033[1;31mError\033[0m: Can't play %s type",getTypeByEnum(set.type));
     }
-    print_set(set);
+    // print_set(set);
     Set * realSet = (Set *)set.value;
     generateWav(*realSet);
     playWav(WAV_FILE_NAME);
 }
 
+Data addParen(Data data) {
+    char * aux = data.print;
+    data.print = printAddParen(data.print);
+    free(aux);
+    return data;
+}
 
+void ifSentence(Data comp, char * ifBody, char * elseBody) {
+    printIfSentence(comp.print, ifBody, elseBody);
+}
 
 /* 
 struct NoteNode{

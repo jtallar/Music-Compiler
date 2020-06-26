@@ -38,6 +38,8 @@ Data getIntData(char * numStr);
 
 Data newSetData(Data chord, Data time);
 
+Data addParen(Data data);
+
 /**      Operations     **/
 Data addOperation(Data first, Data second);
 Data minusOperation(Data first, Data second);
@@ -67,5 +69,7 @@ Data data_boolean(Data data);
 
 void playSet(Data set);
 
+
+void ifSentence(Data comp, char * ifBody, char * elseBody);
 
 #endif
