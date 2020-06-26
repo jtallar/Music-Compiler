@@ -50,9 +50,9 @@ chord       a{note}m?
 "set"               return SET_NAME;
 
 
-{number} 			{ /* puts(yytext); */ yylval.number = malloc(sizeof(int)); *yylval.number = atoi(yytext); return NUMBER; }
-{note} 		        { /* puts(yytext); */ yylval.chord = atonote(yytext); return NOTE; }
-{chord} 			{ /* puts(yytext); */ yylval.chord = atochord(yytext); return CHORD; }
+{number} 			{ /* puts(yytext); */ yylval.strVal = malloc(yyleng+1); strcpy(yylval.strVal,yytext); return NUMBER; }
+{note} 		        { /* puts(yytext); */ yylval.strVal = malloc(yyleng+1); strcpy(yylval.strVal,yytext); return NOTE; }
+{chord} 			{ /* puts(yytext); */ yylval.strVal = malloc(yyleng+1); strcpy(yylval.strVal,yytext); return CHORD; }
 {variable} 			{ /* puts(yytext); */ yylval.strVal = malloc(yyleng+1); strcpy(yylval.strVal,yytext); return VAR; }
 {new_line} 			{ yylineno++; return NEW_LINE; }		
 .				    ;

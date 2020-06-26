@@ -8,17 +8,6 @@ static char * callocPrint(size_t size);
 static void printNoteAssign(char * name, Chord * chord);
 static void printBlockAssign(char * name, Set * set);
 
-static void print_chord(struct chord * chord) {
-    if (chord == NULL || chord->notes == NULL) 
-        yyerror("NULL pointer exception on chord or note");
-    puts("\nChord: ");
-    struct NoteNode * node = chord->notes;
-    for (int i = 0; i < chord->quant; i++){
-        printf("\tNota %d: %d\n", i, node->note);
-        node = node->next;
-    }
-}
-
 void printCreateVar(types type, char * name) {
     switch (type)
     {
@@ -36,6 +25,10 @@ void printCreateVar(types type, char * name) {
         abort();
         break;
     }   
+}
+
+static char * callocPrint(size_t size) {
+    return "calloc(1, size);\n";
 }
 
 void printPutVar(char * name, Data data) {
@@ -63,10 +56,6 @@ void printPutVar(char * name, Data data) {
         abort();
         break;
     }   
-}
-
-static char * callocPrint(size_t size) {
-    return "calloc(1, size);\n";
 }
 
 static void printNoteAssign(char * name, Chord * chord) {
