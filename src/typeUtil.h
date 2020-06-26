@@ -22,7 +22,7 @@ int containsNote(Chord * chord, notes_enum note);
 
 void init_list();
 
-void createVar(types type, char * name);
+char * createVar(types type, char * name);
 
 void putVar (size_t size, Var * variable, void * value);
 
@@ -39,6 +39,7 @@ Data getIntData(char * numStr);
 Data newSetData(Data chord, Data time);
 
 Data addParen(Data data);
+char * addBraces(char * programStr);
 
 /**      Operations     **/
 Data addOperation(Data first, Data second);
@@ -63,13 +64,21 @@ void putChord(char * name, Chord * value);
 
 void putSet(char * name, Set * value);
 
+char * newVar (char * name, Data data);
+
 Data data_boolean(Data data);
 
 /***********************/
 
-void playSet(Data set);
+char * playSet(Data set);
 
 
-void ifSentence(Data comp, char * ifBody, char * elseBody);
+char * ifSentence(Data comp, char * ifBody, char * elseBody);
+char * doWhileSentence(char * body, Data comp);
+char * whileSentence(char * body, Data comp);
+char * emptySentence();
+
+char * concatProgram(char * p1, char * p2);
+void generateFullProgram(char * program);
 
 #endif

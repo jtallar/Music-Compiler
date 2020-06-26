@@ -91,7 +91,7 @@ void init_list(){
     // printf("Preparing our band...\nList: %d\t\tHeader: %d\tTail: %d\n", list, list->header, list->tail);
 }
 
-void createVar(types type, char * name){
+char * createVar(types type, char * name){
     if(getVarByName(name) != NULL)
         yyerror("Variable named %s already exists.", name);
    // printf("Creating varible:  %s -> %s", getTypeByEnum(type), name);
@@ -104,7 +104,7 @@ void createVar(types type, char * name){
     node->var->data.value = NULL;
     node->next = NULL;
 
-    node->var->name = (char *) malloc(sizeof(name));
+    node->var->name = (char *) calloc(strlen(name) + 1, sizeof(char));
     if(node->var->name == NULL) yyerror("Not enough heap memory");
     strcpy(node->var->name, name);
 
@@ -117,7 +117,10 @@ void createVar(types type, char * name){
         list->tail->next = node;
         list->tail = node; 
     }
-    printCreateVar(type, name);
+    
+    char * ret = printCreateVar(type, name);
+    free(name);
+    return ret;
     
     // printf("\tDone!\n\n");
 
@@ -137,7 +140,7 @@ void putVar (size_t size, Var * variable, void * value){
     memcpy(variable->data.value, value, size);
 }
 
-void newVar (char * name, Data data){
+char * newVar (char * name, Data data){
     switch (data.type)
     {
         case num_type:
@@ -153,7 +156,7 @@ void newVar (char * name, Data data){
             yyerror("Undefined type of variable");
             break;
     }
-    printPutVar(name, data);
+    return printPutVar(name, data);
 }
 
 void putInt(char * name, int * value){
@@ -620,7 +623,7 @@ static int total_time(Set * set){
 }
 
 
-void playSet(Data set){
+char * playSet(Data set){
     if( set.type != set_type ){
         yyerror("\033[1;31mError\033[0m: Can't play %s type",getTypeByEnum(set.type));
     }
@@ -628,6 +631,7 @@ void playSet(Data set){
     Set * realSet = (Set *)set.value;
     generateWav(*realSet);
     playWav(WAV_FILE_NAME);
+    return printPlaySet(set.print);
 }
 
 Data addParen(Data data) {
@@ -637,8 +641,49 @@ Data addParen(Data data) {
     return data;
 }
 
-void ifSentence(Data comp, char * ifBody, char * elseBody) {
-    printIfSentence(comp.print, ifBody, elseBody);
+char * addBraces(char * programStr) {
+    char * ret = printAddBraces(programStr);
+    free(programStr);
+    return ret;
+}
+
+char * ifSentence(Data comp, char * ifBody, char * elseBody) {
+    char * ret = printIfSentence(comp.print, ifBody, elseBody);
+    free(ifBody);
+    if (elseBody != NULL) free(elseBody);
+    return ret;
+}
+
+char * doWhileSentence(char * body, Data comp) {
+    char * ret = printDoWhileSentence(body, comp.print);
+    free(body);
+    // TODO: liberar comp
+    return ret;
+}
+
+char * whileSentence(char * body, Data comp) {
+    char * ret = printWhileSentence(body, comp.print);
+    free(body);
+    // TODO: liberar comp
+    return ret;
+}
+
+char * emptySentence() {
+    char * ret = calloc(1, sizeof(*ret));
+    if (ret == NULL) yyerror("Not enough heap memory");
+    return ret;
+}
+
+char * concatProgram(char * p1, char * p2) {
+    char * ret = printConcatProgram(p1, p2);
+    free(p1);
+    free(p2);  // TODO: Ver por que estos frees me rompen
+    return ret;
+}
+
+void generateFullProgram(char * program) {
+    printFullProgram(program);
+    free(program);
 }
 
 /* 

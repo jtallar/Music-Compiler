@@ -46,36 +46,36 @@ extern int yylineno;
 //%type <strVal> expression assign var_type term factor constant
 
 %type <int_type> var_type any_op add_op_logic op_compare
-%type <strVal> assign
+%type <strVal> assign declare if_sentence do_sentence while_sentence play body program
 %type <dataVal> constant factor term expression /**/ compare single_compare mult_compare
 
 %start start
 
 %%
 
-start           :  START NEW_LINE program
+start           :  START NEW_LINE program                                           { printFullProgram($3); }
 
-program         :  program declare 
-                |  program assign
-                |  program if_sentence
-                |  program do_sentence
-                |  program while_sentence
-                |  program play
-                |  program NEW_LINE
-                |  /* empty */
+program         :  program declare                                                  { $$ = concatProgram($1, $2); }   
+                |  program assign                                                   { $$ = concatProgram($1, $2); }
+                |  program if_sentence                                              { $$ = concatProgram($1, $2); }
+                |  program do_sentence                                              { $$ = concatProgram($1, $2); }
+                |  program while_sentence                                           { $$ = concatProgram($1, $2); }
+                |  program play                                                     { $$ = concatProgram($1, $2); }
+                |  program NEW_LINE                                                 { $$ = $1; }
+                |  /* empty */                                                      { $$ = emptySentence(); }
                 ;
 
-play            : PLAY OPEN_PAREN expression CLOSE_PAREN NEW_LINE       { playSet($3);   }
+play            : PLAY OPEN_PAREN expression CLOSE_PAREN NEW_LINE                   { $$ = playSet($3);   }
                 ;
 
-do_sentence     : DO body WHILE compare NEW_LINE
+do_sentence     : DO body WHILE compare NEW_LINE                                    { $$ = doWhileSentence($2, $4); }
                 ;
 
-while_sentence  : WHILE compare body NEW_LINE
+while_sentence  : WHILE compare body NEW_LINE                                       { $$ = whileSentence($3, $2); }
                 ;
 
-if_sentence     : IF compare body NEW_LINE                                          { ifSentence($2, NULL, NULL); /* TODO: change first NULL to $3 */}
-                | IF compare body ELSE body NEW_LINE                                { ifSentence($2, NULL, NULL); /* TODO: change first NULL to $3, second to $5 */}
+if_sentence     : IF compare body NEW_LINE                                          { $$ = ifSentence($2, $3, NULL); }
+                | IF compare body ELSE body NEW_LINE                                { $$ = ifSentence($2, $3, $5); }
                 ;
 
 compare         : OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN         { $$ = addParen(condition_composed($2, $3, $4)); /* print_boolean((int*)$$.value); */ }
@@ -97,7 +97,7 @@ any_op          : add_op_logic                         { $$ = $1; }
                 | op_compare                           { $$ = $1; }
                 ;
                 
-body            : OPEN_BRACES program CLOSE_BRACES
+body            : OPEN_BRACES program CLOSE_BRACES     { $$ = addBraces($2); }
                 ;
 
 else            : ELSE body 
@@ -117,11 +117,11 @@ op_compare      : GT_OP                                { $$ = gt;  }
                 | NOT_EQUAL_OP                         { $$ = neq; }
                 ;
 
-declare         : var_type VAR NEW_LINE                 { createVar($1,$2); }      // se me lleva NEW_LINE     
-            /*  | var_type assign                       { createVar($1,$2); } */
+declare         : var_type VAR NEW_LINE                 { $$ = createVar($1,$2); }      // se me lleva NEW_LINE     
+            /*  | var_type assign                       { $$ = createVar($1,$2); } */
                 ;
 
-assign          : VAR ASSIGN expression NEW_LINE        { newVar($1,$3); }
+assign          : VAR ASSIGN expression NEW_LINE        { $$ = newVar($1,$3); }
                 ;
 
 var_type        : INT_NAME                              { $$ = num_type;   }                              
