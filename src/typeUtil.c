@@ -200,13 +200,22 @@ Data getDataByName(char * name){
     return var->data;
 }
 
-Data getChordData(Chord * chord ){
-    Data data = { chord_type, chord };
+Data getNoteData(char * noteStr ){
+    Chord * chord = atonote(noteStr);
+    Data data = { chord_type, chord, noteStr };
     return data;
 }
 
-Data getIntData(int * num){
-    Data data = { num_type, num };
+Data getChordData(char * chordStr ){
+    Chord * chord = atochord(chordStr);
+    Data data = { chord_type, chord, chordStr };
+    return data;
+}
+
+Data getIntData(char * numStr){
+    int * num = malloc(sizeof(*num));
+    *num = atoi(numStr);
+    Data data = { num_type, num, numStr };
     return data;
 }
 

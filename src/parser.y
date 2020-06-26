@@ -38,10 +38,10 @@ extern int yylineno;
 %token INT_NAME CHORD_NAME SET_NAME
 
 %token <strVal> VAR
-%token <number> NUMBER
+%token <strVal> NUMBER
 /* %token <set> SET */
-%token <chord> CHORD
-%token <chord> NOTE
+%token <strVal> CHORD
+%token <strVal> NOTE
 
 //%type <strVal> expression assign var_type term factor constant
 
@@ -147,7 +147,7 @@ factor          : constant                                              { $$ = $
 
 constant        : CHORD                                 { $$ = getChordData($1); /*print_chord($1); */ }
                 | NUMBER                                { $$ = getIntData($1);  /*  print_number($1); */ }
-                | NOTE                                  { $$ = getChordData($1); /*print_chord($1);  */}
+                | NOTE                                  { $$ = getNoteData($1); /*print_chord($1);  */}
                 ;
 
 %%

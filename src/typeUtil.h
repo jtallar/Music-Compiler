@@ -30,9 +30,11 @@ Var * getVarByName(char * name);
 
 Data getDataByName(char * name);
 
-Data getChordData(Chord * chord );
+Data getNoteData(char * noteStr );
 
-Data getIntData(int * num);
+Data getChordData(char * chordStr );
+
+Data getIntData(char * numStr);
 
 Data newSetData(Data chord, Data time);
 
