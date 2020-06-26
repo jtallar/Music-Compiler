@@ -524,10 +524,11 @@ Data negate_condition(Data condition){
     out.value = malloc(sizeof(int));
     if(condition.type != bool_type){
         *((int *) out.value) = make_comparable(&condition);
-        return out;
-    }
+    } else {
         // yyerror("Invalid parameter for condition. Cannot negate %s value", getTypeByEnum(condition.type));
-    *((int *) out.value) = *((int*)condition.value) > 0 ? 0 : 1;
+        *((int *) out.value) = *((int*)condition.value) > 0 ? 0 : 1;
+    }
+    out.print = printNotComparison(condition.print);
     return out;
 }    
 
@@ -547,15 +548,19 @@ int make_comparable(Data * data){
                 // data->print = data->print;
                 return *((int*)data->value);
                 break;
-        case chord_type: 
+        case chord_type: {
+                char * aux = data->print;
                 data->print = printMakeComparableChord(data->print);
+                free(aux);
                 return avg_freq((Chord *)data->value);
                 break;
-        case set_type:
+        } case set_type: {
+                char * aux = data->print;
                 data->print = printMakeComparableChord(data->print);
+                free(aux);
                 return total_time((Set *) data->value);
                 break;
-        default:
+        } default:
             yyerror("Invalid comparable type");
             break;
     }
@@ -569,12 +574,17 @@ Data data_boolean(Data data){
         case bool_type:
         case num_type:      
                 *((int *) out.value) = *((int*)data.value);
+                out.print = calloc(strlen(data.print) + 1, sizeof(*out.print));
+                if (out.print == NULL) yyerror("Not enough heap memory");
+                strcpy(out.print, data.print);
                 break;
         case chord_type: 
                 *((int *) out.value) = avg_freq((Chord *)data.value);
+                out.print = printMakeComparableChord(data.print);
                 break;
         case set_type:
                 *((int *) out.value) = total_time((Set *) data.value);
+                out.print = printMakeComparableSet(data.print);
                 break;
         default:
             yyerror("Invalid comparable type");
@@ -621,8 +631,14 @@ void playSet(Data set){
 }
 
 Data addParen(Data data) {
+    char * aux = data.print;
     data.print = printAddParen(data.print);
+    free(aux);
     return data;
+}
+
+void ifSentence(Data comp, char * ifBody, char * elseBody) {
+    printIfSentence(comp.print, ifBody, elseBody);
 }
 
 /* 

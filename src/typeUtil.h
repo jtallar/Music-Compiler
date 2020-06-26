@@ -70,4 +70,6 @@ Data data_boolean(Data data);
 void playSet(Data set);
 
 
+void ifSentence(Data comp, char * ifBody, char * elseBody);
+
 #endif

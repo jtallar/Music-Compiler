@@ -30,5 +30,9 @@ char * printMakeComparableChord(char * print);
 char * printMakeComparableSet(char * print);
 
 char * printComparison(char * print1, conditions cond, char * print2);
+char * printNotComparison(char * print);
+
+
+void printIfSentence(char * cond, char * ifBody, char * elseBody);
 
 #endif

@@ -74,12 +74,12 @@ do_sentence     : DO body WHILE compare NEW_LINE
 while_sentence  : WHILE compare body NEW_LINE
                 ;
 
-if_sentence     : IF compare body NEW_LINE
-                | IF compare body ELSE body NEW_LINE
+if_sentence     : IF compare body NEW_LINE                                          { ifSentence($2, NULL, NULL); /* TODO: change first NULL to $3 */}
+                | IF compare body ELSE body NEW_LINE                                { ifSentence($2, NULL, NULL); /* TODO: change first NULL to $3, second to $5 */}
                 ;
 
 compare         : OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN         { $$ = addParen(condition_composed($2, $3, $4)); /* print_boolean((int*)$$.value); */ }
-                | OPEN_PAREN single_compare CLOSE_PAREN                               { $$ = addParen($2);  /* print_boolean((int*)$$.value);   */        }
+                | OPEN_PAREN single_compare CLOSE_PAREN                             { $$ = addParen($2);  /* print_boolean((int*)$$.value);   */        }
                 /* | OPEN_PAREN expression CLOSE_PAREN                                 { $$ = condition_expression($2); print_boolean((int*)$$.value);       } */
                 ;
 

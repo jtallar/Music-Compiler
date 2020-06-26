@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "outPrinter.h"
 
@@ -98,6 +99,7 @@ static void printBlockAssign(char * name, Set * set) {
 #define BASE_CHORD_SUB_LEN  12
 #define BASE_CHORD_CMP_LEN  10
 #define BASE_SET_CMP_LEN    12
+#define BASE_IF_ELSE_LEN    7
 
 
 char * printChordConstant(char * chordStr) {
@@ -245,6 +247,15 @@ char * printComparison(char * print1, conditions cond, char * print2) {
     return ret;
 }
 
+char * printNotComparison(char * print) {
+    char * ret = calloc(4 + strlen(print), sizeof(*ret));
+    if (ret == NULL) {
+        abort(); /** TODO: Que hacemos aca?? */
+    }
+    sprintf(ret, "!(%s)", print);
+    return ret;
+}
+
 static char * getCompareSymbol(conditions cond) {
     char * ret;
     switch (cond)
@@ -275,6 +286,27 @@ static char * getCompareSymbol(conditions cond) {
             break;
         default:
             abort();
+    }
+    return ret;
+}
+
+void printIfSentence(char * cond, char * ifBody, char * elseBody) {
+    bool elsePresent = true;
+    if (ifBody == NULL)     ifBody = "";
+    if (elseBody == NULL) {
+        elseBody = "";
+        elsePresent = false;
+    }
+    char * ret = calloc(BASE_IF_ELSE_LEN + strlen(ifBody) + strlen(elseBody), sizeof(*ret));
+    if (ret == NULL) {
+        abort(); /** TODO: Que hacemos aca?? */
+    }
+    if (elsePresent) {
+        // sprintf(ret, "if%s%selse%s", cond, ifBody, elseBody);
+        printf("if%s%selse%s", cond, ifBody, elseBody);
+    } else {
+        // sprintf(ret, "if%s%s", cond, ifBody);
+        printf("if%s%s", cond, ifBody);
     }
     return ret;
 }
