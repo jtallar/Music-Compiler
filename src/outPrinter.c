@@ -80,3 +80,29 @@ static void printBlockAssign(char * name, Set * set) {
         free(buf);
     }
 }
+
+#define NEW_CHORD_LEN   16
+
+char * printChordConstant(char * chordStr) {
+    char * ret = calloc(NEW_CHORD_LEN, *ret);
+    if (ret == NULL) {
+        abort(); /** TODO: Que hacemos aca?? */
+    }
+    int note;
+    for (note = C; note < NOTE_COUNT; note++) {
+        if (strcmp(chordStr, noteName[note]) == 0) {
+            snprintf(ret, NEW_CHORD_LEN, "newChord(\"%s\")", chordStr);
+            return ret;
+        }
+    }
+
+    int stdChord;
+    for (stdChord = aC; stdChord < CHORD_COUNT; stdChord++) {
+        if (strcmp(chordStr, chordName[stdChord]) == 0) {
+            snprintf(ret, NEW_CHORD_LEN, "newChord(\"%s\")", chordStr);
+            return ret;
+        }
+    }
+    free(ret);
+    abort(); /** TODO: Que hacemos aca?? */
+}
