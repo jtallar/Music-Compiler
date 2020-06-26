@@ -79,11 +79,11 @@ Chord * outNewChord(char * constant){
 Set * outNewSet(Chord * chord, int time){
     Set * new_set = malloc(sizeof(struct set));
     if(new_set == NULL){        //no habia espacio
-        return NULL;
+        exit(1);
     }
     Block * block = malloc(sizeof(struct block));
     if(block == NULL){        //no habia espacio
-        return NULL;
+        exit(1);
     }
     block->chords = chord;
     block->time = time;
@@ -98,6 +98,9 @@ Set * outNewSet(Chord * chord, int time){
 void outAddNote(Chord * chord, notes_enum note){
     struct NoteNode * node = chord->notes;
     struct NoteNode * new = (struct NoteNote *) malloc(sizeof(struct NoteNode));
+    if(new == NULL){
+        exit(1);
+    }
     new->note = note;
     new->next = node;
     chord->notes = new;
@@ -152,6 +155,9 @@ Chord * outChordSum(Chord * c1, Chord * c2){
 
     //Podria devolver directamente c1 creo, check
     Chord * new_chord = malloc(sizeof(struct chord));
+    if(new_chord == NULL){
+        exit(1);
+    }
     new_chord->notes = c1->notes;
     new_chord->quant = c1->quant;
 
@@ -170,6 +176,9 @@ Chord * outChordSub(Chord * c1, Chord * c2){
     
     //Podria devolver directamente c1 creo, check
     Chord * new_chord = malloc(sizeof(struct chord));
+    if(new_chord == NULL){
+        exit(1);
+    }
     new_chord->notes = c1->notes;
     new_chord->quant = c1->quant;
 
@@ -186,6 +195,9 @@ Set * outSetRepeat(Set * set, int times){
         
         Block * old_block = set->blocks;
         Block * new_block = malloc(sizeof(struct block) * new_quant);
+        if(new_block == NULL){
+            exit(1);
+        }
 
         int i = 0, b_index = 0, j = 0;
         for(i=0; i < times; i++){
@@ -195,6 +207,9 @@ Set * outSetRepeat(Set * set, int times){
         }
 
         Set *new_set = malloc(sizeof(struct set));
+        if(new_set == NULL){
+            exit(1);
+        }
         new_set->quant = new_quant;
         new_set->blocks = new_block;
 
@@ -204,6 +219,9 @@ Set * outSetRepeat(Set * set, int times){
 
 Set * outSetConcat(Set * s1, Set * s2){
     Set *new_set = malloc(sizeof(struct set));
+    if(new_set == NULL){
+        exit(1);
+    }
     int new_quant = s1->quant + s2->quant;
 
     for(int i = s1->quant, j = 0; i < new_quant; i++, j++)
