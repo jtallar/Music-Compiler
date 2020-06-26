@@ -1,26 +1,77 @@
 #include <stdlib.h>
 #include "outFunctions.h"
 
+Chord * outAtochord(const char *nptr) {
+    int stdChord;
+    for (stdChord = aC; stdChord < CHORD_COUNT; stdChord++) {
+        if (strcmp(nptr, chordName[stdChord]) == 0) {
+            break;
+        }
+    }
+    if (stdChord == CHORD_COUNT){ 
+        return NULL;
+    }
+    
+    Chord * chord = malloc(sizeof(*chord));
+    if (chord == NULL) { 
+        exit(1);
+    }
+
+    struct NoteNode * node = (struct NoteNode *) malloc(sizeof(struct NoteNode));
+    if (node == NULL){ 
+        exit(1);
+    }
+    node->note = chordsNotes[stdChord][0];
+    chord->notes = node;
+    for (int i = 1; i < STD_CHORD_L; i++) {
+        node->next = (struct NoteNode *) malloc(sizeof(struct NoteNode));
+        if (node->next == NULL) { 
+            exit(1);
+        }
+        node->next->note = chordsNotes[stdChord][i];
+        node = node->next;
+    }
+    node->next = NULL;   
+    chord->quant = STD_CHORD_L;
+    return chord;
+} 
+
+Chord * outAtonote(const char *nptr) {
+    int note;
+    for (note = C; note < NOTE_COUNT; note++) {
+        if (strcmp(nptr, noteName[note]) == 0) {
+            break;
+        }
+    }
+    if (note == NOTE_COUNT) {
+        return NULL;
+    }
+    
+    Chord * chord = malloc(sizeof(*chord));
+    if (chord == NULL) { 
+        exit(1);
+    }
+    chord->notes = malloc(sizeof(struct NoteNode));
+    if (chord->notes == NULL) {
+        free(chord);
+    }
+    chord->notes->note = note;
+    chord->notes->next = NULL;
+    chord->quant = 1;
+    return chord;
+}
+
+
 
 Chord * outNewChord(char * constant){
-    // int note;
-    // for (note = C; note < NOTE_COUNT; note++) {
-    //     if (strcmp(constant, noteName[note]) == 0) {
-    //         break;
-    //     }
-    // }
-    
-    // Chord * chord = malloc(sizeof(*chord));
-    // chord->notes = malloc(sizeof(struct NoteNode));
-    // if (chord->notes == NULL) {
-    //     free(chord);
-    // }
-    // chord->notes->note = note;
-    // chord->notes->next = NULL;
-    // chord->quant = 1;
-    // return chord;
-
-
+    Chord * new_chord = outAtonote(constant);
+    if(new_chord != NULL){
+        return new_chord;
+    }
+    else {
+        new_chord = outAtochord(constant);
+    }
+    return new_chord;
 }
 
 
@@ -189,7 +240,7 @@ int outAvgFreq(Chord * chord){
 
 //igual a typeUtil.c sin validacion
 // void outPlaySet(Set * set){
-//     /** TODO: **/
+     /** TODO: **/
 //     // generateWav(*set);
 //     // playWav("output.wav");
 // }
