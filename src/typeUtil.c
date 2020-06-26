@@ -3,6 +3,8 @@
 #include <string.h>
 #include "typeUtil.h"
 #include "outPrinter.h"
+#include "soundSet.h"
+
 
 static int avg_freq(Chord * chord);
 static int total_time(Set * set);
@@ -583,6 +585,19 @@ static int total_time(Set * set){
     }
     return time;
 }
+
+
+void playSet(Data set){
+    if( set.type != set_type ){
+        yyerror("\033[1;31mError\033[0m: Can't play %s type",getTypeByEnum(set.type));
+    }
+    print_set(set);
+    Set * realSet = (Set *)set.value;
+    generateWav(*realSet);
+    playWav(WAV_FILE_NAME);
+}
+
+
 
 /* 
 struct NoteNode{

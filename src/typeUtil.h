@@ -61,4 +61,9 @@ void putSet(char * name, Set * value);
 
 Data data_boolean(Data data);
 
+/***********************/
+
+void playSet(Data set);
+
+
 #endif
