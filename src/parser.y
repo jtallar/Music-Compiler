@@ -62,6 +62,7 @@ program         :  program declare
                 |  program do_sentence
                 |  program while_sentence
                 |  program play
+                |  program print
                 |  program NEW_LINE
                 |  /* empty */
                 ;
@@ -69,8 +70,8 @@ program         :  program declare
 play            : PLAY OPEN_PAREN expression CLOSE_PAREN NEW_LINE       { playSet($3);   }
                 ;
 
-print           : PRINT OPEN_PAREN expression CLOSE_PAREN NEW_LINE                  {}
-                | PRINT OPEN_PAREN STRING CLOSE_PAREN NEW_LINE                      {printf("%s", $3)}
+print           : PRINT OPEN_PAREN expression CLOSE_PAREN NEW_LINE                  {printg("%s", $3);}
+                | PRINT OPEN_PAREN STRING CLOSE_PAREN NEW_LINE                      {printf("%s", $3);}
                 ;
 
 do_sentence     : DO body WHILE compare NEW_LINE

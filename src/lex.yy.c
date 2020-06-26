@@ -372,14 +372,14 @@ struct yy_trans_info
 static yyconst flex_int16_t yy_accept[91] =
     {   0,
         0,    0,   39,   37,   36,   18,   21,   22,    6,    8,
-        9,    7,   32,   32,   14,    5,   12,   33,   33,   33,
-       33,   33,   33,   23,   24,   35,   35,   35,   35,   35,
-       35,   35,   35,   35,   35,   19,   20,   23,   11,   32,
-       15,   10,   13,   33,   35,   34,   34,   34,   34,   34,
-       34,   34,   35,   35,    4,   35,    1,   35,   17,   35,
-       35,   35,   35,   35,    0,   34,   34,   16,   35,   35,
-       28,   35,   35,   30,   35,   35,    0,   35,    2,   25,
-       35,   35,   35,    0,   29,   26,   27,    3,   31,    0
+        9,    7,   31,   31,   14,    5,   12,   32,   32,   32,
+       32,   32,   32,   23,   24,   34,   34,   34,   34,   34,
+       34,   34,   34,   34,   34,   19,   20,   23,   11,   31,
+       15,   10,   13,   32,   34,   33,   33,   33,   33,   33,
+       33,   33,   34,   34,    4,   34,    1,   34,   17,   34,
+       34,   34,   34,   34,    0,   33,   33,   16,   34,   34,
+       28,   34,   34,   30,   34,   34,    0,   34,    2,   25,
+       34,   34,   34,    0,   29,   26,   27,    3,   35,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
@@ -944,32 +944,32 @@ YY_RULE_SETUP
 return SET_NAME;
 	YY_BREAK
 case 31:
-*yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-(yy_c_buf_p) = yy_cp -= 1;
-YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 #line 54 "scanner.l"
-{ /* puts(yytext); */ yylval.strVal = malloc(yyleng+1); strcpy(yylval.strVal,yytext); return STRING; }
+{ /* puts(yytext); */ yylval.strVal = malloc(yyleng+1); strcpy(yylval.strVal,yytext); return NUMBER; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 55 "scanner.l"
-{ /* puts(yytext); */ yylval.number = malloc(sizeof(int)); *yylval.number = atoi(yytext); return NUMBER; }
+{ /* puts(yytext); */ yylval.strVal = malloc(yyleng+1); strcpy(yylval.strVal,yytext); return NOTE; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 56 "scanner.l"
-{ /* puts(yytext); */ yylval.chord = atonote(yytext); return NOTE; }
+{ /* puts(yytext); */ yylval.strVal = malloc(yyleng+1); strcpy(yylval.strVal,yytext); return CHORD; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 57 "scanner.l"
-{ /* puts(yytext); */ yylval.chord = atochord(yytext); return CHORD; }
+{ /* puts(yytext); */ yylval.strVal = malloc(yyleng+1); strcpy(yylval.strVal,yytext); return VAR; }
 	YY_BREAK
 case 35:
+*yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+(yy_c_buf_p) = yy_cp -= 1;
+YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 #line 58 "scanner.l"
-{ /* puts(yytext); */ yylval.strVal = malloc(yyleng+1); strcpy(yylval.strVal,yytext); return VAR; }
+{ /* puts(yytext); */ yylval.strVal = malloc(yyleng+1); strcpy(yylval.strVal,yytext); return STRING; }
 	YY_BREAK
 case 36:
 /* rule 36 can match eol */
