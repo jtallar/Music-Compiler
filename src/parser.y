@@ -34,7 +34,7 @@ extern int yylineno;
 %token IF ELSE DO WHILE STAR BAR ADD MINUS ASSIGN
 %token EQUAL_OP NOT_EQUAL_OP GT_OP GTE_OP LT_OP LTE_OP AND_OP OR_OP NOT_OP
 %token OPEN_BRACES CLOSE_BRACES OPEN_PAREN CLOSE_PAREN OPEN_BRACKET CLOSE_BRACKET
-%token START PLAY NEW_LINE
+%token START PLAY NEW_LINE PRINT
 %token INT_NAME CHORD_NAME SET_NAME
 
 %token <strVal> VAR
@@ -42,6 +42,7 @@ extern int yylineno;
 /* %token <set> SET */
 %token <chord> CHORD
 %token <chord> NOTE
+%token <strVal> STRING
 
 //%type <strVal> expression assign var_type term factor constant
 
@@ -65,6 +66,10 @@ program         :  program declare
                 ;
 
 play            : PLAY OPEN_PAREN expression CLOSE_PAREN NEW_LINE       { playSet($3);   }
+                ;
+
+print           : PRINT OPEN_PAREN expression CLOSE_PAREN NEW_LINE                  {}
+                | PRINT OPEN_PAREN STRING CLOSE_PAREN NEW_LINE                      {printf("%s", $3)}
                 ;
 
 do_sentence     : DO body WHILE compare NEW_LINE

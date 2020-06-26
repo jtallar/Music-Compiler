@@ -10,6 +10,7 @@ void yyerror (const char * format, ...);
 int yylex();
 %}
 
+string      ^"[.*]"$
 number		([1-9][0-9]*|(0))
 variable 	[a-z][a-z0-9_]* 
 new_line 	\n
@@ -43,13 +44,14 @@ chord       a{note}m?
 "["                 return OPEN_BRACKET;
 "]"                 return CLOSE_BRACKET;
 "play"              return PLAY;
+"print"             return PRINT;
 "start"             return START;
 
 "int"               return INT_NAME;
 "chord"             return CHORD_NAME;
 "set"               return SET_NAME;
 
-
+{string}            { /* puts(yytext); */ yylval.strVal = malloc(yyleng+1); strcpy(yylval.strVal,yytext); return STRING; }
 {number} 			{ /* puts(yytext); */ yylval.number = malloc(sizeof(int)); *yylval.number = atoi(yytext); return NUMBER; }
 {note} 		        { /* puts(yytext); */ yylval.chord = atonote(yytext); return NOTE; }
 {chord} 			{ /* puts(yytext); */ yylval.chord = atochord(yytext); return CHORD; }
