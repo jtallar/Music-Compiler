@@ -2,6 +2,7 @@
 #define NOTE_COUNT  13
 #define CHORD_COUNT 14
 #define STD_CHORD_L 3
+#define MAX_WAV_COUNT   10
 
 typedef enum { C=0, Cs, D, Ds=3, E, F, Fs=6, G, Gs, A=9, As, B, _ } notes_enum;
 typedef enum { aC=0, aCm, aD, aDm=3, aE, aEm, aF=6, aFm, aG, aGm=9, aA, aAm, aB=12, aBm } chords_enum;
@@ -323,6 +324,9 @@ void playSet(Set * set){
     generateWav(*set, buf);
     playWav(buf);
     fileNumber++;
+    if(fileNumber >= MAX_WAV_COUNT) {
+        fileNumber = 0;
+    }
 }
     
     
