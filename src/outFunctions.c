@@ -1,6 +1,11 @@
 #include <stdlib.h>
 #include "outFunctions.h"
 
+#define BASE_FILENAME	"out"
+#define EXT_FILENAME	".wav"
+
+static int fileNumber = 0;
+
 Chord * outAtochord(const char *nptr) {
     int stdChord;
     for (stdChord = aC; stdChord < CHORD_COUNT; stdChord++) {
@@ -257,10 +262,10 @@ int outAvgFreq(Chord * chord){
 
 
 //igual a typeUtil.c sin validacion
-// void outPlaySet(Set * set){
-     /** TODO: **/
-//     // generateWav(*set);
-//     // playWav("output.wav");
-// }
+void outPlaySet(Set * set){
+    generateWav(*set);
+    playWav(WAV_FILENAME(fileNumber));
+    fileNumber++;
+}
 
 
