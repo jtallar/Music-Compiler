@@ -52,6 +52,19 @@ typedef struct set{
 
 static int fileNumber = 0;
 
+Chord * outAtochord(const char *nptr); 
+Chord * outAtonote(const char *nptr);
+Chord * outNewChord(char * constant);
+Set * outNewSet(Chord * chord, int time);
+Set * outSetRepeat(Set * set, int times);
+Set * outSetConcat(Set * s1, Set * s2);
+int outContainsNote(Chord * chord, notes_enum note);
+Chord * outChordSum(Chord * c1, Chord * c2);
+Chord * outChordSub(Chord * c1, Chord * c2);
+int outTotalTime(Set * set);
+int outAvgFreq(Chord * chord);
+void outPlaySet(Set * set);
+
 Chord * outAtochord(const char *nptr) {
     int stdChord;
     for (stdChord = aC; stdChord < CHORD_COUNT; stdChord++) {
@@ -59,7 +72,7 @@ Chord * outAtochord(const char *nptr) {
             break;
         }
     }
-    if (stdChord == CHORD_COUNT){ 
+    if (stdChord == CHORD_COUNT){
         return NULL;
     }
     
@@ -255,7 +268,7 @@ Set * outSetConcat(Set * s1, Set * s2){
     Chord emptyChord = {NULL, 0};
 
     int index = 0;
-    for (int index = 0; index < s1->quant; index++) {
+    for (index = 0; index < s1->quant; index++) {
         new_set->blocks[index].chords = outChordSum(s1->blocks[index].chords, &emptyChord);
         if (new_set->blocks[index].chords == NULL) {
             free(new_set->blocks);
@@ -304,4 +317,12 @@ void outPlaySet(Set * set){
     fileNumber++;
 }
 
-
+void playSet(Set * set){
+    char buf[10];
+    snprintf(buf, 10, "%s%d%s", BASE_FILENAME, fileNumber, EXT_FILENAME);
+    generateWav(*set, buf);
+    playWav(buf);
+    fileNumber++;
+}
+    
+    

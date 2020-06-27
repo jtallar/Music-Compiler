@@ -3,7 +3,7 @@
 #include <string.h>
 #include "typeUtil.h"
 #include "outPrinter.h"
-#include "soundSet.h"
+// #include "soundSet.h"
 
 
 static int avg_freq(Chord * chord);
@@ -628,9 +628,9 @@ char * playSet(Data set){
         yyerror("\033[1;31mError\033[0m: Can't play %s type",getTypeByEnum(set.type));
     }
     // print_set(set);
-    Set * realSet = (Set *)set.value;
-    generateWav(*realSet);
-    playWav(WAV_FILE_NAME);
+    // Set * realSet = (Set *)set.value;
+    // generateWav(*realSet, WAV_FILE_NAME);
+    // playWav(WAV_FILE_NAME);
     return printPlaySet(set.print);
 }
 
