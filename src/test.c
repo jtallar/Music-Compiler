@@ -1,188 +1,10 @@
-%{
-void yyerror(const char * format, ...);
-int yylex();
-extern int yylineno;
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
-#include "typeUtil.h"
-/* Variable for the line count */
-
-%}
-
-/* ----------------- TOKENS ---------------------
- * Token that I'm expecting from the lexical 
- * analyzer (will save as defines in tab.h) */
-
-/*  %code requires {
-    struct data{
-        types type;
-        void * value;
-    };
-} */
-
-%union {
-    int int_type;
-    int * number; 
-    struct chord * chord;
-    struct set * set;
-    char * strVal;
-    struct data dataVal;
-}
-
-%token IF ELSE DO WHILE STAR BAR ADD MINUS ASSIGN
-%token EQUAL_OP NOT_EQUAL_OP GT_OP GTE_OP LT_OP LTE_OP AND_OP OR_OP NOT_OP
-%token OPEN_BRACES CLOSE_BRACES OPEN_PAREN CLOSE_PAREN OPEN_BRACKET CLOSE_BRACKET
-%token START STOP PLAY NEW_LINE PRINT
-%token INT_NAME CHORD_NAME SET_NAME
-
-%token <strVal> VAR
-%token <strVal> NUMBER
-/* %token <set> SET */
-%token <strVal> CHORD
-%token <strVal> NOTE
-%token <strVal> STRING
-
-//%type <strVal> expression assign var_type term factor constant
-
-%type <int_type> var_type any_op add_op_logic op_compare
-%type <strVal> assign declare if_sentence do_sentence while_sentence play body program
-%type <dataVal> constant factor term expression /**/ compare single_compare mult_compare
-
-%start start
-
-%%
-
-start           :  START NEW_LINE program STOP NEW_LINE                             { generateFullProgram($3); free_end(); exit(0); }
-
-program         :  program declare                                                  { $$ = concatProgram($1, $2); }   
-                |  program assign                                                   { $$ = concatProgram($1, $2); }
-                |  program if_sentence                                              { $$ = concatProgram($1, $2); }
-                |  program do_sentence                                              { $$ = concatProgram($1, $2); }
-                |  program while_sentence                                           { $$ = concatProgram($1, $2); }
-                |  program play                                                     { $$ = concatProgram($1, $2); }
-                |  program NEW_LINE                                                 { $$ = $1; }
-                |  /* empty */                                                      { $$ = emptySentence(); }
-                |  program print
-                ;
-
-play            : PLAY OPEN_PAREN expression CLOSE_PAREN NEW_LINE                   { $$ = playSet($3);   }
-                ;
-
-do_sentence     : DO body WHILE compare NEW_LINE                                    { $$ = doWhileSentence($2, $4); }
-print           : PRINT OPEN_PAREN expression CLOSE_PAREN NEW_LINE                  {printg("%s", $3);}
-                | PRINT OPEN_PAREN STRING CLOSE_PAREN NEW_LINE                      {printf("%s", $3);}
-                ;
-
-                ;
-
-while_sentence  : WHILE compare body NEW_LINE                                       { $$ = whileSentence($3, $2); }
-                ;
-
-if_sentence     : IF compare body NEW_LINE                                          { $$ = ifSentence($2, $3, NULL); }
-                | IF compare body ELSE body NEW_LINE                                { $$ = ifSentence($2, $3, $5); }
-                ;
-
-compare         : OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN         { $$ = addParen(condition_composed($2, $3, $4)); /* print_boolean((int*)$$.value); */ }
-                | OPEN_PAREN single_compare CLOSE_PAREN                             { $$ = addParen($2);  /* print_boolean((int*)$$.value);   */        }
-                /* | OPEN_PAREN expression CLOSE_PAREN                                 { $$ = condition_expression($2); print_boolean((int*)$$.value);       } */
-                ;
-
-single_compare  : OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN         { $$ = addParen(condition_composed($2, $3, $4));  }
-                | NOT_OP OPEN_PAREN mult_compare CLOSE_PAREN                        { $$ = negate_condition($3);            }
-                | expression                                                        { $$ = data_boolean($1);        }
-                ;
-
-mult_compare    : mult_compare any_op single_compare                                { $$ = condition_composed($1, $2, $3);  }                                
-                | single_compare                                                    { $$ = $1; }
-                ;
-
-// Guarda lo que esta a la derecha $$ = $1
-any_op          : add_op_logic                         { $$ = $1; }
-                | op_compare                           { $$ = $1; }
-                ;
-                
-body            : OPEN_BRACES program CLOSE_BRACES     { $$ = addBraces($2); }
-                ;
-
-// Enum para todos los operadores que siguen
-add_op_logic    : AND_OP                               { $$ = and; }
-                | OR_OP                                { $$ = or;  }
-                ;
-
-op_compare      : GT_OP                                { $$ = gt;  }
-                | GTE_OP                               { $$ = gte; }    
-                | LT_OP                                { $$ = lt;  }
-                | LTE_OP                               { $$ = lte; }
-                | EQUAL_OP                             { $$ = eq;  }
-                | NOT_EQUAL_OP                         { $$ = neq; }
-                ;
-
-declare         : var_type VAR NEW_LINE                 { $$ = createVar($1,$2); }      // se me lleva NEW_LINE     
-            /*  | var_type assign                       { $$ = createVar($1,$2); } */
-                ;
-
-assign          : VAR ASSIGN expression NEW_LINE        { $$ = newVar($1,$3); }
-                ;
-
-var_type        : INT_NAME                              { $$ = num_type;   }                              
-                | CHORD_NAME                            { $$ = chord_type; }
-                | SET_NAME                              { $$ = set_type;   }
-                ;
-
-expression      : expression ADD term                   { $$ = addOperation($1,$3);   }
-                | expression MINUS term                 { $$ = minusOperation($1,$3); }
-                | term                                  { $$ = $1; }
-                ;
-
-term            : term STAR factor                      { $$ = starOperation($1,$3); }
-                | term BAR factor                       { $$ = barOperation ($1,$3); }
-                | factor                                { $$ = $1; }
-                ;
-
-factor          : constant                                              { $$ = $1;}
-                | VAR                                                   { $$ = getDataByName($1);  }
-                | OPEN_BRACKET expression expression CLOSE_BRACKET      { $$ = newSetData($2, $3); /* print_set($$); */}
-                | OPEN_PAREN expression CLOSE_PAREN                     { $$ = addParen($2); }
-                ;
-
-constant        : CHORD                                 { $$ = getChordData($1); /*print_chord($1); */ }
-                | NUMBER                                { $$ = getIntData($1);  /*  print_number($1); */ }
-                | NOTE                                  { $$ = getNoteData($1); /*print_chord($1);  */}
-                ;
-
-%%
-
-void yyerror(const char * format, ...){
-    va_list argptr;
-    va_start(argptr, format);
-    vfprintf(stderr, format, argptr);
-    va_end(argptr);
-    fprintf(stderr," -> \033[1;31mError\033[0m in line %d\n\n", yylineno);
-    exit(EXIT_FAILURE);
-}
-
-int yywrap(){
-    return 1;
-} 
-
-void printHeaders();
-void printFunctions();
-void printWaveEndiannessFunctions();
-
-int main() {
-    init_list();
-    // printf("\033[1;32mReady! Make your music!\033[0m\n\n");
-    printHeaders();
-    printWaveEndiannessFunctions();
-    printFunctions();
-    return yyparse();
-} 
+#include "outFunctions.h"
 
 void printHeaders(){
     printf("#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <math.h>\n\n");
-    printf("#define BASE_FILENAME	\"out\"\n#define EXT_FILENAME	\".wav\"\n#define MAX_WAV_COUNT\t10\n");
+    printf("#define BASE_FILENAME	\"out\"\n#define EXT_FILENAME	\".wav\"\n");
     printf("#define NOTE_COUNT  13\n#define CHORD_COUNT 14\n#define STD_CHORD_L 3\n\n");
     printf("#define M_PI           3.14159265358979323846\n#ifdef __linux__\n    #define SOUND_COMMAND  \"aplay -c 1 -q -t wav\"\n#endif\n#ifdef __APPLE__	\n    #define SOUND_COMMAND  \"afplay\"\n#endif\n");
     printf("#define SAMPLE_RATE     96000.0 // hertz\n#define MONO            1\n#define STEREO          2\n#define CHANNEL_NUM     MONO\n#define BITS_SAMPLE     16      // 8, 16 or 32\n\n");
@@ -240,7 +62,7 @@ void printFunctions(){
     // /* Print addNote y deleteNote */
     // printf("\n\nvoid outAddNote(Chord * chord, notes_enum note){\n\tstruct NoteNode * node = chord->notes;\n\tstruct NoteNode * new = malloc(sizeof(struct NoteNode));\n\tif(new == NULL){\n\t\texit(1);\n\t}\n\tnew->note = note;\n\tnew->next = node;\n\tchord->notes = new;\n\tchord->quant++;\n\treturn;\n}\n\n\nvoid outDeleteNote(Chord * chord, notes_enum note){\n\tstruct NoteNode * node = chord->notes;\n\tif(node->note == note){\n\t\tstruct NoteNode * aux = node->next;\n\t\tnode->next = node->next->next;\n\t\tfree(aux);\n\t\tchord->quant--;\n\t\treturn;\n\t}\n\twhile (node->next != NULL){\n\t\tif(node->next->note == note){\n\t\t\tstruct NoteNode * aux = node->next;\n\t\t\tnode->next = node->next->next;\n\t\t\tfree(aux);\n\t\t\tchord->quant--;\n\t\t\treturn;\n\t\t}\n\t\tnode = node->next;\n\t}\n\treturn;\n}\n");
     /* Print playSet function */
-    printf("\n\nvoid playSet(Set * set){\n\tchar buf[10];\n\tsnprintf(buf, 10, \"%%s%%d%%s\", BASE_FILENAME, fileNumber, EXT_FILENAME);\n\tgenerateWav(*set, buf);\n\tplayWav(buf);\n\tfileNumber++;\n\tif(fileNumber >= MAX_WAV_COUNT) {\n\t\tfileNumber = 0;\n\t}\n}\n\n");
+    printf("\n\nvoid playSet(Set * set){\n\tchar buf[10];\n\tsnprintf(buf, 10, \"%%s%%d%%s\", BASE_FILENAME, fileNumber, EXT_FILENAME);\n\tgenerateWav(*set, buf);\n\tplayWav(buf);\n\tfileNumber++;\n}\n\n");
     /* Print soundSet.c functions */
     printf("\n\nint playWav( char *filename ) {\n    char command[256];\n    int status;\n    /* create command to execute */\n    sprintf (command, \"%%s %%s\", SOUND_COMMAND, filename);\n\n    /* play sound */\n    status = system( command );\n\n    return status;\n}\n\nvoid addSet (Wave * mySound, Set set);\n\nlong getSampleNumber(long miliseconds) {\n    return (long) ((miliseconds / 1000.0) * SAMPLE_RATE);\n}\n\n");
     printf("\n\nlong getTotalDuration(Set set) {\n    long rta = 0;\n    for (int i = 0; i < set.quant ; i++) {\n        rta += set.blocks[i].time;\n    }\n    return rta;\n}\n\nvoid generateWav(Set set, char * name) {\n    long duration = getTotalDuration(set);\n    long nSamples = getSampleNumber(duration);\n    \n    // Create a mono (1), 16-bit sound and set the duration\n    Wave mySound = makeWave((int)SAMPLE_RATE, CHANNEL_NUM, BITS_SAMPLE);\n    waveSetDuration(&mySound, duration);\n\n    // Add all of the data\n    addSet(&mySound, set);\n\n    // Write it to a file and clean up when done\n    waveToFile(&mySound, name);\n    waveDestroy(&mySound);\n}\n\nvoid resetArray(float * array, int size) {\n    for (int i = 0; i < size; i++) {\n        array[i] = 0.0;\n    }\n}\n\n");
@@ -313,8 +135,8 @@ void printFunctions(){
                 }\n\
             }\n\
             return 0;\n\
-        }\n");
-    printf("Chord * chordSum(Chord * c1, Chord * c2){\n\
+        }\n\
+        Chord * chordSum(Chord * c1, Chord * c2){\n\
             Chord * new_chord = malloc(sizeof(struct chord));\n\
             if(new_chord == NULL){\n\
                 exit(1);\n\
@@ -370,8 +192,8 @@ void printFunctions(){
             }\n\
             new_chord->quant = index;\n\
             return new_chord;\n\
-        }\n");
-    printf("Set * setRepeat(Set * set, int times){\n\
+        }\n\
+        Set * setRepeat(Set * set, int times){\n\
             int old_quant = set->quant;\n\
             int new_quant = set->quant * times;\n\
             Block * old_block = set->blocks;\n\
@@ -504,8 +326,8 @@ void printWaveEndiannessFunctions(){
             }\n\
             void waveDestroy( Wave* wave) {\n\
                 free( wave->data );\n\
-            }\n");
-    printf("void waveSetDuration( Wave* wave, const long miliseconds ) {\n\
+            }\n\
+            void waveSetDuration( Wave* wave, const long miliseconds ) {\n\
                 const float seconds = miliseconds / 1000.0;\n\
                 long long int totalBytes = (long long int)(wave->header.byteRate*seconds);\n\
                 wave->data = (char*)malloc(totalBytes);\n\
@@ -552,8 +374,8 @@ void printWaveEndiannessFunctions(){
                         wave->index += 4;\n\
                     }\n\
                 }\n\
-            }\n");
-    printf("void waveToFile( Wave* wave, const char* filename ){\n\
+            }\n\
+            void waveToFile( Wave* wave, const char* filename ){\n\
                 toLittleEndian(sizeof(int), (void*)&(wave->header.chunkSize));\n\
                 toLittleEndian(sizeof(int), (void*)&(wave->header.subChunk1Size));\n\
                 toLittleEndian(sizeof(short int), (void*)&(wave->header.audioFormat));\n\
@@ -608,9 +430,39 @@ void printWaveEndiannessFunctions(){
                 }\n");
 }
 
+void print_chord2(Chord * chord) {
+    if (chord == NULL || chord->notes == NULL){
+        printf("ERROR");
+        return;
+    }
+    puts("\nChord: ");
+    printf("c quant: %d", chord->quant);
+    struct NoteNode * node = chord->notes;
+    for (int i = 0; i < chord->quant; i++){
+        printf("\tNota %d: %d\n", i, node->note);
+        node = node->next;
+    }
+}
 
-/**
-* *       yacc -d parser.y
-* *       lex scanner.l
-* *       gcc lex.yy.c y.tab.c -ly
-**/
+void print_set2(Set * realSet){
+    puts("---------------------------");
+    printf("Set con:");
+    printf("%d \n",realSet->quant);
+    for(int i=0; i < realSet->quant; i++){
+        printf("i: %d \n",i);
+        print_chord2(realSet->blocks[i].chords);
+        printf(" << durante %d milisegundos >>\n", realSet->blocks[i].time);
+    }
+    puts("---------------------------");
+}
+
+
+
+
+int main(){
+    printHeaders();
+    printFunctions();
+    printf("\n\n\nint main(int argc, char** argv){\n");
+}
+
+

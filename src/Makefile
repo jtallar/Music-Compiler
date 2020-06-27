@@ -1,36 +1,22 @@
 .PHONY=clean all
 include Makefile.inc
 
-all: yacc lex compiler
+all: compiler
 
-yacc:
-	yacc -d parser.y
+y.tab.c + y.tab.h: parser.y
+	$(YACC) $(YACCFLAGS) $<
 
-lex:
-	lex scanner.l
+lex.yy.c: scanner.l
+	$(LEX) $<
 
-compiler: 
-	$(CC) $(CFLAGS) lex.yy.c y.tab.c soundSet.c wave.c endianness.c typeUtil.c outPrinter.c outFunctions.c -o $@.out $(LIB)
+compiler: $(OBJECTS)
+	$(CC) $(CFLAGS) $(OBJECTS) -o $@.out $(LIB)
 
 sound:
 	$(CC) $(CFLAGS) endianness.c wave.c sound.c prueba.c -o $@.out $(LIB)
-# run: lex.yy.c y.tab.c
-# 	$(CC) $(SOURCES) $(CFLAGS) -o a.out $(LIB)
 
-# %.o: %.c
-# 	$(CC) $(CFLAGS) -I$(LIBRARY) -c $< -o $@
-
-# endianness.o: endianness.c 
-# 				$(CC) -c endianness.c 
-
-# wave.o: wave.c 
-# 				$(CC) -c wave.c  
-
-# sound.o: sound.c
-# 				$(CC) -c sound.c
-
-# prueba.o: prueba.c
-# 				$(CC) -c prueba.c				
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -rf *.out *.wav $(OBJECTS)

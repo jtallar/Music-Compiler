@@ -1,1 +1,0 @@
-gcc endianness.c wave.c sound.c prueba.c -lm

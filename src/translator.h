@@ -28,7 +28,7 @@ static const char * noteName[NOTE_COUNT] = {"C", "Cs", "D", "Ds", "E", "F", "Fs"
 static const char * chordName[CHORD_COUNT] = {"aC", "aCm", "aD", "aDm", "aE", "aEm", "aF", "aFm", "aG", "aGm", "aA", "aAm", "aB", "aBm"};
 
 // float notes[] = { /*C*/ 65.41 * pow(2,3), 69.30* pow(2,3), 73.42* pow(2,3), 77.78* pow(2,3), 82.41* pow(2,3), 87.31* pow(2,3), 92.50* pow(2,3), 98.00* pow(2,3), 103.83* pow(2,3), 110.00* pow(2,3), 116.54* pow(2,3), 123.47* pow(2,3) /*B*/};
-static const float notes[] = { /*C*/ 65.41 * 8, 69.30* 8, 73.42* 8, 77.78* 8, 82.41* 8, 87.31* 8, 92.50* 8 , 98.00* 8, 103.83* 8, 110.00* 8, 116.54* 8, 123.47* 8 /*B*/};
+static const float notes[] = { /*C*/ 65.41 * 8, 69.30* 8, 73.42* 8, 77.78* 8, 82.41* 8, 87.31* 8, 92.50* 8 , 98.00* 8, 103.83* 8, 110.00* 8, 116.54* 8, 123.47* 8 /*B*/ , 0};
 
 
 static notes_enum chordsNotes[CHORD_COUNT][STD_CHORD_L] = { {C,E, G},
@@ -92,13 +92,13 @@ typedef struct set{
   int quant;
 }Set;
 
-static const Chord ch[] = {  
-      {chordsNotes[aC],  STD_CHORD_L}, {chordsNotes[aCm], STD_CHORD_L}, {chordsNotes[aD], STD_CHORD_L},
-      {chordsNotes[aDm], STD_CHORD_L}, {chordsNotes[aE],  STD_CHORD_L}, {chordsNotes[aEm],STD_CHORD_L},
-      {chordsNotes[aF],  STD_CHORD_L}, {chordsNotes[aFm], STD_CHORD_L}, {chordsNotes[aG], STD_CHORD_L},
-      {chordsNotes[aGm], STD_CHORD_L}, {chordsNotes[aA],  STD_CHORD_L}, {chordsNotes[aAm],STD_CHORD_L},
-      {chordsNotes[aB],  STD_CHORD_L}, {chordsNotes[aBm], STD_CHORD_L},
-};
+// static const Chord ch[] = {  
+//       {chordsNotes[aC],  STD_CHORD_L}, {chordsNotes[aCm], STD_CHORD_L}, {chordsNotes[aD], STD_CHORD_L},
+//       {chordsNotes[aDm], STD_CHORD_L}, {chordsNotes[aE],  STD_CHORD_L}, {chordsNotes[aEm],STD_CHORD_L},
+//       {chordsNotes[aF],  STD_CHORD_L}, {chordsNotes[aFm], STD_CHORD_L}, {chordsNotes[aG], STD_CHORD_L},
+//       {chordsNotes[aGm], STD_CHORD_L}, {chordsNotes[aA],  STD_CHORD_L}, {chordsNotes[aAm],STD_CHORD_L},
+//       {chordsNotes[aB],  STD_CHORD_L}, {chordsNotes[aBm], STD_CHORD_L},
+// };
 
 extern void yyerror(const char * format, ...);
 

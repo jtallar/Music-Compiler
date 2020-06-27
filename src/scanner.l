@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include "translator.h"
-struct chord * atochord(const char *nptr);
 void yyerror (const char * format, ...);
 int yylex();
 %}
@@ -46,6 +44,7 @@ chord       a{note}m?
 "play"              return PLAY;
 "print"             return PRINT;
 "start"             return START;
+"stop"              return STOP;
 
 "int"               return INT_NAME;
 "chord"             return CHORD_NAME;
