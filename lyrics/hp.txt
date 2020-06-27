@@ -1,0 +1,29 @@
+start
+int neg
+neg = 350
+set s
+s = [aB neg] / [_ 50] / [aE neg*3] / [_ 50] / [aG neg] / [_ 50]
+chord fa_hash
+fa_hash = As + Fs + Cs
+s = s / [fa_hash neg] / [_ 50] / [aE neg] / [_ 50] / [aB neg] / [_ 50] 
+s = s /[aA neg*3] / [_ 200] / [fa_hash neg] / [_ 200]
+s = s / [aE neg*2] / [_ 50] / [aG neg] / [_ 50] / [fa_hash neg] / [_ 50]
+chord ebem
+ebem = Ds + G + Cs
+s = s / [ebem neg*2] / [_ 50] / [aE neg] / [_ 50] / [aB neg*3] / [_ 400]
+
+s = s / [aB neg] / [_ 50] / [aE neg*2] / [_ 50] / [aG neg] / [_ 50]
+s = s / [fa_hash neg] / [_ 50] / [aE neg*2] / [_ 50] / [aB neg] / [_ 50] / [aD neg*2] / [_ 50]
+chord dbem
+dbem = Ds + Cs
+s = s / [dbem neg] / [_ 50] / [aC neg*2] / [_ 200]
+
+chord abem
+abem = As + C + F
+s = s / [abem neg] / [_ 50] / [aC neg*2] / [_ 50] / [aB neg] / [_ 50]
+chord bbem
+bbem = B + D + F
+s = s / [bbem neg] / [_ 50] / [fa_hash neg*2] / [_ 50] / [aG neg] / [_ 50] / [aE neg*2] / [_ 50]
+
+play(s)
+stop
