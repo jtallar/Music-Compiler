@@ -44,6 +44,7 @@ chord       a{note}m?
 "]"                 return CLOSE_BRACKET;
 "play"              return PLAY;
 "start"             return START;
+"stop"              return STOP;
 
 "int"               return INT_NAME;
 "chord"             return CHORD_NAME;

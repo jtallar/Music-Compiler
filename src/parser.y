@@ -34,7 +34,7 @@ extern int yylineno;
 %token IF ELSE DO WHILE STAR BAR ADD MINUS ASSIGN
 %token EQUAL_OP NOT_EQUAL_OP GT_OP GTE_OP LT_OP LTE_OP AND_OP OR_OP NOT_OP
 %token OPEN_BRACES CLOSE_BRACES OPEN_PAREN CLOSE_PAREN OPEN_BRACKET CLOSE_BRACKET
-%token START PLAY NEW_LINE
+%token START STOP PLAY NEW_LINE
 %token INT_NAME CHORD_NAME SET_NAME
 
 %token <strVal> VAR
@@ -53,7 +53,9 @@ extern int yylineno;
 
 %%
 
-start           :  START NEW_LINE program                                           { printFullProgram($3); }
+start           :  START NEW_LINE program stop NEW_LINE                             { printFullProgram($3); }
+
+stop            :  STOP                                                             { free_end(); exit(0); }                                         
 
 program         :  program declare                                                  { $$ = concatProgram($1, $2); }   
                 |  program assign                                                   { $$ = concatProgram($1, $2); }

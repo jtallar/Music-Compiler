@@ -21,12 +21,6 @@ Chord * atochord(const char *nptr) {
     Chord * chord = malloc(sizeof(*chord));
     if (chord == NULL) yyerror("Not enough heap memory");
 
-    /* chord->notes = malloc(sizeof(struct NoteNode));
-    if (chord->notes == NULL) {
-        free(chord);
-        yyerror("Not enough heap memory");
-    } */
-
     struct NoteNode * node = (struct NoteNode *) malloc(sizeof(struct NoteNode));
     if (node == NULL) yyerror("Not enough heap memory");
     node->note = chordsNotes[stdChord][0];
@@ -88,13 +82,12 @@ void init_list(){
     list->header = NULL;
     list->tail = NULL;
     // printf("Preparing our band...\n");
-    // printf("Preparing our band...\nList: %d\t\tHeader: %d\tTail: %d\n", list, list->header, list->tail);
 }
 
 char * createVar(types type, char * name){
     if(getVarByName(name) != NULL)
         yyerror("Variable named %s already exists.", name);
-   // printf("Creating varible:  %s -> %s", getTypeByEnum(type), name);
+
     struct Node * node = (struct Node *) malloc(sizeof(struct Node));
     if(node == NULL) yyerror("Not enough heap memory");
 
@@ -121,15 +114,6 @@ char * createVar(types type, char * name){
     char * ret = printCreateVar(type, name);
     free(name);
     return ret;
-    
-    // printf("\tDone!\n\n");
-
-    /* while (node->next != NULL)      // hasta encontrar que el siguiente esta vacio
-    node = node->next;
-    Node * new = malloc(sizeof(struct Node *));
-    new->var->data.type = type;
-    strcpy(new->var->name, name);
-    node->next = new; */
 }
 
 void putVar (size_t size, Var * variable, void * value){
@@ -239,15 +223,6 @@ void print_boolean(int* num){
 }
 
 void addNote(Chord * chord, notes_enum note){
-    /* struct NoteNode * node = chord->notes;
-    while (node->next != NULL)
-        node = node->next;
-    struct NoteNode * new = (struct NoteNote *) malloc(sizeof(struct NoteNode));
-    if(new == NULL) yyerror("Not enough heap memory");
-    new->note = note;
-    new->next = NULL;
-    node->next = new;
-    return; */
     struct NoteNode * node = chord->notes;
     struct NoteNode * new = (struct NoteNote *) malloc(sizeof(struct NoteNode));
     if(new == NULL) yyerror("Not enough heap memory");
@@ -297,7 +272,6 @@ Data addOperation(Data first, Data second){
         int result =  *((int *)(first.value)) + *((int *)(second.value));
         out.value = malloc(sizeof(int));
         *((int *) out.value) = result;
-        // printf("Result is %d", result);
         out.print = printAddNumbers(first.print, second.print);
         return out;
     }
@@ -307,16 +281,13 @@ Data addOperation(Data first, Data second){
         
         struct NoteNode * node = chord_two->notes;
         while(node != NULL){
-            if(!containsNote(chord_one, node->note)){
+            if(!containsNote(chord_one, node->note))
                 addNote(chord_one, node->note);
-                // printf("NOT CONTAINS %d -> chord_one: ", node->note); 
-            }
             node = node->next;
         }
         out.type = chord_type;
         out.value = chord_one;
         out.print = printAddChords(first.print, second.print);
-        // print_chord_data(out);
 
         return out;
     }
@@ -330,7 +301,6 @@ Data minusOperation(Data first, Data second){
         int result =  *((int *) first.value) - *((int *) second.value);
         out.value = malloc(sizeof(int));
         *((int *) out.value) = result;
-        // printf("Result is %d", result);
         out.print = printSubstractNumbers(first.print, second.print);
         return out;
     }
@@ -347,7 +317,6 @@ Data minusOperation(Data first, Data second){
         out.type = chord_type;
         out.value = chord_one;
         out.print = printSubstractChords(first.print, second.print);
-        // print_chord_data(out);
 
         return out;
     }
@@ -361,7 +330,6 @@ Data barOperation(Data first, Data second){
         int result =  *((int *) first.value) / *((int *) second.value);
         out.value = malloc(sizeof(int));
         *((int *) out.value) = result;
-        // printf("Result is %d", result);
         out.print = printBarNumbers(first.print, second.print);
         return out;
     }
@@ -369,9 +337,6 @@ Data barOperation(Data first, Data second){
         Set set_one = *((Set *) first.value);
         Set set_two = *((Set *) second.value);
         int new_quant = set_one.quant + set_two.quant;
-
-        // for(int i = set_one.quant, j = 0; i < new_quant; i++, j++)
-        //     set_one.blocks[i] = set_two.blocks[j];
 
         out.type = set_type;
         out.value = malloc(sizeof(struct set));
@@ -388,7 +353,6 @@ Data barOperation(Data first, Data second){
 
         ((Set *)out.value)->blocks = outBlocks;
         out.print = printBarSet(first.print, second.print);
-        // print_set(out);
 
         return out;
     }
@@ -402,7 +366,6 @@ Data starOperation(Data first, Data second){
         int result =  *((int *) first.value) * *((int *) second.value);
         out.value = malloc(sizeof(int));
         *((int *) out.value) = result;
-        // printf("Result is %d", result);
         out.print = printStarNumbers(first.print, second.print);
         return out;
     }
@@ -417,10 +380,8 @@ Data starOperation(Data first, Data second){
         Block * block_new = malloc(sizeof(struct block)*new_quant);
 
         int i = 0, b_index = 0, j = 0;
-        // printf("Repeat: %d \t Old Q: %d\n\n", repeat, old_quant);
         for(i=0; i < repeat; i++){
             for(j = 0; j < old_quant; j++){
-                // printf("\nblock_new[%d] = block_old[%d]\n", b_index, j);
                 block_new[b_index++] = block_old[j];              // luego en block_new tengo block_old repeat veces
             }
         }
@@ -430,7 +391,6 @@ Data starOperation(Data first, Data second){
         ((Set *)out.value)->blocks = block_new;
         
         out.print = printStarSet(first.print, second.print);
-        // print_set(out);
 
         return out;
     }
@@ -489,29 +449,21 @@ Data condition_composed(Data first, conditions cond, Data second){
     out.type = bool_type;
     out.value = malloc(sizeof(int));
     switch (cond){
-        case and: /* if(first.type != bool_type || second.type != bool_type)
-                        yyerror("Incompatible types. Can't operate '(%s value) and (%s value)'", getTypeByEnum(first.type), getTypeByEnum(second.type)); */
-                //   printf("Estoy evaluando %d and %d", *((int*)first.value), *((int*)second.value) );
-                  *((int *) out.value) = (make_comparable(&first) && make_comparable(&second) ) ? 1:0;  
-                //   *((int *) out.value) = (*((int*)first.value) && *((int*)second.value) ) ? 1:0;
+        case and: *((int *) out.value) = (make_comparable(&first) && make_comparable(&second) ) ? 1:0;  
                   break;
-        case or:  /* if(first.type != bool_type || second.type != bool_type) */
-                        // yyerror("Incompatible types. Can't operate '(%s value) or (%s value)'", getTypeByEnum(first.type), getTypeByEnum(second.type));
-                  *((int *) out.value) = (make_comparable(&first) || make_comparable(&second) ) ? 1:0;  
-                //   *((int *) out.value) = (*((int*)first.value) || *((int*)second.value) ) ? 1:0;
+        case or:  *((int *) out.value) = (make_comparable(&first) || make_comparable(&second) ) ? 1:0;  
                   break;
-        case gt:  /* printf("Estoy comparando %d > %d", make_comparable(&first), make_comparable(&second)); */
-                  *((int *) out.value) = (make_comparable(&first) > make_comparable(&second))?1:0;
+        case gt:  *((int *) out.value) = (make_comparable(&first) > make_comparable(&second) ) ? 1:0;
                   break;
-        case gte: *((int *) out.value) = (make_comparable(&first) >= make_comparable(&second))?1:0;
+        case gte: *((int *) out.value) = (make_comparable(&first) >= make_comparable(&second) ) ? 1:0;
                   break;
-        case lt:  *((int *) out.value) = (make_comparable(&first) < make_comparable(&second))?1:0;
+        case lt:  *((int *) out.value) = (make_comparable(&first) < make_comparable(&second) ) ? 1:0;
                   break;
-        case lte: *((int *) out.value) = (make_comparable(&first) <= make_comparable(&second))?1:0;
+        case lte: *((int *) out.value) = (make_comparable(&first) <= make_comparable(&second) ) ? 1:0;
                   break;
-        case eq:  *((int *) out.value) = (make_comparable(&first) == make_comparable(&second))?1:0;
+        case eq:  *((int *) out.value) = (make_comparable(&first) == make_comparable(&second) ) ? 1:0;
                   break;
-        case neq: *((int *) out.value) = (make_comparable(&first) != make_comparable(&second))?1:0;
+        case neq: *((int *) out.value) = (make_comparable(&first) != make_comparable(&second) ) ? 1:0;
                   break;
         default:  free(out.value);
                   yyerror("Invalid binary logic operator.[Allowed: and or <= < > >= == != ]");
@@ -548,7 +500,6 @@ int make_comparable(Data * data){
     switch (data->type){
         case bool_type:
         case num_type:
-                // data->print = data->print;
                 return *((int*)data->value);
                 break;
         case chord_type: {
@@ -596,18 +547,18 @@ Data data_boolean(Data data){
     return out;
 }
 
-/* RECURSO DE PRUEBA */
-float getFreq(notes_enum note){
-    float notes[] = { /*C*/ 65.41 * pow(2,3), 69.30* pow(2,3), 73.42* pow(2,3), 77.78* pow(2,3), 82.41* pow(2,3), 87.31* pow(2,3), 92.50* pow(2,3), 98.00* pow(2,3), 103.83* pow(2,3), 110.00* pow(2,3), 116.54* pow(2,3), 123.47* pow(2,3) /*B*/, 0};
-    return notes[note];
-}
+// /* RECURSO DE PRUEBA */
+// float getFreq(notes_enum note){
+//     float notes[] = { /*C*/ 65.41 * pow(2,3), 69.30* pow(2,3), 73.42* pow(2,3), 77.78* pow(2,3), 82.41* pow(2,3), 87.31* pow(2,3), 92.50* pow(2,3), 98.00* pow(2,3), 103.83* pow(2,3), 110.00* pow(2,3), 116.54* pow(2,3), 123.47* pow(2,3) /*B*/, 0};
+//     return notes[note];
+// }
 
 static int avg_freq(Chord * chord){
     float sum_freq = 0;
     int quant = 0;
     struct NoteNode * node = chord->notes;
     while (node != NULL){
-        sum_freq += getFreq(node->note);
+        sum_freq += notes[node->note];
         quant++;
         node = node->next;
     }
@@ -620,6 +571,20 @@ static int total_time(Set * set){
         time += set->blocks[i].time;
     }
     return time;
+}
+
+void free_end(){
+    if(list==NULL) return;
+    struct Node * node = list->header;
+    struct Node * aux;
+    while(node != NULL){
+        aux = node;
+        node = node->next;
+        free(aux->var->name);
+        free(aux->var);
+        free(aux);
+    }
+    free(list);
 }
 
 

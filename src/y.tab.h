@@ -70,15 +70,16 @@ extern int yydebug;
     OPEN_BRACKET = 280,
     CLOSE_BRACKET = 281,
     START = 282,
-    PLAY = 283,
-    NEW_LINE = 284,
-    INT_NAME = 285,
-    CHORD_NAME = 286,
-    SET_NAME = 287,
-    VAR = 288,
-    NUMBER = 289,
-    CHORD = 290,
-    NOTE = 291
+    STOP = 283,
+    PLAY = 284,
+    NEW_LINE = 285,
+    INT_NAME = 286,
+    CHORD_NAME = 287,
+    SET_NAME = 288,
+    VAR = 289,
+    NUMBER = 290,
+    CHORD = 291,
+    NOTE = 292
   };
 #endif
 /* Tokens.  */
@@ -107,15 +108,16 @@ extern int yydebug;
 #define OPEN_BRACKET 280
 #define CLOSE_BRACKET 281
 #define START 282
-#define PLAY 283
-#define NEW_LINE 284
-#define INT_NAME 285
-#define CHORD_NAME 286
-#define SET_NAME 287
-#define VAR 288
-#define NUMBER 289
-#define CHORD 290
-#define NOTE 291
+#define STOP 283
+#define PLAY 284
+#define NEW_LINE 285
+#define INT_NAME 286
+#define CHORD_NAME 287
+#define SET_NAME 288
+#define VAR 289
+#define NUMBER 290
+#define CHORD 291
+#define NOTE 292
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -131,7 +133,7 @@ union YYSTYPE
     char * strVal;
     struct data dataVal;
 
-#line 135 "y.tab.h" /* yacc.c:1909  */
+#line 137 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
