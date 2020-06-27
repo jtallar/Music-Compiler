@@ -53,9 +53,7 @@ extern int yylineno;
 
 %%
 
-start           :  START NEW_LINE program stop NEW_LINE                             { printFullProgram($3); }
-
-stop            :  STOP                                                             { free_end(); exit(0); }                                         
+start           :  START NEW_LINE program STOP NEW_LINE                             { printFullProgram($3); free_end(); exit(0); }
 
 program         :  program declare                                                  { $$ = concatProgram($1, $2); }   
                 |  program assign                                                   { $$ = concatProgram($1, $2); }
@@ -100,10 +98,6 @@ any_op          : add_op_logic                         { $$ = $1; }
                 ;
                 
 body            : OPEN_BRACES program CLOSE_BRACES     { $$ = addBraces($2); }
-                ;
-
-else            : ELSE body 
-                |
                 ;
 
 // Enum para todos los operadores que siguen
