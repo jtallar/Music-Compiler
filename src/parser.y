@@ -34,7 +34,7 @@ extern int yylineno;
 %token IF ELSE DO WHILE STAR BAR ADD MINUS ASSIGN
 %token EQUAL_OP NOT_EQUAL_OP GT_OP GTE_OP LT_OP LTE_OP AND_OP OR_OP NOT_OP
 %token OPEN_BRACES CLOSE_BRACES OPEN_PAREN CLOSE_PAREN OPEN_BRACKET CLOSE_BRACKET
-%token START STOP PLAY NEW_LINE
+%token START STOP PLAY NEW_LINE PRINT
 %token INT_NAME CHORD_NAME SET_NAME
 
 %token <strVal> VAR
@@ -42,11 +42,12 @@ extern int yylineno;
 /* %token <set> SET */
 %token <strVal> CHORD
 %token <strVal> NOTE
+%token <strVal> STRING
 
 //%type <strVal> expression assign var_type term factor constant
 
 %type <int_type> var_type any_op add_op_logic op_compare
-%type <strVal> assign declare if_sentence do_sentence while_sentence play body program
+%type <strVal> assign declare if_sentence do_sentence while_sentence play body print program
 %type <dataVal> constant factor term expression /**/ compare single_compare mult_compare
 
 %start start
@@ -61,11 +62,16 @@ program         :  program declare                                              
                 |  program do_sentence                                              { $$ = concatProgram($1, $2); }
                 |  program while_sentence                                           { $$ = concatProgram($1, $2); }
                 |  program play                                                     { $$ = concatProgram($1, $2); }
+                |  program print                                                    { $$ = concatProgram($1, $2); }
                 |  program NEW_LINE                                                 { $$ = $1; }
                 |  /* empty */                                                      { $$ = emptySentence(); }
                 ;
 
 play            : PLAY OPEN_PAREN expression CLOSE_PAREN NEW_LINE                   { $$ = playSet($3);   }
+                ;
+
+print           : PRINT OPEN_PAREN expression CLOSE_PAREN NEW_LINE                  {$$ = printExpression($3);}
+                | PRINT OPEN_PAREN STRING CLOSE_PAREN NEW_LINE                      {$$ = printMessage($3);}
                 ;
 
 do_sentence     : DO body WHILE compare NEW_LINE                                    { $$ = doWhileSentence($2, $4); }
@@ -178,7 +184,7 @@ void printHeaders(){
     printf("#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <math.h>\n\n");
     printf("#define BASE_FILENAME	\"out\"\n#define EXT_FILENAME	\".wav\"\n#define MAX_WAV_COUNT\t10\n");
     printf("#define NOTE_COUNT  13\n#define CHORD_COUNT 14\n#define STD_CHORD_L 3\n\n");
-    printf("#define M_PI           3.14159265358979323846\n#ifdef __linux__\n    #define SOUND_COMMAND  \"aplay -c 1 -q -t wav\"\n#endif\n#ifdef __APPLE__	\n    #define SOUND_COMMAND  \"afplay\"\n#endif\n");
+    printf("#ifndef M_PI\n\t#define M_PI           3.14159265358979323846\n#endif\n#ifdef __linux__\n    #define SOUND_COMMAND  \"aplay -c 1 -q -t wav\"\n#endif\n#ifdef __APPLE__	\n    #define SOUND_COMMAND  \"afplay\"\n#endif\n");
     printf("#define SAMPLE_RATE     96000.0 // hertz\n#define MONO            1\n#define STEREO          2\n#define CHANNEL_NUM     MONO\n#define BITS_SAMPLE     16      // 8, 16 or 32\n\n");
 
     printf("\nstatic int fileNumber = 0;\n\n");
@@ -202,7 +208,9 @@ void printHeaders(){
             Chord * chordSub(Chord * c1, Chord * c2);\n\
             int totalTime(Set * set);\n\
             int avgFreq(Chord * chord);\n\
-            void playSet(Set * set);\n");
+            void playSet(Set * set);\n\
+            void printChord(Chord * chord);\n\
+            void printSet(Set * set);\n");
     printf("void generateWav(Set set, char * name);\n");
     printf("int playWav( char *filename );\n");
 
@@ -457,6 +465,30 @@ void printFunctions(){
                 quant++;\n\
             }\n\
             return (quant == 0) ? 0 : (sum_freq/quant);\n\
+        }\n");
+    printf("void printChord(Chord * chord) {\n\
+        if (chord == NULL) {\n\
+            puts(\"Empty chord\\n\");\n\
+            return;\n\
+        }\n\
+        printf(\"Chord has %%d note%%s: \\n\", chord->quant, (chord->quant <= 1) ? \"\" : \"s\");\n\
+        for (int i = 0; i < chord->quant; i++){\n\
+            printf(\"\\t|~ Note %%d: %%s\\n\", i + 1, noteName[chord->notes[i].note]);\n\
+        }\n\
+        }\n\
+        \n\
+        void printSet(Set * set) {\n\
+            if (set == NULL) {\n\
+                puts(\"Empty set\\n\");\n\
+                return;\n\
+            }\n\
+            printf(\"Set has %%d block%%s: \\n\", set->quant, (set->quant <= 1) ? \"\" : \"s\");\n\
+            for(int i=0; i < set->quant; i++){\n\
+                printf(\"\\t|~ Block %%d lasting %%d ms: \\n\", i + 1, set->blocks[i].time);\n\
+                for (int j = 0; j < set->blocks[i].chords->quant; j++){\n\
+                    printf(\"\\t\\t|~ Note %%d: %%s\\n\", j + 1, noteName[set->blocks[i].chords->notes[j].note]);\n\
+                }\n\
+            }\n\
         }\n");
 }
 

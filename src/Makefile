@@ -6,7 +6,7 @@ all: compiler
 y.tab.c + y.tab.h: parser.y
 	$(YACC) $(YACCFLAGS) $<
 
-lex.yy.c: scanner.l
+lex.yy.c: scanner.l y.tab.h
 	$(LEX) $<
 
 compiler: $(OBJECTS)

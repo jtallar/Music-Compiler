@@ -329,4 +329,27 @@ void playSet(Set * set){
     }
 }
     
-    
+void printChord(Chord * chord) {
+	if (chord == NULL) {
+        puts("Empty chord\n");
+        return;
+	}
+    printf("Chord has %d note%s: \n", chord->quant, (chord->quant <= 1) ? "" : "s");
+    for (int i = 0; i < chord->quant; i++){
+        printf("\t|~ Note %d: %s\n", i + 1, noteName[chord->notes[i].note]);
+    }
+}
+
+void printSet(Set * set) {
+	if (set == NULL) {
+        puts("Empty set\n");
+        return;
+	}
+    printf("Set has %d block%s: \n", set->quant, (set->quant <= 1) ? "" : "s");
+    for(int i=0; i < set->quant; i++){
+    	printf("\t|~ Block %d lasting %d ms: \n", i + 1, set->blocks[i].time);
+        for (int j = 0; j < set->blocks[i].chords->quant; j++){
+	        printf("\t\t|~ Note %d: %s\n", j + 1, noteName[set->blocks[i].chords->notes[j].note]);
+	    }
+    }
+}

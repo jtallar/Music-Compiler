@@ -392,4 +392,48 @@ void printFullProgram(char * program) {
     printf("}\n");
 }
 
+#define BASE_PRINT_STR_LEN      11
+#define BASE_PRINT_NUM_LEN      18
+#define BASE_PRINT_CHORD_LEN    15
+#define BASE_PRINT_SET_LEN      13
+
+char * printStringLiteral(char * message) {
+    char * ret = calloc(BASE_PRINT_STR_LEN + strlen(message), sizeof(*ret));
+    if (ret == NULL) {
+        abort(); /** TODO: Que hacemos aca?? */
+    }
+    sprintf(ret, "printf(%s);\n", message);
+    return ret;
+}
+
+char * printExpressionValue(Data exp) {
+    char * ret;
+    switch (exp.type)
+    {
+    case num_type:
+        ret = calloc(BASE_PRINT_NUM_LEN + strlen(exp.print), sizeof(*ret));
+        if (ret == NULL) {
+            abort(); /** TODO: Que hacemos aca?? */
+        }
+        sprintf(ret, "printf(\"%%d\\n\",%s);\n", exp.print);
+        return ret;
+    case chord_type:
+        ret = calloc(BASE_PRINT_CHORD_LEN + strlen(exp.print), sizeof(*ret));
+        if (ret == NULL) {
+            abort(); /** TODO: Que hacemos aca?? */
+        }
+        sprintf(ret, "printChord(%s);\n", exp.print);
+        return ret;
+    case set_type:
+        ret = calloc(BASE_PRINT_SET_LEN + strlen(exp.print), sizeof(*ret));
+        if (ret == NULL) {
+            abort(); /** TODO: Que hacemos aca?? */
+        }
+        sprintf(ret, "printSet(%s);\n", exp.print);
+        return ret;
+    default:
+        abort();
+    }
+}
+
 /** TODO: Ver si puedo liberar cada print recibido a medida que lo uso  */

@@ -43,4 +43,8 @@ char * printConcatProgram(char * p1, char * p2);
 
 void printFullProgram(char * program);
 
+char * printStringLiteral(char * message);
+
+char * printExpressionValue(Data exp);
+
 #endif

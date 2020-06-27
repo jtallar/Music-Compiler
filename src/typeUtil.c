@@ -647,7 +647,18 @@ char * emptySentence() {
 char * concatProgram(char * p1, char * p2) {
     char * ret = printConcatProgram(p1, p2);
     free(p1);
-    free(p2);  // TODO: Ver por que estos frees me rompen
+    free(p2);
+    return ret;
+}
+
+char * printMessage(char * message) {
+    char * ret = printStringLiteral(message);
+    free(message);
+    return ret;
+}
+
+char * printExpression(Data exp) {
+    char * ret = printExpressionValue(exp);
     return ret;
 }
 
