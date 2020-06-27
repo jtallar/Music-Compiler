@@ -8,7 +8,7 @@ void yyerror (const char * format, ...);
 int yylex();
 %}
 
-string      ^"[.*]"$
+string      \"[^\"]*\"
 number		([1-9][0-9]*|(0))
 variable 	[a-z][a-z0-9_]* 
 new_line 	\n

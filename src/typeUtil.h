@@ -65,6 +65,8 @@ char * doWhileSentence(char * body, Data comp);
 char * whileSentence(char * body, Data comp);
 char * emptySentence();
 char * concatProgram(char * p1, char * p2);
+char * printMessage(char * message);
+char * printExpression(Data exp);
 void generateFullProgram(char * program);
 /***********************/
 
