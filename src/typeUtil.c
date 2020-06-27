@@ -5,7 +5,7 @@
 #include "outPrinter.h"
 // #include "soundSet.h"
 
-
+static int make_comparable(Data * data);
 static int avg_freq(Chord * chord);
 static int total_time(Set * set);
 
@@ -224,7 +224,7 @@ void print_boolean(int* num){
 
 void addNote(Chord * chord, notes_enum note){
     struct NoteNode * node = chord->notes;
-    struct NoteNode * new = (struct NoteNote *) malloc(sizeof(struct NoteNode));
+    struct NoteNode * new = malloc(sizeof(struct NoteNode));
     if(new == NULL) yyerror("Not enough heap memory");
     new->note = note;
     new->next = node;
@@ -292,6 +292,7 @@ Data addOperation(Data first, Data second){
         return out;
     }
     yyerror("Incompatible types. Can't operate %s value + %s value", getTypeByEnum(first.type), getTypeByEnum(second.type));
+    abort();
 }
 
 Data minusOperation(Data first, Data second){
@@ -321,6 +322,7 @@ Data minusOperation(Data first, Data second){
         return out;
     }
     yyerror("Incompatible types. Can't operate %s value - %s value", getTypeByEnum(first.type), getTypeByEnum(second.type));
+    abort();
 }
 
 Data barOperation(Data first, Data second){
@@ -357,6 +359,7 @@ Data barOperation(Data first, Data second){
         return out;
     }
     yyerror("Incompatible types. Can't operate %s value / %s value", getTypeByEnum(first.type), getTypeByEnum(second.type));
+    abort();
 }
 
 Data starOperation(Data first, Data second){
@@ -395,6 +398,7 @@ Data starOperation(Data first, Data second){
         return out;
     }
     yyerror("Incompatible types. Can't operate (%s value) * (%s value)", getTypeByEnum(first.type), getTypeByEnum(second.type));
+    abort();
 }
 
 char * getTypeByEnum(types type){
@@ -495,7 +499,7 @@ Data negate_condition(Data condition){
     return out;
 } */
 
-int make_comparable(Data * data){
+static int make_comparable(Data * data){
     if(data->value == NULL) return 0;
     switch (data->type){
         case bool_type:
@@ -518,6 +522,7 @@ int make_comparable(Data * data){
             yyerror("Invalid comparable type");
             break;
     }
+    abort();
 }
 
 Data data_boolean(Data data){

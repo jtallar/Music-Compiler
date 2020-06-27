@@ -92,13 +92,13 @@ typedef struct set{
   int quant;
 }Set;
 
-static const Chord ch[] = {  
-      {chordsNotes[aC],  STD_CHORD_L}, {chordsNotes[aCm], STD_CHORD_L}, {chordsNotes[aD], STD_CHORD_L},
-      {chordsNotes[aDm], STD_CHORD_L}, {chordsNotes[aE],  STD_CHORD_L}, {chordsNotes[aEm],STD_CHORD_L},
-      {chordsNotes[aF],  STD_CHORD_L}, {chordsNotes[aFm], STD_CHORD_L}, {chordsNotes[aG], STD_CHORD_L},
-      {chordsNotes[aGm], STD_CHORD_L}, {chordsNotes[aA],  STD_CHORD_L}, {chordsNotes[aAm],STD_CHORD_L},
-      {chordsNotes[aB],  STD_CHORD_L}, {chordsNotes[aBm], STD_CHORD_L},
-};
+// static const Chord ch[] = {  
+//       {chordsNotes[aC],  STD_CHORD_L}, {chordsNotes[aCm], STD_CHORD_L}, {chordsNotes[aD], STD_CHORD_L},
+//       {chordsNotes[aDm], STD_CHORD_L}, {chordsNotes[aE],  STD_CHORD_L}, {chordsNotes[aEm],STD_CHORD_L},
+//       {chordsNotes[aF],  STD_CHORD_L}, {chordsNotes[aFm], STD_CHORD_L}, {chordsNotes[aG], STD_CHORD_L},
+//       {chordsNotes[aGm], STD_CHORD_L}, {chordsNotes[aA],  STD_CHORD_L}, {chordsNotes[aAm],STD_CHORD_L},
+//       {chordsNotes[aB],  STD_CHORD_L}, {chordsNotes[aBm], STD_CHORD_L},
+// };
 
 extern void yyerror(const char * format, ...);
 
