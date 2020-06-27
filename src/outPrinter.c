@@ -22,21 +22,24 @@ char * printCreateVar(types type, char * name) {
     case num_type:
         ret = calloc(BASE_INT_DECL_LEN + strlen(name), sizeof(*ret));
         if (ret == NULL) {
-            abort(); /** TODO: Que hacemos aca?? */
+            yyerror("Not enough heap memory");
+            abort();
         }
         sprintf(ret, "int %s;\n", name);
         break;
     case chord_type:
         ret = calloc(BASE_CHORD_DECL_LEN + strlen(name), sizeof(*ret));
         if (ret == NULL) {
-            abort(); /** TODO: Que hacemos aca?? */
+            yyerror("Not enough heap memory");
+            abort(); 
         }
         sprintf(ret, "Chord* %s=calloc(1,%lu);\n", name, sizeof(Chord));
         break;
     case set_type:
         ret = calloc(BASE_SET_DECL_LEN + strlen(name), sizeof(*ret));
         if (ret == NULL) {
-            abort(); /** TODO: Que hacemos aca?? */
+            yyerror("Not enough heap memory");
+            abort(); 
         }
         sprintf(ret, "Set* %s=calloc(1,%lu);\n", name, sizeof(Set));
         break;
@@ -62,7 +65,8 @@ char * printPutVar(char * name, Data data) {
     //     printf("%s->quant=%d;\n", name, ((Chord *) data.value)->quant);
     //     char * buf = calloc(strlen(name) + strlen("->notes") + 1, sizeof(buf));
     //     if (buf == NULL) {
-    //         abort(); /** TODO: Que hacemos aca?? */
+    //         yyerror("Not enough heap memory");
+    //         abort(); 
     //     }
     //     sprintf(buf, "%s->notes", name);
     //     printNoteAssign(buf, (Chord *) data.value);
@@ -78,18 +82,19 @@ char * printPutVar(char * name, Data data) {
     //     break;
     // }
     char * ret;
-    /** TODO: Agregar una variable global void* auxFree */
     if (data.type == num_type) {
         ret = calloc(4 + strlen(name) + strlen(data.print), sizeof(*ret));
         if (ret == NULL) {
-            abort(); /** TODO: Que hacemos aca?? */
+            yyerror("Not enough heap memory");
+            abort(); 
         }
         sprintf(ret, "%s=%s;\n", name, data.print);
         return ret;
     }
     ret = calloc(BASE_ASSIGN_LEN + strlen(name) * 2 + strlen(data.print), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "auxFree=%s;\n%s=%s;\nfree(auxFree);\n", name, name, data.print);
     return ret;
@@ -110,7 +115,8 @@ char * printPutVar(char * name, Data data) {
 //         printf("%s->blocks[i].time=%d;\n", name, set->blocks[i].time);
 //         char * buf = calloc(strlen(name) + strlen("->blocks[i].chords") + 1, sizeof(buf));
 //         if (buf == NULL) {
-//             abort(); /** TODO: Que hacemos aca?? */
+//             yyerror("Not enough heap memory");
+//             abort(); 
 //         }
 //         sprintf(buf, "%s->blocks[i].chords", name);
 //         printNoteAssign(buf, set->blocks[i].chords);
@@ -135,7 +141,8 @@ char * printPutVar(char * name, Data data) {
 char * printChordConstant(char * chordStr) {
     char * ret = calloc(NEW_CHORD_LEN, sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     int note;
     for (note = C; note < NOTE_COUNT; note++) {
@@ -153,13 +160,15 @@ char * printChordConstant(char * chordStr) {
         }
     }
     free(ret);
-    abort(); /** TODO: Que hacemos aca?? */
+    yyerror("Not enough heap memory");
+    abort(); 
 }
 
 char * printNewSet(char * chordPrint, char * timePrint) {
     char * ret = calloc(BASE_NEW_SET_LEN + strlen(chordPrint) + strlen(timePrint), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "newSet(%s,%s)", chordPrint, timePrint);
     return ret;
@@ -168,7 +177,8 @@ char * printNewSet(char * chordPrint, char * timePrint) {
 char * printAddParen(char * expPrint) {
     char * ret = calloc(3 + strlen(expPrint), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "(%s)", expPrint);
     return ret;
@@ -177,7 +187,8 @@ char * printAddParen(char * expPrint) {
 char * printAddBraces(char * print) {
     char * ret = calloc(5 + strlen(print), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "{\n%s}\n", print);
     return ret;
@@ -187,7 +198,8 @@ char * printAddBraces(char * print) {
 char * printStarNumbers(char * print1, char * print2){
     char * ret = calloc(2 + strlen(print1) + strlen(print2), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "%s*%s", print1, print2);
     return ret;
@@ -196,7 +208,8 @@ char * printStarNumbers(char * print1, char * print2){
 char * printStarSet(char * setPrint, char * timesPrint){
     char * ret = calloc(BASE_SET_STAR_LEN + strlen(setPrint) + strlen(timesPrint), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "setRepeat(%s,%s)", setPrint, timesPrint);
     return ret;
@@ -206,7 +219,8 @@ char * printStarSet(char * setPrint, char * timesPrint){
 char * printBarNumbers(char * print1, char * print2){
     char * ret = calloc(2 + strlen(print1) + strlen(print2), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "%s/%s", print1, print2);
     return ret;
@@ -215,7 +229,8 @@ char * printBarNumbers(char * print1, char * print2){
 char * printBarSet(char * print1, char * print2){
     char * ret = calloc(BASE_SET_BAR_LEN + strlen(print1) + strlen(print2), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "setConcat(%s,%s)", print1, print2);
     return ret;
@@ -225,7 +240,8 @@ char * printBarSet(char * print1, char * print2){
 char * printAddNumbers(char * print1, char * print2) {
     char * ret = calloc(2 + strlen(print1) + strlen(print2), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "%s+%s", print1, print2);
     return ret;
@@ -234,7 +250,8 @@ char * printAddNumbers(char * print1, char * print2) {
 char * printAddChords(char * print1, char * print2) {
     char * ret = calloc(BASE_CHORD_ADD_LEN + strlen(print1) + strlen(print2), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "chordSum(%s,%s)", print1, print2);
     return ret;
@@ -244,7 +261,8 @@ char * printAddChords(char * print1, char * print2) {
 char * printSubstractNumbers(char * print1, char * print2) {
     char * ret = calloc(2 + strlen(print1) + strlen(print2), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "%s-%s", print1, print2);
     return ret;
@@ -253,7 +271,8 @@ char * printSubstractNumbers(char * print1, char * print2) {
 char * printSubstractChords(char * print1, char * print2) {
     char * ret = calloc(BASE_CHORD_SUB_LEN + strlen(print1) + strlen(print2), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "chordSub(%s,%s)", print1, print2);
     return ret;
@@ -262,7 +281,8 @@ char * printSubstractChords(char * print1, char * print2) {
 char * printMakeComparableChord(char * print) {
     char * ret = calloc(BASE_CHORD_CMP_LEN + strlen(print), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "avgFreq(%s)", print);
     return ret;
@@ -271,7 +291,8 @@ char * printMakeComparableChord(char * print) {
 char * printMakeComparableSet(char * print) {
     char * ret = calloc(BASE_SET_CMP_LEN + strlen(print), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "totalTime(%s)", print);
     return ret;
@@ -280,7 +301,8 @@ char * printMakeComparableSet(char * print) {
 char * printComparison(char * print1, conditions cond, char * print2) {
     char * ret = calloc(3 + strlen(print1) + strlen(print2), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "%s%s%s", print1, getCompareSymbol(cond), print2);
     return ret;
@@ -289,7 +311,8 @@ char * printComparison(char * print1, conditions cond, char * print2) {
 char * printNotComparison(char * print) {
     char * ret = calloc(4 + strlen(print), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "!(%s)", print);
     return ret;
@@ -338,7 +361,8 @@ char * printIfSentence(char * cond, char * ifBody, char * elseBody) {
     }
     char * ret = calloc(BASE_IF_ELSE_LEN + strlen(cond) + strlen(ifBody) + strlen(elseBody), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     if (elsePresent) {
         sprintf(ret, "if%s%selse%s", cond, ifBody, elseBody);
@@ -353,7 +377,8 @@ char * printIfSentence(char * cond, char * ifBody, char * elseBody) {
 char * printDoWhileSentence(char * body, char * cond) {
     char * ret = calloc(BASE_DO_WHILE_LEN + strlen(body) + strlen(cond), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "do%swhile%s;\n", body, cond);
     return ret;
@@ -362,7 +387,8 @@ char * printDoWhileSentence(char * body, char * cond) {
 char * printWhileSentence(char * body, char * cond) {
     char * ret = calloc(BASE_WHILE_LEN + strlen(body) + strlen(cond), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "while%s%s", cond, body);
     return ret;
@@ -371,7 +397,8 @@ char * printWhileSentence(char * body, char * cond) {
 char * printPlaySet(char * print) {
     char * ret = calloc(BASE_PLAY_SET_LEN + strlen(print), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "playSet(%s);\n", print);
     return ret;
@@ -380,7 +407,8 @@ char * printPlaySet(char * print) {
 char * printConcatProgram(char * p1, char * p2) {
     char * ret = calloc(1 + strlen(p1) + strlen(p2), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "%s%s", p1, p2);
     return ret;
@@ -400,7 +428,8 @@ void printFullProgram(char * program) {
 char * printStringLiteral(char * message) {
     char * ret = calloc(BASE_PRINT_STR_LEN + strlen(message), sizeof(*ret));
     if (ret == NULL) {
-        abort(); /** TODO: Que hacemos aca?? */
+        yyerror("Not enough heap memory");
+        abort(); 
     }
     sprintf(ret, "printf(%s);\n", message);
     return ret;
@@ -413,21 +442,24 @@ char * printExpressionValue(Data exp) {
     case num_type:
         ret = calloc(BASE_PRINT_NUM_LEN + strlen(exp.print), sizeof(*ret));
         if (ret == NULL) {
-            abort(); /** TODO: Que hacemos aca?? */
+            yyerror("Not enough heap memory");
+            abort(); 
         }
         sprintf(ret, "printf(\"%%d\\n\",%s);\n", exp.print);
         return ret;
     case chord_type:
         ret = calloc(BASE_PRINT_CHORD_LEN + strlen(exp.print), sizeof(*ret));
         if (ret == NULL) {
-            abort(); /** TODO: Que hacemos aca?? */
+            yyerror("Not enough heap memory");
+            abort(); 
         }
         sprintf(ret, "printChord(%s);\n", exp.print);
         return ret;
     case set_type:
         ret = calloc(BASE_PRINT_SET_LEN + strlen(exp.print), sizeof(*ret));
         if (ret == NULL) {
-            abort(); /** TODO: Que hacemos aca?? */
+            yyerror("Not enough heap memory");
+            abort(); 
         }
         sprintf(ret, "printSet(%s);\n", exp.print);
         return ret;
@@ -435,5 +467,3 @@ char * printExpressionValue(Data exp) {
         abort();
     }
 }
-
-/** TODO: Ver si puedo liberar cada print recibido a medida que lo uso  */

@@ -627,14 +627,12 @@ char * ifSentence(Data comp, char * ifBody, char * elseBody) {
 char * doWhileSentence(char * body, Data comp) {
     char * ret = printDoWhileSentence(body, comp.print);
     free(body);
-    // TODO: liberar comp
     return ret;
 }
 
 char * whileSentence(char * body, Data comp) {
     char * ret = printWhileSentence(body, comp.print);
     free(body);
-    // TODO: liberar comp
     return ret;
 }
 
