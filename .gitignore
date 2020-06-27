@@ -21,3 +21,8 @@
 
 # GDB History
 .gdb_history
+
+# Lex and yacc output files
+lex.yy.c
+y.tab.c
+y.tab.h
