@@ -21,7 +21,7 @@
 #define BITS_SAMPLE     16      // 8, 16 or 32
 
 
-void generateWav(Set set);
+void generateWav(Set set, char * name);
 
 int playWav( char *filename );
 

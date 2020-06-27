@@ -36,8 +36,7 @@ long getTotalDuration(Set set) {
     return rta;
 }
 
-
-void generateWav(Set set) {
+void generateWav(Set set, char * name) {
     long duration = getTotalDuration(set);
     long nSamples = getSampleNumber(duration);
     
@@ -49,7 +48,7 @@ void generateWav(Set set) {
     addSet(&mySound, set);
 
     // Write it to a file and clean up when done
-    waveToFile(&mySound, WAV_FILE_NAME);
+    waveToFile(&mySound, name);
     waveDestroy(&mySound);
 }
 
@@ -76,12 +75,10 @@ void addChord(Wave * mySound, Chord * chord, long nSamples) {
     int i, j, k;
     for(i = 0; i < nSamples; i++){
         resetArray(frameData, CHANNEL_NUM);
-        struct NoteNode * node = chord->notes;
         for (j = 0; j < chord->quant ; j++) {
             for (k = 0; k < CHANNEL_NUM; k++) {
-                frameData[k] += sin(notes[node->note] * (float)i * multiplier) / chord->quant;
+                frameData[k] += sin(notes[chord->notes[j].note] * (float)i * multiplier) / chord->quant;
             }
-            node->next;
         }
         waveAddSample(mySound, frameData);
     }
