@@ -56,7 +56,7 @@ chord       a{note}m?
 {variable} 			{ /* puts(yytext); */ yylval.strVal = malloc(yyleng+1); strcpy(yylval.strVal,yytext); return VAR; }
 {string}            { /* puts(yytext); */ yylval.strVal = malloc(yyleng+1); strcpy(yylval.strVal,yytext); return STRING; }
 {new_line} 			{ yylineno++; return NEW_LINE; }		
-.				    { yyerror("Syntax Error! No match found"); }
+.				    { /* yyerror("Syntax Error! No match found for %s %d", yytext, yyleng); */ }
 	
 %%
 
