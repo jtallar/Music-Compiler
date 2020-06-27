@@ -53,7 +53,7 @@ extern int yylineno;
 
 %%
 
-start           :  START NEW_LINE program STOP NEW_LINE                             { printFullProgram($3); free_end(); exit(0); }
+start           :  START NEW_LINE program STOP NEW_LINE                             { generateFullProgram($3); free_end(); exit(0); }
 
 program         :  program declare                                                  { $$ = concatProgram($1, $2); }   
                 |  program assign                                                   { $$ = concatProgram($1, $2); }
@@ -307,8 +307,8 @@ void printFunctions(){
                 }\n\
             }\n\
             return 0;\n\
-        }\n\
-        Chord * chordSum(Chord * c1, Chord * c2){\n\
+        }\n");
+    printf("Chord * chordSum(Chord * c1, Chord * c2){\n\
             Chord * new_chord = malloc(sizeof(struct chord));\n\
             if(new_chord == NULL){\n\
                 exit(1);\n\
@@ -364,8 +364,8 @@ void printFunctions(){
             }\n\
             new_chord->quant = index;\n\
             return new_chord;\n\
-        }\n\
-        Set * setRepeat(Set * set, int times){\n\
+        }\n");
+    printf("Set * setRepeat(Set * set, int times){\n\
             int old_quant = set->quant;\n\
             int new_quant = set->quant * times;\n\
             Block * old_block = set->blocks;\n\
@@ -498,8 +498,8 @@ void printWaveEndiannessFunctions(){
             }\n\
             void waveDestroy( Wave* wave) {\n\
                 free( wave->data );\n\
-            }\n\
-            void waveSetDuration( Wave* wave, const long miliseconds ) {\n\
+            }\n");
+    printf("void waveSetDuration( Wave* wave, const long miliseconds ) {\n\
                 const float seconds = miliseconds / 1000.0;\n\
                 long long int totalBytes = (long long int)(wave->header.byteRate*seconds);\n\
                 wave->data = (char*)malloc(totalBytes);\n\
@@ -546,8 +546,8 @@ void printWaveEndiannessFunctions(){
                         wave->index += 4;\n\
                     }\n\
                 }\n\
-            }\n\
-            void waveToFile( Wave* wave, const char* filename ){\n\
+            }\n");
+    printf("void waveToFile( Wave* wave, const char* filename ){\n\
                 toLittleEndian(sizeof(int), (void*)&(wave->header.chunkSize));\n\
                 toLittleEndian(sizeof(int), (void*)&(wave->header.subChunk1Size));\n\
                 toLittleEndian(sizeof(short int), (void*)&(wave->header.audioFormat));\n\

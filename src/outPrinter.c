@@ -5,9 +5,9 @@
 
 #include "outPrinter.h"
 
-static char * callocPrint(size_t size);
-static void printNoteAssign(char * name, Chord * chord);
-static void printBlockAssign(char * name, Set * set);
+// static char * callocPrint(size_t size);
+// static void printNoteAssign(char * name, Chord * chord);
+// static void printBlockAssign(char * name, Set * set);
 static char * getCompareSymbol(conditions cond);
 
 #define BASE_INT_DECL_LEN   7
@@ -31,14 +31,14 @@ char * printCreateVar(types type, char * name) {
         if (ret == NULL) {
             abort(); /** TODO: Que hacemos aca?? */
         }
-        sprintf(ret, "Chord* %s=calloc(1,%d);\n", name, sizeof(Chord));
+        sprintf(ret, "Chord* %s=calloc(1,%lu);\n", name, sizeof(Chord));
         break;
     case set_type:
         ret = calloc(BASE_SET_DECL_LEN + strlen(name), sizeof(*ret));
         if (ret == NULL) {
             abort(); /** TODO: Que hacemos aca?? */
         }
-        sprintf(ret, "Set* %s=calloc(1,%d);\n", name, sizeof(Set));
+        sprintf(ret, "Set* %s=calloc(1,%lu);\n", name, sizeof(Set));
         break;
     default:
         perror("Unknown var type. Aborting...\n");
@@ -48,9 +48,9 @@ char * printCreateVar(types type, char * name) {
     return ret;
 }
 
-static char * callocPrint(size_t size) {
-    return "calloc(1,size);\n";
-}
+// static char * callocPrint(size_t size) {
+//     return "calloc(1,size);\n";
+// }
 
 char * printPutVar(char * name, Data data) {
     // switch (data.type)
@@ -95,28 +95,28 @@ char * printPutVar(char * name, Data data) {
     return ret;
 }
 
-static void printNoteAssign(char * name, Chord * chord) {
-    printf("%s=malloc(sizeof(*%s)*%d);\n", name, name, chord->quant);
-    struct NoteNode * node = chord->notes;
-    for (int i = 0; i < chord->quant; i++) {
-        printf("%s[i].note=%d;\n", name, node->note);
-        node = node->next;
-    }
-}
+// static void printNoteAssign(char * name, Chord * chord) {
+//     printf("%s=malloc(sizeof(*%s)*%d);\n", name, name, chord->quant);
+//     struct NoteNode * node = chord->notes;
+//     for (int i = 0; i < chord->quant; i++) {
+//         printf("%s[i].note=%d;\n", name, node->note);
+//         node = node->next;
+//     }
+// }
 
-static void printBlockAssign(char * name, Set * set) {
-    printf("%s->blocks=malloc(sizeof(*%s->blocks)*%d);\n", name, name, set->quant);
-    for (int i = 0; i < set->quant; i++) {
-        printf("%s->blocks[i].time=%d;\n", name, set->blocks[i].time);
-        char * buf = calloc(strlen(name) + strlen("->blocks[i].chords") + 1, sizeof(buf));
-        if (buf == NULL) {
-            abort(); /** TODO: Que hacemos aca?? */
-        }
-        sprintf(buf, "%s->blocks[i].chords", name);
-        printNoteAssign(buf, set->blocks[i].chords);
-        free(buf);
-    }
-}
+// static void printBlockAssign(char * name, Set * set) {
+//     printf("%s->blocks=malloc(sizeof(*%s->blocks)*%d);\n", name, name, set->quant);
+//     for (int i = 0; i < set->quant; i++) {
+//         printf("%s->blocks[i].time=%d;\n", name, set->blocks[i].time);
+//         char * buf = calloc(strlen(name) + strlen("->blocks[i].chords") + 1, sizeof(buf));
+//         if (buf == NULL) {
+//             abort(); /** TODO: Que hacemos aca?? */
+//         }
+//         sprintf(buf, "%s->blocks[i].chords", name);
+//         printNoteAssign(buf, set->blocks[i].chords);
+//         free(buf);
+//     }
+// }
 
 #define NEW_CHORD_LEN       16
 #define BASE_NEW_SET_LEN    10
