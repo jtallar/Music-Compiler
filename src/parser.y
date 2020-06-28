@@ -34,7 +34,7 @@ extern int yylineno;
 %token IF ELSE DO WHILE STAR BAR ADD MINUS ASSIGN
 %token EQUAL_OP NOT_EQUAL_OP GT_OP GTE_OP LT_OP LTE_OP AND_OP OR_OP NOT_OP
 %token OPEN_BRACES CLOSE_BRACES OPEN_PAREN CLOSE_PAREN OPEN_BRACKET CLOSE_BRACKET
-%token START STOP PLAY NEW_LINE PRINT
+%token START STOP PLAY NEW_LINE PRINT GET_NUM GET_CHORD
 %token INT_NAME CHORD_NAME SET_NAME
 
 %token <strVal> VAR
@@ -47,7 +47,7 @@ extern int yylineno;
 //%type <strVal> expression assign var_type term factor constant
 
 %type <int_type> var_type any_op add_op_logic op_compare
-%type <strVal> assign declare if_sentence do_sentence while_sentence play body print program
+%type <strVal> assign declare if_sentence do_sentence while_sentence play body print getter program
 %type <dataVal> constant factor term expression /**/ compare single_compare mult_compare
 
 %start start
@@ -63,6 +63,7 @@ program         :  program declare                                              
                 |  program while_sentence                                           { $$ = concatProgram($1, $2); }
                 |  program play                                                     { $$ = concatProgram($1, $2); }
                 |  program print                                                    { $$ = concatProgram($1, $2); }
+                |  program getter                                                   { $$ = concatProgram($1, $2); }
                 |  program NEW_LINE                                                 { $$ = $1; }
                 |  /* empty */                                                      { $$ = emptySentence(); }
                 ;
@@ -70,8 +71,12 @@ program         :  program declare                                              
 play            : PLAY OPEN_PAREN expression CLOSE_PAREN NEW_LINE                   { $$ = playSet($3);   }
                 ;
 
-print           : PRINT OPEN_PAREN expression CLOSE_PAREN NEW_LINE                  {$$ = printExpression($3);}
-                | PRINT OPEN_PAREN STRING CLOSE_PAREN NEW_LINE                      {$$ = printMessage($3);}
+print           : PRINT OPEN_PAREN expression CLOSE_PAREN NEW_LINE                  { $$ = printExpression($3); }
+                | PRINT OPEN_PAREN STRING CLOSE_PAREN NEW_LINE                      { $$ = printMessage($3); }
+                ;
+
+getter          : GET_NUM OPEN_PAREN VAR CLOSE_PAREN NEW_LINE                       { $$ = getNumber($3); }
+                | GET_CHORD OPEN_PAREN VAR CLOSE_PAREN NEW_LINE                     { $$ = getChord($3); }
                 ;
 
 do_sentence     : DO body WHILE compare NEW_LINE                                    { $$ = doWhileSentence($2, $4); }
@@ -183,7 +188,7 @@ int main() {
 void printHeaders(){
     printf("#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <math.h>\n\n");
     printf("#define BASE_FILENAME	\"out\"\n#define EXT_FILENAME	\".wav\"\n#define MAX_WAV_COUNT\t10\n");
-    printf("#define NOTE_COUNT  13\n#define CHORD_COUNT 14\n#define STD_CHORD_L 3\n\n");
+    printf("#define NOTE_COUNT  13\n#define CHORD_COUNT 14\n#define STD_CHORD_L 3\n#define BUF_SIZE		255\n#ifndef INT_MAX\n	#define INT_MAX 	2147483647\n#endif\n\n");
     printf("#ifndef M_PI\n\t#define M_PI           3.14159265358979323846\n#endif\n#ifdef __linux__\n    #define SOUND_COMMAND  \"aplay -c 1 -q -t wav\"\n#endif\n#ifdef __APPLE__	\n    #define SOUND_COMMAND  \"afplay\"\n#endif\n");
     printf("#define SAMPLE_RATE     96000.0 // hertz\n#define MONO            1\n#define STEREO          2\n#define CHANNEL_NUM     MONO\n#define BITS_SAMPLE     16      // 8, 16 or 32\n\n");
 
@@ -210,7 +215,8 @@ void printHeaders(){
             int avgFreq(Chord * chord);\n\
             void playSet(Set * set);\n\
             void printChord(Chord * chord);\n\
-            void printSet(Set * set);\n");
+            void printSet(Set * set);\n\
+            int getNumber(char * buffer);\n");
     printf("void generateWav(Set set, char * name);\n");
     printf("int playWav( char *filename );\n");
 
@@ -490,6 +496,7 @@ void printFunctions(){
                 }\n\
             }\n\
         }\n");
+    printf("\n\nint getNumber(char * buffer) {\n	long int aux = strtol(buffer, NULL, 10);\n	if (aux > INT_MAX) {\n		return INT_MAX;\n	}\n	return (int) aux;\n}\n");
 }
 
 void printWaveEndiannessFunctions(){

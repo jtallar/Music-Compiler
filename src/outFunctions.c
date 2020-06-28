@@ -3,6 +3,10 @@
 #define CHORD_COUNT 14
 #define STD_CHORD_L 3
 #define MAX_WAV_COUNT   10
+#define BUF_SIZE		255
+#ifndef INT_MAX
+	#define INT_MAX 	2147483647
+#endif
 
 typedef enum { C=0, Cs, D, Ds=3, E, F, Fs=6, G, Gs, A=9, As, B, _ } notes_enum;
 typedef enum { aC=0, aCm, aD, aDm=3, aE, aEm, aF=6, aFm, aG, aGm=9, aA, aAm, aB=12, aBm } chords_enum;
@@ -352,4 +356,12 @@ void printSet(Set * set) {
 	        printf("\t\t|~ Note %d: %s\n", j + 1, noteName[set->blocks[i].chords->notes[j].note]);
 	    }
     }
+}
+
+int getNumber(char * buffer) {
+	long int aux = strtol(buffer, NULL, 10);
+	if (aux > INT_MAX) {
+		return INT_MAX;
+	}
+	return (int) aux;
 }

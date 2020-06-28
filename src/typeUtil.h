@@ -67,6 +67,8 @@ char * emptySentence();
 char * concatProgram(char * p1, char * p2);
 char * printMessage(char * message);
 char * printExpression(Data exp);
+char * getNumber(char * name);
+char * getChord(char * name);
 void generateFullProgram(char * program);
 /***********************/
 

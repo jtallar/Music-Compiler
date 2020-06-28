@@ -415,7 +415,7 @@ char * printConcatProgram(char * p1, char * p2) {
 }
 
 void printFullProgram(char * program) {
-    printf("int main (void) {\nvoid * auxFree;\n");
+    printf("int main (void) {\nvoid * auxFree;\nchar buf[BUF_SIZE];\n\n");
     printf("%s", program);
     printf("}\n");
 }
@@ -424,6 +424,8 @@ void printFullProgram(char * program) {
 #define BASE_PRINT_NUM_LEN      18
 #define BASE_PRINT_CHORD_LEN    15
 #define BASE_PRINT_SET_LEN      13
+#define BASE_GET_NUM_LEN        45
+#define BASE_GET_CHORD_LEN      122
 
 char * printStringLiteral(char * message) {
     char * ret = calloc(BASE_PRINT_STR_LEN + strlen(message), sizeof(*ret));
@@ -466,4 +468,24 @@ char * printExpressionValue(Data exp) {
     default:
         abort();
     }
+}
+
+char * printGetNumber(char * name) {
+    char * ret = calloc(BASE_GET_NUM_LEN + strlen(name), sizeof(*ret));
+    if (ret == NULL) {
+        yyerror("Not enough heap memory");
+        abort(); 
+    }
+    sprintf(ret, "fgets(buf,BUF_SIZE,stdin);\n%s=getNumber(buf);\n", name);
+    return ret;
+}
+
+char * printGetChord(char * name) {
+    char * ret = calloc(BASE_GET_CHORD_LEN + strlen(name) * 2, sizeof(*ret));
+    if (ret == NULL) {
+        yyerror("Not enough heap memory");
+        abort(); 
+    }
+    sprintf(ret, "fgets(buf,BUF_SIZE,stdin);\nbuf[strlen(buf)-1]=\'\\0\';\n%s=newChord(buf);\nif(%s==NULL){\nputs(\"Invalid note/chord\\n\");\nexit(1);\n}\n", name, name);
+    return ret;
 }

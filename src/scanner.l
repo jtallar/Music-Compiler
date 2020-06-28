@@ -43,6 +43,8 @@ chord       a{note}m?
 "]"                 return CLOSE_BRACKET;
 "play"              return PLAY;
 "print"             return PRINT;
+"getnum"            return GET_NUM;
+"getchord"          return GET_CHORD;
 "start"             return START;
 "stop"              return STOP;
 

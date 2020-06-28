@@ -660,6 +660,31 @@ char * printExpression(Data exp) {
     return ret;
 }
 
+char * getNumber(char * name) {
+    Var * variable = getVarByName(name);
+    if(variable == NULL)
+        yyerror("Variable '%s' doesn't exist", name);
+    if(variable->data.type != num_type)
+        yyerror("You are trying to assign %s to a %s variable", getTypeByEnum(num_type), getTypeByEnum(variable->data.type));
+    char * ret = printGetNumber(name);
+    int mock = 0;
+    putInt(name, &mock); // Initialize value
+    free(name);
+    return ret;
+}
+
+char * getChord(char * name) {
+    Var * variable = getVarByName(name);
+    if(variable == NULL)
+        yyerror("Variable '%s' doesn't exist", name);
+    if(variable->data.type != chord_type)
+        yyerror("You are trying to assign %s to a %s variable", getTypeByEnum(num_type), getTypeByEnum(variable->data.type));
+    char * ret = printGetChord(name);
+    putChord(name, atonote("A")); // Initialize value
+    free(name);
+    return ret;
+}
+
 void generateFullProgram(char * program) {
     printFullProgram(program);
     free(program);

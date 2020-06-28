@@ -47,4 +47,8 @@ char * printStringLiteral(char * message);
 
 char * printExpressionValue(Data exp);
 
+char * printGetNumber(char * name);
+
+char * printGetChord(char * name);
+
 #endif
