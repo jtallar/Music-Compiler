@@ -27,4 +27,11 @@ lex.yy.c
 y.tab.c
 y.tab.h
 
+# MacOS
 .DS_Store
+
+# Junk Files
+*.swp
+
+# VisualStudioConfig
+.vscode/
