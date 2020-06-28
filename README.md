@@ -31,6 +31,9 @@ En la carpeta `lyrics` se encuentran ejemplos para ejecutar, la manera de hacerl
 $ ./wcc ./lyrics/full_test.txt 	# Este ejemplo muestra el uso de getters y prints. El resto genera melodias al ejecutarlos
 ```
 
+## Documentación
+Se encuentran disponibles en este directorio el archivo `Informe.pdf`, con la explicación de todo lo desarrollado, y el archivo `grammar_bnf.txt`, con la gramática escrita en Backus Nair Form (BNF).
+
 ---
 
 ## Autores: 
