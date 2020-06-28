@@ -13,7 +13,7 @@ Facilita la creación de música a través de la simpleza de la programación do
 Los siguientes comandos se corren en la terminal:
 ``` bash
 $  make clean -C src			# Limpiar archivos auxiliares
-$  make -C src					# Generar el parser
+$  make -C src					# Generar el ejecutable del compilador
 ```
 
 ## Uso
