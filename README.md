@@ -25,6 +25,11 @@ $  ./nombre	[0-100]				# Correr el ejecutable. El numero opcional es el volumen 
 *El/los archivos .wav se generarán en la misma carpeta en donde se encuentre el archivo `nombre` (o `a.out` de no especificarlo).*  
 En el caso de haber problema de permisos al ejecutar el compilador `./wcc`, correr en la terminal `chmod +x wcc`.
 
+# Pruebas
+En la carpeta `lyrics` se encuentran ejemplos para ejecutar, la manera de hacerlo es (luego de haber instalado con `make`):
+```bash
+$ ./wcc ./lyrics/full_test.txt 	# Este ejemplo muestra el uso de getters y prints. El resto genera melodias al ejecutarlos
+```
 
 ---
 
