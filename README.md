@@ -12,18 +12,19 @@ Facilita la creación de música a través de la simpleza de la programación do
 ## Instalación
 Los siguientes comandos se corren en la terminal:
 ``` bash
-$  make					# Generar el parser
-$  make clean			# Limpiar archivos auxiliares
+$  make -C src					# Generar el parser
+$  make clean -C src			# Limpiar archivos auxiliares
 ```
 
 ## Uso
 Siendo `program` el programa en lenguaje Wavicii, correr:
 ```bash
-$  ./compiler.out < program > out.c 	# Pasar a c
-$  gcc out.c -lm -o a.out 				# Compilar el archivo en c
-$  ./a.out								# Correr el ejecutable
+$  ./wcc program [nombre]		# Compilar el archivo. De no especificar el nombre del ejecutable de salida será por default a.out
+$  ./nombre						# Correr el ejecutable
 ```
-*El/los archivos .wav se generarán en la misma carpeta en donde se encuentre el archivo `a.out`.*
+*El/los archivos .wav se generarán en la misma carpeta en donde se encuentre el archivo `nombre` (o `a.out` de no especificarlo).*  
+En el caso de haber problema de permisos de ejecutar el compilador `./wcc` correr en la terminal `chmod +x wcc`.
+
 
 ---
 
