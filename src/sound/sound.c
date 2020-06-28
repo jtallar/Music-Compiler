@@ -3,6 +3,10 @@
 #include <math.h>
 #include "sound.h"
 
+#ifndef M_PI
+#define M_PI           3.14159265358979323846
+#endif
+
 int playWav( char *filename ) {
     char command[256];
     int status;
@@ -50,7 +54,6 @@ void addChord(Wave * mySound, Chord chord, long nSamples) {
         }
         waveAddSample(mySound, frameData);
     }
-    printf("%g\n", frameData[0]);
 }
 
 long getTotalDuration(Score score) {

@@ -1,20 +1,22 @@
-COMPILER=gcc
-FLAGS=-Wall -pedantic -std=c99 -lm
+.PHONY=clean all
+include Makefile.inc
 
-all: endianness.o wave.o sound.o prueba.o
-		 $(COMPILER) endianness.o wave.o sound.o prueba.o $(FLAGS)
+all: compiler
 
-endianness.o: endianness.c 
-				$(COMPILER) -c endianness.c 
+y.tab.c + y.tab.h: parser.y
+	$(YACC) $(YACCFLAGS) $<
 
-wave.o: wave.c 
-				$(COMPILER) -c wave.c  
+lex.yy.c: scanner.l y.tab.h
+	$(LEX) $<
 
-sound.o: sound.c
-				$(COMPILER) -c sound.c
+compiler: $(OBJECTS)
+	$(CC) $(CFLAGS) $(OBJECTS) -o $@.out $(LIB)
 
-prueba.o: prueba.c
-				$(COMPILER) -c prueba.c				
+# sound:
+# 	$(CC) $(CFLAGS) sound/endianness.c sound/wave.c sound/sound.c sound/prueba.c -o $@.out $(LIB)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-			rm -rf a.out *.wav *.o *.h.gch
+	rm -rf *.out *.wav y.tab.c y.tab.h lex.yy.c $(OBJECTS)

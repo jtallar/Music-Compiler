@@ -1,0 +1,16 @@
+start
+chord fa_sostenido
+fa_sostenido = Fs + As + Cs
+chord sol_sostenido
+sol_sostenido = Gs + C + Ds
+set meme
+meme = ([A 200]/[_ 50]*4) / ([Cs 200]/[_ 50]*4) / ([B 200]/[_ 50]*4) / ([E 200]/[_ 50]*4) / ([F 200]/[_ 50]*8) / [F 400]
+meme = meme / [_ 800] / [Cs 200]/[_ 50] / [B 200]/[_ 50]/ [A 200]/[_ 50]/ [Gs 200]/[_ 50]/ [fa_sostenido 400]/[_ 200] 
+meme = meme / [Fs 200]/[_ 100] / [Cs 150]/[_ 100]/ [B 300]/[_ 50]/ [A 300]/[_ 50]/ [sol_sostenido 700]/[_ 300]
+meme = meme / [Gs 100]/ [Gs 100]/[_ 80]/ [B 300]/[_ 80]/ [A 300]/ [Gs 300]
+meme = meme / [F 200]/ [F 200]/[_ 200]
+meme = meme / (([A 300]/ [Gs 300] *2) / [A 300]/ ([aF 300]/[_ 40]/[aF 200]/[_ 50]) *2)
+
+play(meme)
+stop
+

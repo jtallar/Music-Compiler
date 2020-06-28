@@ -19,3 +19,20 @@
 *.tar
 *.zip
 
+# GDB files
+.gdb_history
+.gdbinit
+
+# Lex and yacc output files
+lex.yy.c
+y.tab.c
+y.tab.h
+
+# MacOS
+.DS_Store
+
+# Junk Files
+*.swp
+
+# VisualStudioConfig
+.vscode/

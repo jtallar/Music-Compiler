@@ -1,0 +1,15 @@
+#! /bin/bash
+if [ $# -lt 1 ] 
+then 
+    echo -e "\033[1mwcc: \033[1;31merror:\033[0m missing code file"
+else
+    out=a.out
+    if [ $# -eq 2 ]
+    then
+        out=$2
+    fi
+
+    ./src/compiler.out < $1 > out.c     # Pasar a c
+    gcc out.c -lm -o $out             # Compilar el archivo en c
+    rm out.c                        # Eliminar archivos innecesarios
+fi
