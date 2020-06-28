@@ -415,7 +415,7 @@ char * printConcatProgram(char * p1, char * p2) {
 }
 
 void printFullProgram(char * program) {
-    printf("int main (const int argc, const char **argv) {\nvoid * auxFree;\nchar buf[BUF_SIZE];\n\n");
+    printf("int main (const int argc, const char **argv) {\nvoid * auxFree;\nchar auxBuf[BUF_SIZE];\n\n");
     printf("if (argc >= 2) {\n\tchar * auxPtr;\n\tlong int volumePercent = strtol(argv[1], &auxPtr, 10);\n\tif (auxPtr != argv[1]) {\n\t\toutVolume = (volumePercent >= 100) ? 1.0 : (volumePercent / 100.0);\n\t}\n}\n\n");
     printf("%s", program);
     printf("}\n");
@@ -477,7 +477,7 @@ char * printGetNumber(char * name) {
         yyerror("Not enough heap memory");
         abort(); 
     }
-    sprintf(ret, "fgets(buf,BUF_SIZE,stdin);\n%s=getNumber(buf);\n", name);
+    sprintf(ret, "fgets(auxBuf,BUF_SIZE,stdin);\n%s=getNumber(auxBuf);\n", name);
     return ret;
 }
 
@@ -487,6 +487,6 @@ char * printGetChord(char * name) {
         yyerror("Not enough heap memory");
         abort(); 
     }
-    sprintf(ret, "fgets(buf,BUF_SIZE,stdin);\nbuf[strlen(buf)-1]=\'\\0\';\nauxFree=%s;\n%s=newChord(buf);\nfree(auxFree);\nif(%s==NULL){\nputs(\"Invalid note/chord\\n\");\nexit(1);\n}\n", name, name, name);
+    sprintf(ret, "fgets(auxBuf,BUF_SIZE,stdin);\nauxBuf[strlen(auxBuf)-1]=\'\\0\';\nauxFree=%s;\n%s=newChord(auxBuf);\nfree(auxFree);\nif(%s==NULL){\nputs(\"Invalid note/chord\\n\");\nexit(1);\n}\n", name, name, name);
     return ret;
 }
