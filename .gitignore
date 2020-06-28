@@ -19,8 +19,9 @@
 *.tar
 *.zip
 
-# GDB History
+# GDB files
 .gdb_history
+.gdbinit
 
 # Lex and yacc output files
 lex.yy.c
