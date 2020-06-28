@@ -5,6 +5,7 @@ int time_index
 time_index = 100
 set w
 chord ch
+print("Enter a note/chord: ")
 getchord(ch)
 w = [ch time_index]
 while (w < time_final){
