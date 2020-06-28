@@ -19,4 +19,4 @@ sound:
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf *.out *.wav $(OBJECTS)
+	rm -rf *.out *.wav y.tab.c y.tab.h lex.yy.c $(OBJECTS)
