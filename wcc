@@ -10,6 +10,6 @@ else
     fi
 
     ./src/compiler.out < $1 > out.c     # Pasar a c
-    gcc-9 out.c -lm -o $out             # Compilar el archivo en c
+    gcc out.c -lm -o $out             # Compilar el archivo en c
     rm out.c                        # Eliminar archivos innecesarios
 fi
