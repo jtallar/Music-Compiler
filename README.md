@@ -20,7 +20,7 @@ $  make clean -C src			# Limpiar archivos auxiliares
 Siendo `program` el programa en lenguaje Wavicii, correr:
 ```bash
 $  ./wcc program [nombre]		# Compilar el archivo. De no especificar el nombre del ejecutable de salida será por default a.out
-$  ./nombre						# Correr el ejecutable
+$  ./nombre	[0-100]				# Correr el ejecutable. El numero opcional es el volumen máximo de salida de los audios. Por default es 50
 ```
 *El/los archivos .wav se generarán en la misma carpeta en donde se encuentre el archivo `nombre` (o `a.out` de no especificarlo).*  
 En el caso de haber problema de permisos al ejecutar el compilador `./wcc`, correr en la terminal `chmod +x wcc`.
