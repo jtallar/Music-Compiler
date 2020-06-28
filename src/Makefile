@@ -12,8 +12,8 @@ lex.yy.c: scanner.l y.tab.h
 compiler: $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) -o $@.out $(LIB)
 
-sound:
-	$(CC) $(CFLAGS) endianness.c wave.c sound.c prueba.c -o $@.out $(LIB)
+# sound:
+# 	$(CC) $(CFLAGS) sound/endianness.c sound/wave.c sound/sound.c sound/prueba.c -o $@.out $(LIB)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@

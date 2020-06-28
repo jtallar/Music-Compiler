@@ -3,7 +3,6 @@
 #include <string.h>
 #include "typeUtil.h"
 #include "outPrinter.h"
-// #include "soundSet.h"
 
 static int make_comparable(Data * data);
 static int avg_freq(Chord * chord);
