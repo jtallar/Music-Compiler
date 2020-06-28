@@ -23,7 +23,7 @@ $  ./wcc program [nombre]		# Compilar el archivo. De no especificar el nombre de
 $  ./nombre						# Correr el ejecutable
 ```
 *El/los archivos .wav se generarán en la misma carpeta en donde se encuentre el archivo `nombre` (o `a.out` de no especificarlo).*  
-En el caso de haber problema de permisos de ejecutar el compilador `./wcc` correr en la terminal `chmod +x wcc`.
+En el caso de haber problema de permisos al ejecutar el compilador `./wcc`, correr en la terminal `chmod +x wcc`.
 
 
 ---
