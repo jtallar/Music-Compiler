@@ -148,7 +148,7 @@ void putInt(char * name, int * value){
     if(variable == NULL)
         yyerror("Variable '%s' doesn't exist", name);
     if(variable->data.type != num_type)
-        yyerror("You are trying to assign %s to a %s variable", getTypeByEnum(variable->data.type), getTypeByEnum(num_type));
+        yyerror("You are trying to assign %s to a %s variable", getTypeByEnum(num_type), getTypeByEnum(variable->data.type));
     putVar(sizeof(*value), variable, (void *) value);
 }
 
@@ -157,7 +157,7 @@ void putChord(char * name, Chord * value){
     if(variable == NULL)
         yyerror("Variable '%s' doesn't exist", name);
     if(variable->data.type != chord_type)
-        yyerror("You are trying to assign %s to a %s variable", getTypeByEnum(variable->data.type), getTypeByEnum(chord_type));
+        yyerror("You are trying to assign %s to a %s variable", getTypeByEnum(chord_type), getTypeByEnum(variable->data.type));
     putVar(sizeof(*value), variable, (void *) value);
 }
 
@@ -166,7 +166,7 @@ void putSet(char * name, Set * value){
     if(variable == NULL)
         yyerror("Variable '%s' doesn't exist", name);
     if(variable->data.type != set_type)
-        yyerror("You are trying to assign %s to a %s variable", getTypeByEnum(variable->data.type), getTypeByEnum(set_type));
+        yyerror("You are trying to assign %s to a %s variable", getTypeByEnum(set_type), getTypeByEnum(variable->data.type));
     putVar(sizeof(* value), variable, (void *) value);
 }
 
@@ -678,7 +678,7 @@ char * getChord(char * name) {
     if(variable == NULL)
         yyerror("Variable '%s' doesn't exist", name);
     if(variable->data.type != chord_type)
-        yyerror("You are trying to assign %s to a %s variable", getTypeByEnum(num_type), getTypeByEnum(variable->data.type));
+        yyerror("You are trying to assign %s to a %s variable", getTypeByEnum(chord_type), getTypeByEnum(variable->data.type));
     char * ret = printGetChord(name);
     putChord(name, atonote("A")); // Initialize value
     free(name);
