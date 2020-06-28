@@ -1,0 +1,102 @@
+start           ::=  START NEW_LINE program STOP NEW_LINE                             { generateFullProgram($3); free_end(); exit(0); }
+
+program         ::=  program declare                                                  { $$ = concatProgram($1, $2); }   
+                |  program assign                                                   { $$ = concatProgram($1, $2); }
+                |  program if_sentence                                              { $$ = concatProgram($1, $2); }
+                |  program do_sentence                                              { $$ = concatProgram($1, $2); }
+                |  program while_sentence                                           { $$ = concatProgram($1, $2); }
+                |  program play                                                     { $$ = concatProgram($1, $2); }
+                |  program print                                                    { $$ = concatProgram($1, $2); }
+                |  program getter                                                   { $$ = concatProgram($1, $2); }
+                |  program NEW_LINE                                                 { $$ = $1; }
+                |  /* empty */                                                      { $$ = emptySentence(); }
+                ;
+
+play            ::= PLAY OPEN_PAREN expression CLOSE_PAREN NEW_LINE                   { $$ = playSet($3);   }
+                ;
+
+print           ::= PRINT OPEN_PAREN expression CLOSE_PAREN NEW_LINE                  { $$ = printExpression($3); }
+                | PRINT OPEN_PAREN STRING CLOSE_PAREN NEW_LINE                      { $$ = printMessage($3); }
+                ;
+
+getter          ::= GET_NUM OPEN_PAREN VAR CLOSE_PAREN NEW_LINE                       { $$ = getNumber($3); }
+                | GET_CHORD OPEN_PAREN VAR CLOSE_PAREN NEW_LINE                     { $$ = getChord($3); }
+                ;
+
+do_sentence     ::= DO body WHILE compare NEW_LINE                                    { $$ = doWhileSentence($2, $4); }
+                ;
+
+while_sentence  ::= WHILE compare body NEW_LINE                                       { $$ = whileSentence($3, $2); }
+                ;
+
+if_sentence     ::= IF compare body NEW_LINE                                          { $$ = ifSentence($2, $3, NULL); }
+                | IF compare body ELSE body NEW_LINE                                { $$ = ifSentence($2, $3, $5); }
+                ;
+
+compare         ::= OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN         { $$ = addParen(condition_composed($2, $3, $4)); /* print_boolean((int*)$$.value); */ }
+                | OPEN_PAREN single_compare CLOSE_PAREN                             { $$ = addParen($2);  /* print_boolean((int*)$$.value);   */        }
+                /* | OPEN_PAREN expression CLOSE_PAREN                                 { $$ = condition_expression($2); print_boolean((int*)$$.value);       } */
+                ;
+
+single_compare  ::= OPEN_PAREN mult_compare any_op single_compare CLOSE_PAREN         { $$ = addParen(condition_composed($2, $3, $4));  }
+                | NOT_OP OPEN_PAREN mult_compare CLOSE_PAREN                        { $$ = negate_condition($3);            }
+                | expression                                                        { $$ = data_boolean($1);        }
+                ;
+
+mult_compare    ::= mult_compare any_op single_compare                                { $$ = condition_composed($1, $2, $3);  }                                
+                | single_compare                                                    { $$ = $1; }
+                ;
+
+// Guarda lo que esta a la derecha $$ = $1
+any_op          ::= add_op_logic                         { $$ = $1; }
+                | op_compare                           { $$ = $1; }
+                ;
+                
+body            ::= OPEN_BRACES program CLOSE_BRACES     { $$ = addBraces($2); }
+                ;
+
+// Enum para todos los operadores que siguen
+add_op_logic    ::= AND_OP                               { $$ = and; }
+                | OR_OP                                { $$ = or;  }
+                ;
+
+op_compare      ::= GT_OP                                { $$ = gt;  }
+                | GTE_OP                               { $$ = gte; }    
+                | LT_OP                                { $$ = lt;  }
+                | LTE_OP                               { $$ = lte; }
+                | EQUAL_OP                             { $$ = eq;  }
+                | NOT_EQUAL_OP                         { $$ = neq; }
+                ;
+
+declare         ::= var_type VAR NEW_LINE                 { $$ = createVar($1,$2); }      // se me lleva NEW_LINE     
+            /*  | var_type assign                       { $$ = createVar($1,$2); } */
+                ;
+
+assign          ::= VAR ASSIGN expression NEW_LINE        { $$ = newVar($1,$3); }
+                ;
+
+var_type        ::= INT_NAME                              { $$ = num_type;   }                              
+                | CHORD_NAME                            { $$ = chord_type; }
+                | SET_NAME                              { $$ = set_type;   }
+                ;
+
+expression      ::= expression ADD term                   { $$ = addOperation($1,$3);   }
+                | expression MINUS term                 { $$ = minusOperation($1,$3); }
+                | term                                  { $$ = $1; }
+                ;
+
+term            ::= term STAR factor                      { $$ = starOperation($1,$3); }
+                | term BAR factor                       { $$ = barOperation ($1,$3); }
+                | factor                                { $$ = $1; }
+                ;
+
+factor          ::= constant                                              { $$ = $1;}
+                | VAR                                                   { $$ = getDataByName($1);  }
+                | OPEN_BRACKET expression expression CLOSE_BRACKET      { $$ = newSetData($2, $3); /* print_set($$); */}
+                | OPEN_PAREN expression CLOSE_PAREN                     { $$ = addParen($2); }
+                ;
+
+constant        ::= CHORD                                 { $$ = getChordData($1); /*print_chord($1); */ }
+                | NUMBER                                { $$ = getIntData($1);  /*  print_number($1); */ }
+                | NOTE                                  { $$ = getNoteData($1); /*print_chord($1);  */}
+                ;
