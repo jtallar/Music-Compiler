@@ -415,7 +415,8 @@ char * printConcatProgram(char * p1, char * p2) {
 }
 
 void printFullProgram(char * program) {
-    printf("int main (void) {\nvoid * auxFree;\nchar buf[BUF_SIZE];\n\n");
+    printf("int main (const int argc, const char **argv) {\nvoid * auxFree;\nchar buf[BUF_SIZE];\n\n");
+    printf("if (argc >= 2) {\n\tchar * auxPtr;\n\tlong int volumePercent = strtol(argv[1], &auxPtr, 10);\n\tif (auxPtr != argv[1]) {\n\t\toutVolume = (volumePercent >= 100) ? 1.0 : (volumePercent / 100.0);\n\t}\n}\n\n");
     printf("%s", program);
     printf("}\n");
 }

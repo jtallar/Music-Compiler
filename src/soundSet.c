@@ -7,6 +7,7 @@
 
 #define M_PI           3.14159265358979323846
 
+static double outVolume = BASE_VOLUME;
 
 int playWav( char *filename ) {
     char command[256];
@@ -77,7 +78,7 @@ void addChord(Wave * mySound, Chord * chord, long nSamples) {
         resetArray(frameData, CHANNEL_NUM);
         for (j = 0; j < chord->quant ; j++) {
             for (k = 0; k < CHANNEL_NUM; k++) {
-                frameData[k] += sin(notes[chord->notes[j].note] * (float)i * multiplier) / chord->quant;
+                frameData[k] += outVolume * sin(notes[chord->notes[j].note] * (float)i * multiplier) / chord->quant;
             }
         }
         waveAddSample(mySound, frameData);

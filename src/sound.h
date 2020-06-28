@@ -18,6 +18,7 @@
 #define STEREO          2
 #define CHANNEL_NUM     MONO
 #define BITS_SAMPLE     16      // 8, 16 or 32
+#define BASE_VOLUME     0.5
 
 typedef struct Chord {
     float * freq;   // Frequency array [hz]
