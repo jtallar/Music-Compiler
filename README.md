@@ -32,7 +32,7 @@ $ ./wcc ./lyrics/full_test.txt 	# Este ejemplo muestra el uso de getters y print
 ```
 
 ## Documentación
-Se encuentran disponibles en este directorio el archivo `Informe.pdf`, con la explicación de todo lo desarrollado, y el archivo `grammar_bnf.txt`, con la gramática escrita en Backus Nair Form (BNF).
+Se encuentran disponibles en este directorio el archivo .pdf `Informe.pdf`, con la explicación de todo lo desarrollado, y el archivo .txt `grammar_bnf.txt`, con la gramática escrita en Backus Nair Form (BNF).
 
 ---
 
