@@ -1,5 +1,7 @@
+; "new_line" debe matchear con : '\n'
 <start>           ::=  "start" "new_line" <program> "stop" "new_line"                        
 
+; "new_line" debe matchear con : '\n'
 <program>         ::=  <program> <declare>                                                  
                     |  <program> <assign>                                                 
                     |  <program> <if_sentence>                                            
@@ -12,26 +14,39 @@
                     |                                                         
                     ;
 
+; "new_line" debe matchear con : '\n'
 <play>            ::= "play" "(" <expression> ")" "new_line"                   
                     ;
 
+
+; "string" es una cadena que debe matchear con la expresion regular: string      \"[^\"]*\"
+; "new_line" debe matchear con : '\n'
 <print>           ::= "print" "(" <expression> ")" "new_line"                  
                     | "print" "(" "string" ")" "new_line"                      
                     ;
 
+
+; "new_line" debe matchear con : '\n'
+; "variable" debe matchear con:     [a-z][a-z0-9_]* 
 <getter>          ::= "getnum" "(" "variable" ")" "new_line"                       
                     | "getchord" "(" "variable" ")" "new_line"                     
                     ;
 
+; "new_line" debe matchear con : '\n'
 <do_sentence>     ::= "do" <body> "while" <compare> "new_line"                                    
                     ;
 
+
+; "new_line" debe matchear con : '\n'
 <while_sentence>  ::= "while" <compare> <body> "new_line"                                       
                     ;
 
+
+; "new_line" debe matchear con : '\n'
 <if_sentence>     ::= "if" <compare> <body> "new_line"                                          
                     | "if" <compare> <body> "else" <body> "new_line"                                
                     ;
+
 
 <compare>         ::= "(" <mult_compare> <any_op> <single_compare> ")"         
                     | "(" <single_compare> ")"                             
@@ -65,9 +80,15 @@
                     | "!="                         
                     ;
 
+
+; "new_line" debe matchear con : '\n'
+; "variable" debe matchear con:     [a-z][a-z0-9_]* 
 <declare>         ::= <var_type> "variable" "new_line"                      
                     ;
 
+
+; "new_line" debe matchear con : '\n'
+; "variable" debe matchear con:     [a-z][a-z0-9_]* 
 <assign>          ::= "variable" "=" <expression> "new_line"        
                     ;
 
@@ -86,13 +107,18 @@
                     | <factor>                                  
                     ;
 
+
+; "variable" debe matchear con:     [a-z][a-z0-9_]* 
 <factor>          ::= <constant>                                            
                     | "variable"                                                   
                     | "[" <expression> <expression> "]"     
                     | "(" <expression> ")"                     
                     ;
 
-<constant>        ::= "chor"                                 
+; "number" debe matchear con:       ([1-9][0-9]*|(0))
+; "chord" debe matchear con:        a{note}m?
+; "note" debe matchear con:         (As|Cs|Ds|Fs|Gs|[_A-G])
+<constant>        ::= "chord"                                 
                     | "number"                               
                     | "note"                              
                     ;
