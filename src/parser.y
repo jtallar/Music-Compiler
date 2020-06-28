@@ -55,6 +55,7 @@ extern int yylineno;
 %%
 
 start           :  START NEW_LINE program STOP NEW_LINE                             { generateFullProgram($3); free_end(); exit(0); }
+                ;
 
 program         :  program declare                                                  { $$ = concatProgram($1, $2); }   
                 |  program assign                                                   { $$ = concatProgram($1, $2); }

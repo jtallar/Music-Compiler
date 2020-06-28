@@ -1,17 +1,18 @@
 ; "new_line" debe matchear con : '\n'
-<start>           ::=  "start" "new_line" <program> "stop" "new_line"                        
+<start>           ::=  "start" "new_line" <program> "stop" "new_line"
+                    |  "start" "new_line" "stop" "new_line"
+                    ;
 
 ; "new_line" debe matchear con : '\n'
-<program>         ::=  <program> <declare>                                                  
-                    |  <program> <assign>                                                 
-                    |  <program> <if_sentence>                                            
-                    |  <program> <do_sentence>                                            
-                    |  <program> <while_sentence>                                         
-                    |  <program> <play>                                                   
-                    |  <program> <print>                                                  
-                    |  <program> <getter>                                                 
-                    |  <program> "new_line"                                                 
-                    |                                                         
+<program>         ::=  <program> <declare>          | <declare>                                                  
+                    |  <program> <assign>           | <assign>                                                 
+                    |  <program> <if_sentence>      | <if_sentence>                                            
+                    |  <program> <do_sentence>      | <do_sentence>                                            
+                    |  <program> <while_sentence>   | <while_sentence>                                         
+                    |  <program> <play>             | <play>                                                   
+                    |  <program> <print>            | <print>                                                  
+                    |  <program> <getter>           | <getter>                                                 
+                    |  <program> "new_line"         | "new_line"                                                                                    
                     ;
 
 ; "new_line" debe matchear con : '\n'
@@ -19,7 +20,7 @@
                     ;
 
 
-; "string" es una cadena que debe matchear con la expresion regular: string      \"[^\"]*\"
+; "string" es una cadena que debe matchear con la expresion regular:       \"[^\"]*\"
 ; "new_line" debe matchear con : '\n'
 <print>           ::= "print" "(" <expression> ")" "new_line"                  
                     | "print" "(" "string" ")" "new_line"                      
@@ -65,7 +66,8 @@
                     | <op_compare>                           
                     ;
                 
-<body>            ::= "{" <program> "}"     
+<body>            ::= "{" <program> "}"
+                    | "{" "}"    
                     ;
 
 <add_op_logic>    ::= "and"                               
