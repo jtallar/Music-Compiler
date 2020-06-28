@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #define NOTE_COUNT  13
 #define CHORD_COUNT 14
@@ -325,7 +326,9 @@ void outPlaySet(Set * set){
 void playSet(Set * set){
     char buf[10];
     snprintf(buf, 10, "%s%d%s", BASE_FILENAME, fileNumber, EXT_FILENAME);
+    fprintf(stderr," -> \033[1;36mGenerating\033[0m wav %s\n", buf);
     generateWav(*set, buf);
+    fprintf(stderr," -> \033[1;36mPlaying\033[0m wav %s\n", buf);
     playWav(buf);
     fileNumber++;
     if(fileNumber >= MAX_WAV_COUNT) {
