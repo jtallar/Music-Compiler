@@ -194,12 +194,20 @@ char * printAddBraces(char * print) {
     return ret;
 }
 
-/** TODO: Optimizar si ambos NO son variables */
 char * printStarNumbers(char * print1, char * print2){
     char * ret = calloc(2 + strlen(print1) + strlen(print2), sizeof(*ret));
     if (ret == NULL) {
         yyerror("Not enough heap memory");
         abort(); 
+    }
+    char * auxPtr = NULL;
+	long int num1 = strtol(print1, &auxPtr, 10);
+    if (auxPtr != NULL && *auxPtr == '\0') {
+        long int num2 = strtol(print2, &auxPtr, 10);
+        if (auxPtr != NULL && *auxPtr == '\0') {
+            sprintf(ret, "%ld", num1 * num2);
+            return ret;
+        }
     }
     sprintf(ret, "%s*%s", print1, print2);
     return ret;
@@ -215,12 +223,20 @@ char * printStarSet(char * setPrint, char * timesPrint){
     return ret;
 }
 
-/** TODO: Optimizar si ambos NO son variables */
 char * printBarNumbers(char * print1, char * print2){
     char * ret = calloc(2 + strlen(print1) + strlen(print2), sizeof(*ret));
     if (ret == NULL) {
         yyerror("Not enough heap memory");
         abort(); 
+    }
+    char * auxPtr = NULL;
+	long int num1 = strtol(print1, &auxPtr, 10);
+    if (auxPtr != NULL && *auxPtr == '\0') {
+        long int num2 = strtol(print2, &auxPtr, 10);
+        if (auxPtr != NULL && *auxPtr == '\0') {
+            sprintf(ret, "%ld", num1 / num2);
+            return ret;
+        }
     }
     sprintf(ret, "%s/%s", print1, print2);
     return ret;
@@ -236,12 +252,20 @@ char * printBarSet(char * print1, char * print2){
     return ret;
 }
 
-/** TODO: Optimizar si ambos NO son variables */
 char * printAddNumbers(char * print1, char * print2) {
     char * ret = calloc(2 + strlen(print1) + strlen(print2), sizeof(*ret));
     if (ret == NULL) {
         yyerror("Not enough heap memory");
         abort(); 
+    }
+    char * auxPtr = NULL;
+	long int num1 = strtol(print1, &auxPtr, 10);
+    if (auxPtr != NULL && *auxPtr == '\0') {
+        long int num2 = strtol(print2, &auxPtr, 10);
+        if (auxPtr != NULL && *auxPtr == '\0') {
+            sprintf(ret, "%ld", num1 + num2);
+            return ret;
+        }
     }
     sprintf(ret, "%s+%s", print1, print2);
     return ret;
@@ -257,12 +281,20 @@ char * printAddChords(char * print1, char * print2) {
     return ret;
 }
 
-/** TODO: Optimizar si ambos NO son variables */
 char * printSubstractNumbers(char * print1, char * print2) {
     char * ret = calloc(2 + strlen(print1) + strlen(print2), sizeof(*ret));
     if (ret == NULL) {
         yyerror("Not enough heap memory");
         abort(); 
+    }
+    char * auxPtr = NULL;
+	long int num1 = strtol(print1, &auxPtr, 10);
+    if (auxPtr != NULL && *auxPtr == '\0') {
+        long int num2 = strtol(print2, &auxPtr, 10);
+        if (auxPtr != NULL && *auxPtr == '\0') {
+            sprintf(ret, "%ld", num1 - num2);
+            return ret;
+        }
     }
     sprintf(ret, "%s-%s", print1, print2);
     return ret;

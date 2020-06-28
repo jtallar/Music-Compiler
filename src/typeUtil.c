@@ -348,7 +348,7 @@ Data barOperation(Data first, Data second){
         if(outBlocks == NULL) yyerror("Not enough heap memory");
 
         int i = 0, j = 0;
-        for (i = 0; i < set_one.quant; i++)     // TODO: Ver si no conviene malloquear de nuevo
+        for (i = 0; i < set_one.quant; i++)     
             outBlocks[i] = set_one.blocks[i];
         for (j = 0; j < set_two.quant; j++, i++)
             outBlocks[i] = set_two.blocks[j];
@@ -429,7 +429,7 @@ Set * newSet(Data chord, Data time){
         yyerror("You are creating a new set with incorrect variable types");
     Set * set = (Set *) malloc(sizeof(struct set));
     Block * block = (Block *) malloc(sizeof(struct block));
-    block->chords = ((Chord *)chord.value); // TODO: Ver si no conviene hacer malloc y memcpy
+    block->chords = ((Chord *)chord.value);
     block->time = *((int*)time.value);
     set->blocks = block;
     set->quant = 1;
