@@ -83,9 +83,27 @@ void init_list(){
     // printf("Preparing our band...\n");
 }
 
+#define RESERVED_WORDS_LEN  37
+
+static const char * reservedWords[RESERVED_WORDS_LEN] = {"notes", "argc", "argv", "auto", "enum", "restrict", 
+    "unsigned", "break", "extern", "return", "void", "case", "float", "short", "volatile", "char", "for", 
+    "signed", "while", "const", "goto", "sizeof", "continue", "if", "static", "default", "inline", "struct", 
+    "do", "int", "switch", "double", "long", "typedef", "else", "register", "union"};
+
+static int checkReservedWords(char * name) {
+    for (int i = 0; i < RESERVED_WORDS_LEN; i++) {
+        if(strcmp(reservedWords[i], name) == 0) {
+            return -1;
+        }
+    }
+    return 0;
+}
+
 char * createVar(types type, char * name){
     if(getVarByName(name) != NULL)
         yyerror("Variable named %s already exists.", name);
+    if(checkReservedWords(name) < 0)
+        yyerror("Word %s is reserved.", name);
 
     struct Node * node = (struct Node *) malloc(sizeof(struct Node));
     if(node == NULL) yyerror("Not enough heap memory");
