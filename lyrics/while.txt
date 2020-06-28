@@ -1,0 +1,16 @@
+start
+int time_final
+time_final = 1000
+int time_index
+time_index = 100
+set w
+chord ch
+getchord(ch)
+w = [ch time_index]
+while (w < time_final){
+	w = w / [_ 50]
+	w = w / [ch time_index]
+	print(w)
+}
+play(w)
+stop
