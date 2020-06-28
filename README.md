@@ -12,8 +12,8 @@ Facilita la creación de música a través de la simpleza de la programación do
 ## Instalación
 Los siguientes comandos se corren en la terminal:
 ``` bash
-$  make -C src					# Generar el parser
 $  make clean -C src			# Limpiar archivos auxiliares
+$  make -C src					# Generar el parser
 ```
 
 ## Uso
